@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="12dp">
+
+    <View
+        android:id="@+id/gander_list_code"
+        android:layout_width="40dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="2dp"
+        android:background="@color/gander_loader"
+        android:textAppearance="@style/Gander.TextAppearance.ListItem" />
+
+    <View
+        android:id="@+id/gander_list_path"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="2dp"
+        android:layout_toEndOf="@id/gander_list_code"
+        android:layout_toRightOf="@id/gander_list_code"
+        android:background="@color/gander_loader" />
+
+    <View
+        android:id="@+id/gander_list_host"
+        android:layout_width="80dp"
+        android:layout_height="16dp"
+        android:layout_below="@id/gander_list_path"
+        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/gander_list_code"
+        android:layout_toRightOf="@id/gander_list_code"
+        android:background="@color/gander_loader" />
+
+    <ImageView
+        android:id="@+id/gander_list_ssl"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_below="@id/gander_list_path"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/gander_list_host"
+        android:layout_toRightOf="@id/gander_list_host"
+        android:contentDescription="@string/gander_ssl"
+        android:src="@drawable/gander_ic_https_grey_24dp" />
+
+    <LinearLayout
+        android:id="@+id/gander_list_meta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gander_list_host"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <View
+            android:layout_width="72dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:background="@color/gander_loader" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/gander_loader" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/gander_loader" />
+
+    </LinearLayout>
+
+</RelativeLayout>

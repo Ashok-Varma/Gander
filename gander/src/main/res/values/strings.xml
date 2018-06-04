@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Gander</string>
+
+    <string name="gander_name">@string/app_name</string>
+    <string name="gander_loading">Loading …</string>
+    <string name="gander_notification_title">Recording HTTP activity</string>
+    <string name="gander_clear">Clear</string>
+    <string name="gander_browse_sql_database">Browse SQLite database</string>
+    <string name="gander_overview">Overview</string>
+    <string name="gander_request">Request</string>
+    <string name="gander_response">Response</string>
+    <string name="gander_url">URL</string>
+    <string name="gander_method">Method</string>
+    <string name="gander_protocol">Protocol</string>
+    <string name="gander_status">Status</string>
+    <string name="gander_ssl">SSL</string>
+    <string name="gander_request_time">Request time</string>
+    <string name="gander_response_time">Response time</string>
+    <string name="gander_duration">Duration</string>
+    <string name="gander_request_size">Request size</string>
+    <string name="gander_response_size">Response size</string>
+    <string name="gander_total_size">Total size</string>
+    <string name="gander_yes">Yes</string>
+    <string name="gander_no">No</string>
+    <string name="gander_share">Share</string>
+    <string name="gander_share_as_text">Share as text</string>
+    <string name="gander_share_as_curl">Share as curl command</string>
+    <string name="gander_body_omitted">(encoded or binary body omitted)</string>
+    <string name="gander_search">Search</string>
+    <string name="gander_body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
+    <string name="gander_body_content_truncated">\n\n--- Content truncated ---</string>
+    <string name="notification_category">Gander HTTP notifications</string>
+</resources>

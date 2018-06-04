@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ashokvarma.gander">
+
+    <application>
+        <service
+            android:name=".internal.support.ClearTransactionsService"
+            android:exported="false" />
+
+        <activity
+            android:name=".internal.ui.list.TransactionListActivity"
+            android:label="@string/gander_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.ashokvarma.gander.task"
+            android:theme="@style/Gander.Theme" />
+
+        <activity
+            android:name=".internal.ui.details.TransactionDetailsActivity"
+            android:parentActivityName=".internal.ui.list.TransactionListActivity"
+            android:theme="@style/Gander.Theme" />
+    </application>
+
+</manifest>

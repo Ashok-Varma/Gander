@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'Gander'
+
+    publishedGroupId = 'com.ashokvarma.android'
+    libraryName = 'Gander'
+    artifact = 'gander'
+
+    libraryDescription = 'Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.'
+
+    siteUrl = 'https://github.com/Ashok-Varma/Gander'
+    gitUrl = 'https://github.com/Ashok-Varma/Gander.git'
+
+    libraryVersion = rootProject.ext.versionName
+
+    developerId = 'Ashok-Varma'
+    developerName = 'Ashok Varma'
+    developerEmail = 'ashokvitece@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
+
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    implementation "android.arch.paging:runtime:$pagingVersion"
+    implementation "android.arch.lifecycle:extensions:$viewModelVersion"
+    implementation "android.arch.lifecycle:viewmodel:$viewModelVersion"
+
+}
+
+
+// Place it at the end of the file
+apply from: 'install_lib.gradle'
+apply from: 'bintray_lib.gradle'

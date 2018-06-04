@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Gander</string>
+    <string name="do_http_activity">Do HTTP activity</string>
+    <string name="launch_gander_directly">Launch Gander directly</string>
+</resources>

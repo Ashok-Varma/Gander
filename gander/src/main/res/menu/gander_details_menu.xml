@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/gander_ic_share_white_24dp"
+        android:title="@string/gander_share"
+        app:showAsAction="always">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/share_text"
+                    android:title="@string/gander_share_as_text" />
+                <item
+                    android:id="@+id/share_curl"
+                    android:title="@string/gander_share_as_curl" />
+            </group>
+        </menu>
+    </item>
+</menu>

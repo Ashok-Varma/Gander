@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gander_colorPrimary">#607D8B</color>
+    <color name="gander_colorPrimaryDark">#455A64</color>
+    <color name="gander_colorAccent">#616161</color>
+
+    <color name="gander_loader">#CECECE</color>
+
+    <!--4caf50(green), 00bcd4(cyan), 2196f3(blue)-->
+    <color name="gander_status_default_txt">#212121</color>
+    <color name="gander_status_default">#4caf50</color>
+    <color name="gander_status_requested">#9E9E9E</color>
+    <color name="gander_status_300">#0D47A1</color>
+    <color name="gander_status_400">#FF9800</color>
+    <color name="gander_status_500">#F44336</color>
+    <color name="gander_status_error">#B71C1C</color>
+</resources>
