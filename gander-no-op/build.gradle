@@ -5,7 +5,7 @@ ext {
     bintrayName = 'GanderNoOp'
 
     publishedGroupId = 'com.ashokvarma.android'
-    libraryName = 'Gander NoOp'
+    libraryName = 'GanderNoOp'
     artifact = 'gander-no-op'
 
     libraryDescription = 'Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.'
@@ -35,3 +35,7 @@ android {
 dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
 }
+
+// Place it at the end of the file
+apply from: 'install_lib.gradle'
+apply from: 'bintray_lib.gradle'

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.ashokvarma.gander.GanderInterceptor;
 import com.ashokvarma.gander.Gander;
+import com.ashokvarma.gander.GanderInterceptor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     private OkHttpClient getClient(Context context) {
         return new OkHttpClient.Builder()
                 // Add a GanderInterceptor instance to your OkHttp client
-                .addInterceptor(new GanderInterceptor(context).showNotification(true))
+                .addInterceptor(new GanderInterceptor(context, true))
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
     }

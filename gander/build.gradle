@@ -57,7 +57,6 @@ dependencies {
 
 }
 
-
 // Place it at the end of the file
 apply from: 'install_lib.gradle'
 apply from: 'bintray_lib.gradle'

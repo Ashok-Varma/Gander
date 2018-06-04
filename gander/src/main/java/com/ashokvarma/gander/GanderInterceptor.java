@@ -1,7 +1,6 @@
 package com.ashokvarma.gander;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.ashokvarma.gander.internal.data.GanderDatabase;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -73,27 +72,14 @@ public class GanderInterceptor implements Interceptor {
 
     /**
      * @param context The current Context.
+     * @param showNotification true to show a notification, false to suppress it.
      */
-    public GanderInterceptor(Context context) {
+    public GanderInterceptor(Context context, boolean showNotification) {
         this.context = context.getApplicationContext();
         ganderDatabase = GanderDatabase.getInstance(context);
         notificationHelper = new NotificationHelper(this.context);
         retentionManager = new RetentionManager(this.context, DEFAULT_RETENTION);
-        showNotification(false);// to avoid un-necessary channel creation default set to false
-    }
-
-    /**
-     * Control whether a notification is shown while HTTP activity is recorded.
-     *
-     * @param show true to show a notification, false to suppress it.
-     * @return The {@link GanderInterceptor} instance.
-     */
-    public GanderInterceptor showNotification(boolean show) {
-        showNotification = show;
-        if (showNotification) {
-            notificationHelper.setUpChannelIfNecessary();
-        }
-        return this;
+        showNotification(showNotification);// to avoid un-necessary channel creation it's requested in constructor
     }
 
     /**
@@ -118,6 +104,18 @@ public class GanderInterceptor implements Interceptor {
     public GanderInterceptor retainDataFor(Period period) {
         retentionManager = new RetentionManager(context, period);
         return this;
+    }
+
+    /**
+     * Control whether a notification is shown while HTTP activity is recorded.
+     *
+     * @param show true to show a notification, false to suppress it.
+     */
+    private void showNotification(boolean show) {
+        showNotification = show;
+        if (showNotification) {
+            notificationHelper.setUpChannelIfNecessary();
+        }
     }
 
     @Override
@@ -175,7 +173,7 @@ public class GanderInterceptor implements Interceptor {
 
         ResponseBody responseBody = response.body();
 
-//        transaction.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
+        transaction.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
         transaction.setResponseDate(new Date());
         transaction.setTookMs(tookMs);
         transaction.setProtocol(response.protocol().toString());

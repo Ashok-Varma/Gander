@@ -39,17 +39,7 @@ public class GanderInterceptor implements Interceptor {
     /**
      * @param context The current Context.
      */
-    public GanderInterceptor(Context context) {
-    }
-
-    /**
-     * Control whether a notification is shown while HTTP activity is recorded.
-     *
-     * @param show true to show a notification, false to suppress it.
-     * @return The {@link GanderInterceptor} instance.
-     */
-    public GanderInterceptor showNotification(boolean show) {
-        return this;
+    public GanderInterceptor(Context context, boolean showNotification) {
     }
 
     /**
