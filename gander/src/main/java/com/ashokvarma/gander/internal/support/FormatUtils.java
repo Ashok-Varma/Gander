@@ -1,8 +1,14 @@
 package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -13,6 +19,7 @@ import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +38,34 @@ import javax.xml.transform.stream.StreamResult;
  * @since 03/06/18
  */
 public class FormatUtils {
+
+    public static SpannableStringBuilder formatTextHighlight(String text, String searchKey) {
+        List<Integer> startIndexes = indexOf(text, searchKey);
+        return applySpannable(text, startIndexes, searchKey.length());
+    }
+
+    private static List<Integer> indexOf(String text, String criteria) {
+        List<Integer> startPositions = new ArrayList<>();
+        int index = text.indexOf(criteria);
+        while (index >= 0) {
+            startPositions.add(index);
+            index = text.indexOf(criteria, index + 1);
+        }
+        return startPositions;
+    }
+
+    private static SpannableStringBuilder applySpannable(String text, List<Integer> indexes, int length) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(text);
+        for (Integer position : indexes) {
+            builder.setSpan(new UnderlineSpan(),
+                    position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(Color.RED),
+                    position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new BackgroundColorSpan(Color.YELLOW),
+                    position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return builder;
+    }
 
     public static CharSequence formatHeaders(List<HttpHeader> httpHeaders, boolean withMarkup) {
         Truss truss = new Truss();

@@ -12,6 +12,7 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
  * @since 03/06/18
  */
 public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransaction> {
+
     @Override
     public boolean areItemsTheSame(HttpTransaction oldItem, HttpTransaction newItem) {
         // even if both are null => items are not same (animation issues)
@@ -20,17 +21,21 @@ public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransaction> {
 
     @Override
     public boolean areContentsTheSame(HttpTransaction oldItem, HttpTransaction newItem) {
-        // both will non null. because of areItemsTheSame logic
+        // both will non null. because of areItemsTheSame logic only non nulls come here
         // comparing only items shown in the list
-        return areEqual(oldItem.getMethod(), newItem.getMethod()) &&
-                areEqual(oldItem.getPath(), newItem.getPath()) &&
-                areEqual(oldItem.getHost(), newItem.getHost()) &&
-                areEqual(oldItem.getRequestStartTimeString(), newItem.getRequestStartTimeString()) &&
-                (oldItem.isSsl() == newItem.isSsl()) &&
-                oldItem.getStatus().equals(newItem.getStatus()) &&
-                areEqual(oldItem.getResponseCode(), newItem.getResponseCode()) &&
-                areEqual(oldItem.getDurationString(), newItem.getDurationString()) &&
-                areEqual(oldItem.getTotalSizeString(), newItem.getTotalSizeString());
+//        return areEqual(oldItem.getMethod(), newItem.getMethod()) &&
+//                areEqual(oldItem.getPath(), newItem.getPath()) &&
+//                areEqual(oldItem.getHost(), newItem.getHost()) &&
+//                areEqual(oldItem.getRequestStartTimeString(), newItem.getRequestStartTimeString()) &&
+//                (oldItem.isSsl() == newItem.isSsl()) &&
+//                oldItem.getStatus().equals(newItem.getStatus()) &&
+//                areEqual(oldItem.getResponseCode(), newItem.getResponseCode()) &&
+//                areEqual(oldItem.getDurationString(), newItem.getDurationString()) &&
+//                areEqual(oldItem.getTotalSizeString(), newItem.getTotalSizeString());
+
+        // Defaulted to false because we need to highlighted search word. which is independent of this object
+        // and also onBind is not heavy in the adapter(just text switches), so made it false.
+        return false;
     }
 
     private static boolean areEqual(Object oldItem, Object newItem) {

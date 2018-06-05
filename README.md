@@ -23,8 +23,8 @@ Add the dependency in your `build.gradle` file. Add it alongside the `no-op` var
 
 ```gradle
  dependencies {
-   debugCompile 'com.ashokvarma.android:gander:1.0.2'
-   releaseCompile 'com.ashokvarma.android:gander-no-op:1.0.2'
+   debugCompile 'com.ashokvarma.android:gander:1.0.3'
+   releaseCompile 'com.ashokvarma.android:gander-no-op:1.0.3'
  }
 ```
 

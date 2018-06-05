@@ -73,13 +73,12 @@ public class NotificationHelper {
     public synchronized void show(HttpTransaction transaction) {
         addToBuffer(transaction);
         if (!BaseGanderActivity.isInForeground()) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentIntent(PendingIntent.getActivity(context, 0, Gander.getLaunchIntent(context), 0))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.gander_ic_notification_white_24dp)
                     .setColor(ContextCompat.getColor(context, R.color.gander_colorPrimary))
-                    .setContentTitle(context.getString(R.string.gander_notification_title))
-                    .setChannelId(CHANNEL_ID);
+                    .setContentTitle(context.getString(R.string.gander_notification_title));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
             int count = 0;
@@ -108,7 +107,7 @@ public class NotificationHelper {
         int color = colorUtil.getTransactionColor(transaction);
         String text = transaction.getNotificationText();
         // Simple span no Truss required
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
         spannableStringBuilder.setSpan(new ForegroundColorSpan(color), 0, text.length(), SPAN_INCLUSIVE_EXCLUSIVE);
         return spannableStringBuilder;
     }

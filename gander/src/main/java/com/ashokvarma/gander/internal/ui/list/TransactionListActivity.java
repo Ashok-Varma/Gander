@@ -47,13 +47,13 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
         viewModel = ViewModelProviders.of(this).get(TransactionListViewModel.class);
 
-        debouncer = new Debouncer<>(300, this);
+        debouncer = new Debouncer<>(400, this);
 
         loadResults(null);
     }
 
     private void loadResults(String searchKey) {
-        subscribeTo(viewModel.getTransactions(searchKey));
+        subscribeTo(searchKey, viewModel.getTransactions(searchKey));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
     private LiveData<PagedList<HttpTransaction>> currentSubscription;
 
-    private void subscribeTo(LiveData<PagedList<HttpTransaction>> pagedListLiveData) {
+    private void subscribeTo(final String searchKey, LiveData<PagedList<HttpTransaction>> pagedListLiveData) {
         if (currentSubscription != null && currentSubscription.hasObservers()) {
             currentSubscription.removeObservers(this);
         }
@@ -72,6 +72,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
             @Override
             public void onChanged(@Nullable PagedList<HttpTransaction> itemAndPeople) {
                 transactionAdapter.submitList(itemAndPeople);
+                transactionAdapter.setSearchKey(searchKey);
             }
         });
     }

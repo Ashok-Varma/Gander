@@ -42,7 +42,7 @@ public class TransactionListViewModel extends AndroidViewModel {
         if (key == null || key.trim().length() == 0) {
             return transactions;
         } else {
-            DataSource.Factory<Integer, HttpTransaction> factory = transactionDao.getAllTransactionsWith(key + "%", "%" + key + "%");
+            DataSource.Factory<Integer, HttpTransaction> factory = transactionDao.getAllTransactionsWith(key, TransactionDao.SEARCH_DEFAULT);
             return new LivePagedListBuilder<>(factory, config).build();
         }
     }
