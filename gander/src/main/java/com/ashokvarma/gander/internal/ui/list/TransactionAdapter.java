@@ -3,7 +3,6 @@ package com.ashokvarma.gander.internal.ui.list;
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.support.TransactionColorUtil;
 
 /**
  * Class description
@@ -24,14 +24,9 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
 public class TransactionAdapter extends PagedListAdapter<HttpTransaction, RecyclerView.ViewHolder> {
 
     private final LayoutInflater layoutInflater;
+    private final TransactionColorUtil colorUtil;
 
-    private final int colorDefault;
-    private final int colorDefaultTxt;
-    private final int colorRequested;
-    private final int colorError;
-    private final int color500;
-    private final int color400;
-    private final int color300;
+
 
     private Listener listener;
 
@@ -39,15 +34,19 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
         super(new ListDiffUtil());
 
         layoutInflater = LayoutInflater.from(context);
+        colorUtil = TransactionColorUtil.getInstance(context);
 
+        registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
 
-        colorDefault = ContextCompat.getColor(context, R.color.gander_status_default);
-        colorDefaultTxt = ContextCompat.getColor(context, R.color.gander_status_default_txt);
-        colorRequested = ContextCompat.getColor(context, R.color.gander_status_requested);
-        colorError = ContextCompat.getColor(context, R.color.gander_status_error);
-        color500 = ContextCompat.getColor(context, R.color.gander_status_500);
-        color400 = ContextCompat.getColor(context, R.color.gander_status_400);
-        color300 = ContextCompat.getColor(context, R.color.gander_status_300);
+                if (listener != null) {
+                    // in the database inserts only occur at the top
+                    listener.onItemsInserted(positionStart);
+                }
+            }
+        });
     }
 
     public void setListener(Listener listener) {
@@ -98,30 +97,13 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
             if (transaction.getStatus() == HttpTransaction.Status.Failed) {
                 holder.code.setText("!!!");
             }
-            setStatusColor(holder, transaction);
+
+            int color = colorUtil.getTransactionColor(transaction, true);
+            holder.path.setTextColor(color);
+            holder.code.setTextColor(color);
         }
         // null no changes
 
-    }
-
-    private void setStatusColor(TransactionViewHolder holder, HttpTransaction transaction) {
-        int color;
-        if (transaction.getStatus() == HttpTransaction.Status.Failed) {
-            color = colorError;
-        } else if (transaction.getStatus() == HttpTransaction.Status.Requested) {
-            color = colorRequested;
-        } else if (transaction.getResponseCode() >= 500) {
-            color = color500;
-        } else if (transaction.getResponseCode() >= 400) {
-            color = color400;
-        } else if (transaction.getResponseCode() >= 300) {
-            color = color300;
-        } else {
-            color = colorDefaultTxt;
-        }
-
-        holder.path.setTextColor(color);
-        holder.code.setTextColor(color);
     }
 
     static class EmptyTransactionViewHolder extends RecyclerView.ViewHolder {
@@ -166,5 +148,7 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
 
     interface Listener {
         void onTransactionClicked(HttpTransaction httpTransaction);
+
+        void onItemsInserted(int firstInsertedItemPosition);
     }
 }

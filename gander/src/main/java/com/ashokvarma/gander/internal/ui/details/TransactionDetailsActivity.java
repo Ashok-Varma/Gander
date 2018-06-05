@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.FormatUtils;
+import com.ashokvarma.gander.internal.support.TransactionColorUtil;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionFragment;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionOverviewFragment;
@@ -60,6 +61,7 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
 
     private HttpTransaction transaction;
     TransactionDetailViewModel viewModel;
+    TransactionColorUtil colorUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,9 +70,10 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         long transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
         int statusOrdinal = getIntent().getIntExtra(ARG_TRANSACTION_STATUS, HttpTransaction.Status.Requested.ordinal());
         int responseCode = getIntent().getIntExtra(ARG_TRANSACTION_RESPONSE_CODE, -1);
+        colorUtil = TransactionColorUtil.getInstance(this);
 
         appBarLayout = findViewById(R.id.gander_details_appbar);
-        setStatusColor(HttpTransaction.Status.values()[statusOrdinal], responseCode);
+        appBarLayout.setBackgroundColor(colorUtil.getTransactionColor(HttpTransaction.Status.values()[statusOrdinal], responseCode));
         Toolbar toolbar = findViewById(R.id.gander_details_toolbar);
         setSupportActionBar(toolbar);
         title = findViewById(R.id.gander_details_toolbar_title);
@@ -126,26 +129,8 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
             for (TransactionFragment fragment : adapter.fragments) {
                 fragment.transactionUpdated(transaction);
             }
-            setStatusColor(transaction.getStatus(), transaction.getResponseCode());
+            appBarLayout.setBackgroundColor(colorUtil.getTransactionColor(transaction));
         }
-    }
-
-    private void setStatusColor(HttpTransaction.Status status, Integer responseCode) {
-        int color;
-        if (status == HttpTransaction.Status.Failed) {
-            color = ContextCompat.getColor(this, R.color.gander_status_error);
-        } else if (status == HttpTransaction.Status.Requested) {
-            color = ContextCompat.getColor(this, R.color.gander_status_requested);
-        } else if (responseCode >= 500) {
-            color = ContextCompat.getColor(this, R.color.gander_status_500);
-        } else if (responseCode >= 400) {
-            color = ContextCompat.getColor(this, R.color.gander_status_400);
-        } else if (responseCode >= 300) {
-            color = ContextCompat.getColor(this, R.color.gander_status_300);
-        } else {
-            color = ContextCompat.getColor(this, R.color.gander_status_default);
-        }
-        appBarLayout.setBackgroundColor(color);
     }
 
     private void setupViewPager(ViewPager viewPager) {

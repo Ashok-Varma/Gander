@@ -9,12 +9,16 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.LongSparseArray;
 
-import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.Gander;
+import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
+
+import static android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
 
 /**
  * Class description
@@ -34,6 +38,7 @@ public class NotificationHelper {
 
     private final Context context;
     private final NotificationManager notificationManager;
+    private final TransactionColorUtil colorUtil;
 //    private Method setChannelId;
 
     public static synchronized void clearBuffer() {
@@ -54,6 +59,7 @@ public class NotificationHelper {
     public NotificationHelper(Context context) {
         this.context = context;
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        colorUtil = TransactionColorUtil.getInstance(context);
     }
 
     public void setUpChannelIfNecessary() {
@@ -80,9 +86,9 @@ public class NotificationHelper {
             for (int i = transactionBuffer.size() - 1; i >= 0; i--) {
                 if (count < BUFFER_SIZE) {
                     if (count == 0) {
-                        builder.setContentText(transactionBuffer.valueAt(i).getNotificationText());
+                        builder.setContentText(getNotificationText(transactionBuffer.valueAt(i)));
                     }
-                    inboxStyle.addLine(transactionBuffer.valueAt(i).getNotificationText());
+                    inboxStyle.addLine(getNotificationText(transactionBuffer.valueAt(i)));
                 }
                 count++;
             }
@@ -96,6 +102,15 @@ public class NotificationHelper {
             builder.addAction(getClearAction());
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
+    }
+
+    private CharSequence getNotificationText(HttpTransaction transaction) {
+        int color = colorUtil.getTransactionColor(transaction);
+        String text = transaction.getNotificationText();
+        // Simple span no Truss required
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(color), 0, text.length(), SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannableStringBuilder;
     }
 
     @NonNull

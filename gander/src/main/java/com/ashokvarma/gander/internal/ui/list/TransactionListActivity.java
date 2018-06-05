@@ -17,8 +17,8 @@ import android.view.MenuItem;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
-import com.ashokvarma.gander.internal.support.NotificationHelper;
 import com.ashokvarma.gander.internal.support.Debouncer;
+import com.ashokvarma.gander.internal.support.NotificationHelper;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
 import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 
@@ -82,6 +82,11 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
     }
 
     @Override
+    public void onItemsInserted(int firstInsertedItemPosition) {
+        recyclerView.smoothScrollToPosition(firstInsertedItemPosition);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gander_list_menu, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
@@ -109,7 +114,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return true;
+        return false;
     }
 
     @Override
