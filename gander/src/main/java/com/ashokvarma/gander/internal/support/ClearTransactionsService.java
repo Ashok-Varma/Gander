@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.ashokvarma.gander.GanderInterceptor;
 import com.ashokvarma.gander.internal.data.GanderDatabase;
 
 /**
@@ -17,7 +16,7 @@ import com.ashokvarma.gander.internal.data.GanderDatabase;
 public class ClearTransactionsService extends IntentService {
 
     public ClearTransactionsService() {
-        super("Chuck-ClearTransactionsService");
+        super("Gander-ClearTransactionsService");
     }
 
     @Override

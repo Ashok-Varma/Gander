@@ -45,6 +45,9 @@ public class FormatUtils {
     }
 
     private static List<Integer> indexOf(String text, String criteria) {
+        text = text.toLowerCase();
+        criteria = criteria.toLowerCase();
+
         List<Integer> startPositions = new ArrayList<>();
         int index = text.indexOf(criteria);
         while (index >= 0) {

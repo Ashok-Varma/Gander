@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
                 launchGanderDirectly();
             }
         });
+        Gander.addAppShortcut(this);
     }
 
 
