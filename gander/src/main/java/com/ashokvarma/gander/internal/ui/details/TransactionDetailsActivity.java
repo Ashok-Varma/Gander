@@ -11,17 +11,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.support.Debouncer;
 import com.ashokvarma.gander.internal.support.FormatUtils;
 import com.ashokvarma.gander.internal.support.TransactionColorUtil;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
@@ -39,7 +39,7 @@ import java.util.List;
  * @version 1.0
  * @since 03/06/18
  */
-public class TransactionDetailsActivity extends BaseGanderActivity {
+public class TransactionDetailsActivity extends BaseGanderActivity implements SearchView.OnQueryTextListener, Debouncer.Callback<String> {
 
     private static final String ARG_TRANSACTION_ID = "transaction_id";
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
@@ -60,8 +60,11 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     AppBarLayout appBarLayout;
 
     private HttpTransaction transaction;
+    private String searchKey;
     TransactionDetailViewModel viewModel;
     TransactionColorUtil colorUtil;
+
+    private final Debouncer<String> debouncer = new Debouncer<>(400, this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,9 +106,32 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.gander_details_menu, menu);
+        getMenuInflater().inflate(R.menu.gander_details_menu, menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        searchView.setIconifiedByDefault(true);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        debouncer.consume(newText);
+        return true;
+    }
+
+    @Override
+    public void onEmit(String key) {
+        searchKey = key;
+        for (TransactionFragment fragment : adapter.fragments) {
+            fragment.onSearchUpdated(searchKey);
+        }
     }
 
     @Override

@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +26,11 @@ import android.widget.TextView;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.support.FormatUtils;
 import com.ashokvarma.gander.internal.support.TextUtil;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
@@ -40,11 +41,13 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
 
     private static final String ARG_TYPE = "type";
 
-    TextView headers;
-    TextView body;
+    private TextView headers;
+    private TextView body;
 
     private int type;
     private HttpTransaction transaction;
+    private String mSearchKey;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public TransactionPayloadFragment() {
     }
@@ -76,34 +79,46 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        populateUI();
+        populateUI(true);
     }
 
     @Override
     public void transactionUpdated(HttpTransaction transaction) {
         this.transaction = transaction;
-        populateUI();
+        populateUI(true);
     }
 
-    private void populateUI() {
+    @Override
+    public void onSearchUpdated(String searchKey) {
+        mSearchKey = searchKey;
+        populateUI(false);
+    }
+
+    private void populateUI(boolean updateHeaders) {
         if (isAdded() && transaction != null) {
             switch (type) {
                 case TYPE_REQUEST:
-                    setText(transaction.getRequestHeadersString(true),
-                            transaction.requestBodyIsPlainText(), new Callable<String>() {
-                                @Override
-                                public String call() {
-                                    return transaction.getFormattedRequestBody();
-                                }
-                            });
+                    if (updateHeaders) {
+                        setHeaderText(transaction.getRequestHeadersString(true));
+                    }
+                    setBody(transaction.requestBodyIsPlainText(), new Callable<CharSequence>() {
+                        @Override
+                        public CharSequence call() {
+                            String body = transaction.getFormattedRequestBody();
+                            return FormatUtils.formatTextHighlight(body, mSearchKey);
+                        }
+                    });
                     break;
                 case TYPE_RESPONSE:
-                    setText(transaction.getResponseHeadersString(true),
-                            transaction.responseBodyIsPlainText(),
-                            new Callable<String>() {
+                    if (updateHeaders) {
+                        setHeaderText(transaction.getResponseHeadersString(true));
+                    }
+                    setBody(transaction.responseBodyIsPlainText(),
+                            new Callable<CharSequence>() {
                                 @Override
-                                public String call() {
-                                    return transaction.getFormattedResponseBody();
+                                public CharSequence call() {
+                                    String body = transaction.getFormattedResponseBody();
+                                    return FormatUtils.formatTextHighlight(body, mSearchKey);
                                 }
                             });
                     break;
@@ -111,13 +126,17 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
         }
     }
 
-    private void setText(CharSequence headersString, boolean isPlainText, Callable<String> bodyString) {
-        headers.setVisibility((TextUtils.isEmpty(headersString) ? View.GONE : View.VISIBLE));
+    private void setHeaderText(CharSequence headersString) {
+        headers.setVisibility((TextUtil.isNullOrWhiteSpace(headersString) ? View.GONE : View.VISIBLE));
         headers.setText(headersString);
+    }
+
+    private void setBody(boolean isPlainText, Callable<CharSequence> bodyString) {
         if (!isPlainText) {
             body.setText(getString(R.string.gander_body_omitted));
         } else {
-            TextUtil.asyncSetText(body, Executors.newSingleThreadExecutor(), bodyString);
+//            executor.shutdown();
+            TextUtil.asyncSetText(body, executor, bodyString);
         }
     }
 }

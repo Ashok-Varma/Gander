@@ -24,11 +24,11 @@ import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 
 public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener, Debouncer.Callback<String> {
 
-    TransactionAdapter transactionAdapter;
-    ListDiffUtil listDiffUtil;
-    RecyclerView recyclerView;
-    TransactionListViewModel viewModel;
-    Debouncer<String> debouncer;
+    private TransactionAdapter transactionAdapter;
+    private ListDiffUtil listDiffUtil;
+    private RecyclerView recyclerView;
+    private TransactionListViewModel viewModel;
+    private Debouncer<String> debouncer = new Debouncer<>(400, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,6 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         recyclerView.setAdapter(transactionAdapter);
 
         viewModel = ViewModelProviders.of(this).get(TransactionListViewModel.class);
-
-        debouncer = new Debouncer<>(400, this);
 
         loadResults(null);
     }

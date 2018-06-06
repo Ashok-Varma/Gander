@@ -4,7 +4,6 @@ import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,11 +111,7 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
     }
 
     private CharSequence getHighlightedText(String text) {
-        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(mSearchKey)) {
-            return text;
-        } else {
-            return FormatUtils.formatTextHighlight(text, mSearchKey);
-        }
+        return FormatUtils.formatTextHighlight(text, mSearchKey);
     }
 
     static class EmptyTransactionViewHolder extends RecyclerView.ViewHolder {

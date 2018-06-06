@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -39,9 +38,13 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class FormatUtils {
 
-    public static SpannableStringBuilder formatTextHighlight(String text, String searchKey) {
-        List<Integer> startIndexes = indexOf(text, searchKey);
-        return applySpannable(text, startIndexes, searchKey.length());
+    public static CharSequence formatTextHighlight(String text, String searchKey) {
+        if (TextUtil.isNullOrWhiteSpace(text) || TextUtil.isNullOrWhiteSpace(searchKey)) {
+            return text;
+        } else {
+            List<Integer> startIndexes = indexOf(text, searchKey);
+            return applySpannable(text, startIndexes, searchKey.length());
+        }
     }
 
     private static List<Integer> indexOf(String text, String criteria) {
@@ -138,7 +141,7 @@ public class FormatUtils {
         text.append("\n");
         text.append("---------- ").append(context.getString(R.string.gander_request)).append(" ----------\n\n");
         String headers = formatHeaders(transaction.getRequestHeaders(), false).toString();
-        if (!TextUtils.isEmpty(headers)) {
+        if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
         text.append((transaction.requestBodyIsPlainText()) ? v(transaction.getFormattedRequestBody()) :
@@ -146,7 +149,7 @@ public class FormatUtils {
         text.append("\n\n");
         text.append("---------- ").append(context.getString(R.string.gander_response)).append(" ----------\n\n");
         headers = formatHeaders(transaction.getResponseHeaders(), false).toString();
-        if (!TextUtils.isEmpty(headers)) {
+        if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
         text.append((transaction.responseBodyIsPlainText()) ? v(transaction.getFormattedResponseBody()) :

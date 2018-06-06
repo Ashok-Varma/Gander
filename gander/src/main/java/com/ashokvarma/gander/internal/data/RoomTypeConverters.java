@@ -1,7 +1,8 @@
 package com.ashokvarma.gander.internal.data;
 
 import android.arch.persistence.room.TypeConverter;
-import android.text.TextUtils;
+
+import com.ashokvarma.gander.internal.support.TextUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +31,7 @@ public class RoomTypeConverters {
 
     @TypeConverter
     public static List<HttpHeader> fromStringToHeaderList(String value) {
-        if (value == null || TextUtils.isEmpty(value)) {
+        if (value == null || TextUtil.isNullOrWhiteSpace(value)) {
             return new ArrayList<>();
         }
 

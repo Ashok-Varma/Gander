@@ -24,7 +24,8 @@ public class TextUtil {
      * <p>
      * Pref Matters
      */
-    public static void asyncSetText(TextView textView, Executor bgExecutor, final Callable<String> callable) {
+    public static void asyncSetText(TextView textView, Executor bgExecutor, final Callable<CharSequence> callable) {
+//        textView.setText(R.string.gander_loading);// looks like bug in small text
         // construct precompute related parameters using the TextView that we will set the text on.
 //        final PrecomputedText.Params params = textView.getTextMetricsParams();
         final Reference<TextView> textViewRef = new WeakReference<>(textView);
@@ -34,7 +35,7 @@ public class TextUtil {
                 TextView textView = textViewRef.get();
                 if (textView == null) return;
                 try {
-                    final String longString = callable.call();
+                    final CharSequence longString = callable.call();
 //                final PrecomputedText precomputedText = PrecomputedText.create(longString, params);
                     textView.post(new Runnable() {
                         @Override
@@ -51,5 +52,9 @@ public class TextUtil {
             }
         });
 
+    }
+
+    public static boolean isNullOrWhiteSpace(CharSequence text) {
+        return text == null || text.length() == 0 || text.toString().trim().length() == 0;
     }
 }

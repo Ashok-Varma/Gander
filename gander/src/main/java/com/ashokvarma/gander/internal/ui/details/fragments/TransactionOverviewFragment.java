@@ -30,20 +30,21 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
 
 public class TransactionOverviewFragment extends Fragment implements TransactionFragment {
 
-    TextView url;
-    TextView method;
-    TextView protocol;
-    TextView status;
-    TextView response;
-    TextView ssl;
-    TextView requestTime;
-    TextView responseTime;
-    TextView duration;
-    TextView requestSize;
-    TextView responseSize;
-    TextView totalSize;
+    private TextView url;
+    private TextView method;
+    private TextView protocol;
+    private TextView status;
+    private TextView response;
+    private TextView ssl;
+    private TextView requestTime;
+    private TextView responseTime;
+    private TextView duration;
+    private TextView requestSize;
+    private TextView responseSize;
+    private TextView totalSize;
 
     private HttpTransaction transaction;
+    private String mSearchKey;
 
     public TransactionOverviewFragment() {
     }
@@ -82,6 +83,13 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
     public void transactionUpdated(HttpTransaction transaction) {
         this.transaction = transaction;
         populateUI();
+    }
+
+
+    @Override
+    public void onSearchUpdated(String searchKey) {
+        mSearchKey = searchKey;
+        //populateUI();
     }
 
     private void populateUI() {
