@@ -40,7 +40,11 @@ public class RoomTypeConverters {
 
         for (String nameValuePair : nameValuePairArray) {
             String[] nameValue = nameValuePair.split(NAME_VALUE_SEPARATOR);
-            list.add(new HttpHeader(nameValue[0], nameValue[1]));
+            if (nameValue.length == 2) {
+                list.add(new HttpHeader(nameValue[0], nameValue[1]));
+            } else if (nameValue.length == 1) {
+                list.add(new HttpHeader(nameValue[0], ""));
+            }
         }
         return list;
     }
