@@ -31,8 +31,8 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
     private Listener listener;
     private String mSearchKey;
 
-    protected TransactionAdapter(Context context) {
-        super(new ListDiffUtil());
+    protected TransactionAdapter(Context context, ListDiffUtil listDiffUtil) {
+        super(listDiffUtil);
 
         layoutInflater = LayoutInflater.from(context);
         colorUtil = TransactionColorUtil.getInstance(context);

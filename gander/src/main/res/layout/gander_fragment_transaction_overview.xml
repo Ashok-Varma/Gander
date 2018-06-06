@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ Copyright (C) 2017 Jeff Gilfelt.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,231 +28,231 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gander_url"
-            style="@style/Gander.TextAppearance.Label"/>
+            <TextView
+                style="@style/Gander.TextAppearance.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gander_url" />
 
-        <TextView
-            android:id="@+id/gander_details_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Gander.TextAppearance.Value"
-            tools:text="https://example.com/path/to/resource?here=might_be_really_long"/>
+            <TextView
+                android:id="@+id/gander_details_url"
+                style="@style/Gander.TextAppearance.Value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_method"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_method" />
 
             <TextView
                 android:id="@+id/gander_details_method"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="GET"/>
+                tools:text="GET" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_protocol"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_protocol" />
 
             <TextView
                 android:id="@+id/gander_details_protocol"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="HTTP/1.1"/>
+                tools:text="HTTP/1.1" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_status"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_status" />
 
             <TextView
                 android:id="@+id/gander_details_status"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="Complete"/>
+                tools:text="Complete" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_response"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_response" />
 
             <TextView
                 android:id="@+id/gander_details_response"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="200 OK"/>
+                tools:text="200 OK" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_ssl"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_ssl" />
 
             <TextView
                 android:id="@+id/gander_details_ssl"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="Yes"/>
+                tools:text="Yes" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_request_time"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_request_time" />
 
             <TextView
                 android:id="@+id/gander_details_request_time"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="05/02/17 11:52:49"/>
+                tools:text="05/02/17 11:52:49" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_response_time"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_response_time" />
 
             <TextView
                 android:id="@+id/gander_details_response_time"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="05/02/17 11:52:49"/>
+                tools:text="05/02/17 11:52:49" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_duration"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_duration" />
 
             <TextView
                 android:id="@+id/gander_details_duration"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="405 ms"/>
+                tools:text="405 ms" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_request_size"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_request_size" />
 
             <TextView
                 android:id="@+id/gander_details_request_size"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="53 KB"/>
+                tools:text="53 KB" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_response_size"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_response_size" />
 
             <TextView
                 android:id="@+id/gander_details_response_size"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="148 KB"/>
+                tools:text="148 KB" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
+                style="@style/Gander.TextAppearance.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gander_total_size"
-                style="@style/Gander.TextAppearance.Label"/>
+                android:text="@string/gander_total_size" />
 
             <TextView
                 android:id="@+id/gander_details_total_size"
+                style="@style/Gander.TextAppearance.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Gander.TextAppearance.Value"
-                tools:text="201 KB"/>
+                tools:text="201 KB" />
 
         </TableRow>
 

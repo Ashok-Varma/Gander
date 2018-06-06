@@ -2,6 +2,7 @@ package com.ashokvarma.gander.internal.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
 
@@ -374,4 +375,10 @@ public class HttpTransaction {
     public CharSequence getRequestHeadersString(boolean withMarkup) {
         return FormatUtils.formatHeaders(getRequestHeaders(), withMarkup);
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // for UI not related to model.
+    ///////////////////////////////////////////////////////////////////////////
+    @Ignore
+    public String searchKey;
 }

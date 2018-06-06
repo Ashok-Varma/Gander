@@ -23,8 +23,8 @@ Add the dependency in your `build.gradle` file. Add it alongside the `no-op` var
 
 ```gradle
  dependencies {
-   debugCompile 'com.ashokvarma.android:gander:1.0.4'
-   releaseCompile 'com.ashokvarma.android:gander-no-op:1.0.4'
+   debugCompile 'com.ashokvarma.android:gander:1.0.5'
+   releaseCompile 'com.ashokvarma.android:gander-no-op:1.0.5'
  }
 ```
 
@@ -52,6 +52,7 @@ Diff between Chuck and Gander:
 3. Improved Search
 4. Improved Performance (PagedList, BackGround Load for Text, other minor pref boosts)
 5. Minor fixes (Notification Channel Creation ..etc)
+6. Many new features (Search highlight, Improved Notifications ..etc)
 
 Acknowledgements
 ----------------

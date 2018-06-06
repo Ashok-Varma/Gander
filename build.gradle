@@ -21,16 +21,6 @@ allprojects {
         google()
         jcenter()
     }
-    configurations {
-        //todo remove this once support library is updated
-        all {
-            resolutionStrategy {
-                force "android.arch.lifecycle:livedata-core:1.1.1"
-                force "android.arch.lifecycle:runtime:1.1.1"
-                force "android.arch.lifecycle:viewmodel:1.1.1"
-            }
-        }
-    }
 }
 
 task clean(type: Delete) {
@@ -42,13 +32,13 @@ ext {
     targetSdkVersion = 27
     compileSdkVersion = 27
 
-    versionCode = 5
-    versionName = "1.0.4"
+    versionCode = 6
+    versionName = "1.0.5"
 
     supportLibVersion = '27.1.1'
     viewModelVersion = '1.1.1'
     pagingVersion = "1.0.0"
     roomVersion = '1.1.0'
-    okhttp3Version = '3.6.0'
+    okhttp3Version = '3.10.0'
     retrofitVersion = '2.4.0'
 }

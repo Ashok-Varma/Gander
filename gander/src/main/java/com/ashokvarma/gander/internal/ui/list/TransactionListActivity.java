@@ -25,6 +25,7 @@ import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener, Debouncer.Callback<String> {
 
     TransactionAdapter transactionAdapter;
+    ListDiffUtil listDiffUtil;
     RecyclerView recyclerView;
     TransactionListViewModel viewModel;
     Debouncer<String> debouncer;
@@ -38,7 +39,8 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         toolbar.setSubtitle(getApplicationName());
 
         recyclerView = findViewById(R.id.gander_txn_list);
-        transactionAdapter = new TransactionAdapter(this);
+        listDiffUtil = new ListDiffUtil();
+        transactionAdapter = new TransactionAdapter(this, listDiffUtil);
         transactionAdapter.setListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -71,8 +73,9 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         currentSubscription.observe(TransactionListActivity.this, new Observer<PagedList<HttpTransaction>>() {
             @Override
             public void onChanged(@Nullable PagedList<HttpTransaction> itemAndPeople) {
-                transactionAdapter.submitList(itemAndPeople);
+                listDiffUtil.setSearchKey(searchKey);
                 transactionAdapter.setSearchKey(searchKey);
+                transactionAdapter.submitList(itemAndPeople);
             }
         });
     }
