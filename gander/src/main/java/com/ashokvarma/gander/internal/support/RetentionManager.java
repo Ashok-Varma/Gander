@@ -2,7 +2,6 @@ package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.ashokvarma.gander.GanderInterceptor;
 import com.ashokvarma.gander.internal.data.GanderDatabase;
@@ -21,25 +20,23 @@ public class RetentionManager {
     private static final String PREFS_NAME = "gander_preferences";
     private static final String KEY_LAST_CLEANUP = "last_cleanup";
 
-    private static long lastCleanup;
+    private static long LAST_CLEAN_UP;
 
-    private final Context context;
-    private final GanderDatabase ganderDatabase;
-    private final long period;
-    private final long cleanupFrequency;
-    private final SharedPreferences prefs;
+    private final GanderDatabase mGanderDatabase;
+    private final long mPeriod;
+    private final long mCleanupFrequency;
+    private final SharedPreferences mPrefs;
 
     public RetentionManager(Context context, GanderInterceptor.Period retentionPeriod) {
-        this.context = context;
-        this.ganderDatabase = GanderDatabase.getInstance(context);
-        period = toMillis(retentionPeriod);
-        prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        cleanupFrequency = (retentionPeriod == GanderInterceptor.Period.ONE_HOUR) ?
+        this.mGanderDatabase = GanderDatabase.getInstance(context);
+        mPeriod = toMillis(retentionPeriod);
+        mPrefs = context.getSharedPreferences(PREFS_NAME, 0);
+        mCleanupFrequency = (retentionPeriod == GanderInterceptor.Period.ONE_HOUR) ?
                 TimeUnit.MINUTES.toMillis(30) : TimeUnit.HOURS.toMillis(2);
     }
 
     public synchronized void doMaintenance() {
-        if (period > 0) {
+        if (mPeriod > 0) {
             long now = new Date().getTime();
             if (isCleanupDue(now)) {
                 Logger.i("Performing data retention maintenance...");
@@ -50,28 +47,28 @@ public class RetentionManager {
     }
 
     private long getLastCleanup(long fallback) {
-        if (lastCleanup == 0) {
-            lastCleanup = prefs.getLong(KEY_LAST_CLEANUP, fallback);
+        if (LAST_CLEAN_UP == 0) {
+            LAST_CLEAN_UP = mPrefs.getLong(KEY_LAST_CLEANUP, fallback);
         }
-        return lastCleanup;
+        return LAST_CLEAN_UP;
     }
 
     private void updateLastCleanup(long time) {
-        lastCleanup = time;
-        prefs.edit().putLong(KEY_LAST_CLEANUP, time).apply();
+        LAST_CLEAN_UP = time;
+        mPrefs.edit().putLong(KEY_LAST_CLEANUP, time).apply();
     }
 
     private void deleteSince(long threshold) {
-        long rows = ganderDatabase.httpTransactionDao().deleteTransactionsBefore(new Date(threshold));
+        long rows = mGanderDatabase.httpTransactionDao().deleteTransactionsBefore(new Date(threshold));
         Logger.i(rows + " transactions deleted");
     }
 
     private boolean isCleanupDue(long now) {
-        return (now - getLastCleanup(now)) > cleanupFrequency;
+        return (now - getLastCleanup(now)) > mCleanupFrequency;
     }
 
     private long getThreshold(long now) {
-        return (period == 0) ? now : now - period;
+        return (mPeriod == 0) ? now : now - mPeriod;
     }
 
     private long toMillis(GanderInterceptor.Period period) {

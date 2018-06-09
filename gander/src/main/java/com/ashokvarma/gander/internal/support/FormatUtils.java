@@ -1,13 +1,11 @@
 package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.SpannableStringBuilder;
+import android.support.annotation.NonNull;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.UnderlineSpan;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -43,11 +41,14 @@ public class FormatUtils {
             return text;
         } else {
             List<Integer> startIndexes = indexOf(text, searchKey);
-            return applySpannable(text, startIndexes, searchKey.length());
+            SpannableString spannableString = new SpannableString(text);
+            applyHighlightSpan(spannableString, startIndexes, searchKey.length());
+            return spannableString;
         }
     }
 
-    private static List<Integer> indexOf(String text, String criteria) {
+    @NonNull
+    public static List<Integer> indexOf(String text, String criteria) {
         text = text.toLowerCase();
         criteria = criteria.toLowerCase();
 
@@ -60,17 +61,11 @@ public class FormatUtils {
         return startPositions;
     }
 
-    private static SpannableStringBuilder applySpannable(String text, List<Integer> indexes, int length) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(text);
+    public static void applyHighlightSpan(Spannable spannableString, List<Integer> indexes, int length) {
         for (Integer position : indexes) {
-            builder.setSpan(new UnderlineSpan(),
-                    position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new ForegroundColorSpan(Color.RED),
-                    position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new BackgroundColorSpan(Color.YELLOW),
+            spannableString.setSpan(new HighlightSpan(GanderColorUtil.HIGHLIGHT_BACKGROUND_COLOR, GanderColorUtil.HIGHLIGHT_TEXT_COLOR, GanderColorUtil.HIGHLIGHT_UNDERLINE),
                     position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        return builder;
     }
 
     public static CharSequence formatHeaders(List<HttpHeader> httpHeaders, boolean withMarkup) {

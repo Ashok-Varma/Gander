@@ -1,4 +1,4 @@
-package com.ashokvarma.gander.internal.support;
+package com.ashokvarma.gander.internal.support.event;
 
 
 import android.os.Handler;
@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Class description
+ * only emit an item from an event bus. if a particular timespan has passed without it emitting another item
  *
  * @author ashok
  * @version 1.0
@@ -23,34 +24,23 @@ public class Debouncer<V> {
         mHandler = new Handler();
     }
 
-
-    private Runnable currentRunnable;
-
-    public void consume(V key) {
+    public void consume(V event) {
         mHandler.removeCallbacksAndMessages(null);
-//        if (currentRunnable != null) {
-//            mHandler.removeCallbacks(currentRunnable);// if running cancel
-//        }
-        currentRunnable = new Counter<>(key, mCallback);
-        mHandler.postDelayed(currentRunnable, mInterval);
+        mHandler.postDelayed(new Counter<>(event, mCallback), mInterval);
     }
 
     public static class Counter<T> implements Runnable {
-        private final T mDeliverable;
+        private final T mEvent;
         private final Callback<T> mCallback;
 
-        Counter(T deliverable, Callback<T> callback) {
-            mDeliverable = deliverable;
+        Counter(T event, Callback<T> callback) {
+            mEvent = event;
             mCallback = callback;
         }
 
         @Override
         public void run() {
-            mCallback.onEmit(mDeliverable);
+            mCallback.onEmit(mEvent);
         }
-    }
-
-    public interface Callback<T> {
-        void onEmit(T key);
     }
 }

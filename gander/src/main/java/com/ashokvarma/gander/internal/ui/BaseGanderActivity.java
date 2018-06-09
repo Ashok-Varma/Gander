@@ -15,31 +15,31 @@ import com.ashokvarma.gander.internal.support.NotificationHelper;
  */
 public abstract class BaseGanderActivity extends AppCompatActivity {
 
-    private static boolean inForeground;
+    private static boolean IN_FOREGROUND;
 
-    private NotificationHelper notificationHelper;
+    private NotificationHelper mNotificationHelper;
 
     public static boolean isInForeground() {
-        return inForeground;
+        return IN_FOREGROUND;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        notificationHelper = new NotificationHelper(this);
+        mNotificationHelper = new NotificationHelper(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        inForeground = true;
-        notificationHelper.dismiss();
+        IN_FOREGROUND = true;
+        mNotificationHelper.dismiss();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        inForeground = false;
+        IN_FOREGROUND = false;
     }
 
 }

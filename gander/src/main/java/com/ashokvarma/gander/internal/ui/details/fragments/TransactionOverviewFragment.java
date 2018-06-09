@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.ashokvarma.gander.internal.ui.details.fragments;
 
 import android.os.Bundle;
@@ -30,21 +15,20 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
 
 public class TransactionOverviewFragment extends Fragment implements TransactionFragment {
 
-    private TextView url;
-    private TextView method;
-    private TextView protocol;
-    private TextView status;
-    private TextView response;
-    private TextView ssl;
-    private TextView requestTime;
-    private TextView responseTime;
-    private TextView duration;
-    private TextView requestSize;
-    private TextView responseSize;
-    private TextView totalSize;
+    private TextView mUrlView;
+    private TextView mMethodView;
+    private TextView mProtocolView;
+    private TextView mStatusView;
+    private TextView mResponseView;
+    private TextView mSslView;
+    private TextView mRequestTimeView;
+    private TextView mResponseTimeView;
+    private TextView mDurationView;
+    private TextView mRequestSizeView;
+    private TextView mResponseSizeView;
+    private TextView mTotalSizeView;
 
-    private HttpTransaction transaction;
-    private String mSearchKey;
+    private HttpTransaction mTransaction;
 
     public TransactionOverviewFragment() {
     }
@@ -57,19 +41,19 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.gander_fragment_transaction_overview, container, false);
-        url = view.findViewById(R.id.gander_details_url);
-        method = view.findViewById(R.id.gander_details_method);
-        protocol = view.findViewById(R.id.gander_details_protocol);
-        status = view.findViewById(R.id.gander_details_status);
-        response = view.findViewById(R.id.gander_details_response);
-        ssl = view.findViewById(R.id.gander_details_ssl);
-        requestTime = view.findViewById(R.id.gander_details_request_time);
-        responseTime = view.findViewById(R.id.gander_details_response_time);
-        duration = view.findViewById(R.id.gander_details_duration);
-        requestSize = view.findViewById(R.id.gander_details_request_size);
-        responseSize = view.findViewById(R.id.gander_details_response_size);
-        totalSize = view.findViewById(R.id.gander_details_total_size);
+        View view = inflater.inflate(R.layout.gander_frag_transaction_overview, container, false);
+        mUrlView = view.findViewById(R.id.gander_details_url);
+        mMethodView = view.findViewById(R.id.gander_details_method);
+        mProtocolView = view.findViewById(R.id.gander_details_protocol);
+        mStatusView = view.findViewById(R.id.gander_details_status);
+        mResponseView = view.findViewById(R.id.gander_details_response);
+        mSslView = view.findViewById(R.id.gander_details_ssl);
+        mRequestTimeView = view.findViewById(R.id.gander_details_request_time);
+        mResponseTimeView = view.findViewById(R.id.gander_details_response_time);
+        mDurationView = view.findViewById(R.id.gander_details_duration);
+        mRequestSizeView = view.findViewById(R.id.gander_details_request_size);
+        mResponseSizeView = view.findViewById(R.id.gander_details_response_size);
+        mTotalSizeView = view.findViewById(R.id.gander_details_total_size);
         return view;
     }
 
@@ -81,31 +65,24 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
 
     @Override
     public void transactionUpdated(HttpTransaction transaction) {
-        this.transaction = transaction;
+        this.mTransaction = transaction;
         populateUI();
     }
 
-
-    @Override
-    public void onSearchUpdated(String searchKey) {
-        mSearchKey = searchKey;
-        //populateUI();
-    }
-
     private void populateUI() {
-        if (isAdded() && transaction != null) {
-            url.setText(transaction.getUrl());
-            method.setText(transaction.getMethod());
-            protocol.setText(transaction.getProtocol());
-            status.setText(transaction.getStatus().toString());
-            response.setText(transaction.getResponseSummaryText());
-            ssl.setText((transaction.isSsl() ? R.string.gander_yes : R.string.gander_no));
-            requestTime.setText(transaction.getRequestDateString());
-            responseTime.setText(transaction.getResponseDateString());
-            duration.setText(transaction.getDurationString());
-            requestSize.setText(transaction.getRequestSizeString());
-            responseSize.setText(transaction.getResponseSizeString());
-            totalSize.setText(transaction.getTotalSizeString());
+        if (isAdded() && mTransaction != null) {
+            mUrlView.setText(mTransaction.getUrl());
+            mMethodView.setText(mTransaction.getMethod());
+            mProtocolView.setText(mTransaction.getProtocol());
+            mStatusView.setText(mTransaction.getStatus().toString());
+            mResponseView.setText(mTransaction.getResponseSummaryText());
+            mSslView.setText((mTransaction.isSsl() ? R.string.gander_yes : R.string.gander_no));
+            mRequestTimeView.setText(mTransaction.getRequestDateString());
+            mResponseTimeView.setText(mTransaction.getResponseDateString());
+            mDurationView.setText(mTransaction.getDurationString());
+            mRequestSizeView.setText(mTransaction.getRequestSizeString());
+            mResponseSizeView.setText(mTransaction.getResponseSizeString());
+            mTotalSizeView.setText(mTransaction.getTotalSizeString());
         }
     }
 }

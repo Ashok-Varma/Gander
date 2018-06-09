@@ -1,11 +1,8 @@
 package com.ashokvarma.gander.internal.support;
 
 
-import android.widget.TextView;
-
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
 /**
@@ -21,37 +18,36 @@ public class TextUtil {
      * <p>
      * PrecomputedText is not yet in support library, But still this is left
      * because the callable which is formatting Json, Xml will now be done in background thread
-     * <p>
-     * Pref Matters
      */
-    public static void asyncSetText(TextView textView, Executor bgExecutor, final Callable<CharSequence> callable) {
-//        textView.setText(R.string.gander_loading);// looks like bug in small text
+    public static void asyncSetText(Executor bgExecutor, final AsyncTextProvider asyncTextProvider) {
         // construct precompute related parameters using the TextView that we will set the text on.
 //        final PrecomputedText.Params params = textView.getTextMetricsParams();
-        final Reference<TextView> textViewRef = new WeakReference<>(textView);
+        final Reference<AsyncTextProvider> asyncTextProviderReference = new WeakReference<>(asyncTextProvider);
         bgExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                TextView textView = textViewRef.get();
-                if (textView == null) return;
+                AsyncTextProvider asyncTextProvider = asyncTextProviderReference.get();
+                if (asyncTextProvider == null) return;
                 try {
-                    final CharSequence longString = callable.call();
+                    CharSequence longString = asyncTextProvider.getText();
+                    asyncTextProvider = null;//clear ref
 //                final PrecomputedText precomputedText = PrecomputedText.create(longString, params);
-                    textView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView textViewInternal = textViewRef.get();
-                            if (textViewInternal == null) return;
-//                        textView.setText(precomputedText);
-                            textViewInternal.setText(longString);
-                        }
-                    });
+
+                    asyncTextProvider = asyncTextProviderReference.get();
+                    if (asyncTextProvider == null) return;
+//                        asyncTextProvider.setText(precomputedText);
+                    asyncTextProvider.setText(longString);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
 
+    public interface AsyncTextProvider {
+        CharSequence getText();
+
+        void setText(final CharSequence charSequence);
     }
 
     public static boolean isNullOrWhiteSpace(CharSequence text) {

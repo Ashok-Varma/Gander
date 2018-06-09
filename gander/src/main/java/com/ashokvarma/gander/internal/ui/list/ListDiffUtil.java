@@ -13,7 +13,6 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
  */
 public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransaction> {
 
-
     private String mSearchKey;
 
     public void setSearchKey(String searchKey) {

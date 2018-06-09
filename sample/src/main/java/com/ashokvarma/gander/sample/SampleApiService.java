@@ -1,6 +1,7 @@
 package com.ashokvarma.gander.sample;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -38,14 +39,15 @@ public class SampleApiService {
 
     static class Data {
         final String thing;
-        List<String> things;
+        final List<String> things = new ArrayList<>();
+        final HashMap<String, Integer> thingsMap = new HashMap<>();
 
         Data(String thing) {
             this.thing = thing;
-            things = new ArrayList<>();
             int i = 10;
             while (i > 0) {
-                things.add(thing + i);
+                things.add(thing + "_" + i);
+                thingsMap.put(thing + "_key_" + i, i);
                 i--;
             }
         }

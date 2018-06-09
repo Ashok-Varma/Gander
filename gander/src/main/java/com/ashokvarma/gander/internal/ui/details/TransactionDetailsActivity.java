@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +20,8 @@ import android.widget.TextView;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
-import com.ashokvarma.gander.internal.support.Debouncer;
 import com.ashokvarma.gander.internal.support.FormatUtils;
-import com.ashokvarma.gander.internal.support.TransactionColorUtil;
+import com.ashokvarma.gander.internal.support.GanderColorUtil;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionFragment;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionOverviewFragment;
@@ -39,13 +37,11 @@ import java.util.List;
  * @version 1.0
  * @since 03/06/18
  */
-public class TransactionDetailsActivity extends BaseGanderActivity implements SearchView.OnQueryTextListener, Debouncer.Callback<String> {
+public class TransactionDetailsActivity extends BaseGanderActivity {
 
     private static final String ARG_TRANSACTION_ID = "transaction_id";
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
     private static final String ARG_TRANSACTION_RESPONSE_CODE = "transaction_response_code";
-
-    private static int selectedTabPosition = 0;
 
     public static void start(Context context, long transactionId, HttpTransaction.Status status, Integer responseCode) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
@@ -55,31 +51,31 @@ public class TransactionDetailsActivity extends BaseGanderActivity implements Se
         context.startActivity(intent);
     }
 
-    TextView title;
-    Adapter adapter;
-    AppBarLayout appBarLayout;
+    private static int SELECTED_TAB_POSITION = 0;
 
-    private HttpTransaction transaction;
-    private String searchKey;
-    TransactionDetailViewModel viewModel;
-    TransactionColorUtil colorUtil;
+    TextView mTitleView;
+    Adapter mAdapter;
+    AppBarLayout mAppBarLayout;
 
-    private final Debouncer<String> debouncer = new Debouncer<>(400, this);
+    private HttpTransaction mTransaction;
+    private String mSearchKey;
+    TransactionDetailViewModel mViewModel;
+    GanderColorUtil mColorUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gander_activity_transaction);
+        setContentView(R.layout.gander_act_transaction_details);
         long transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
         int statusOrdinal = getIntent().getIntExtra(ARG_TRANSACTION_STATUS, HttpTransaction.Status.Requested.ordinal());
         int responseCode = getIntent().getIntExtra(ARG_TRANSACTION_RESPONSE_CODE, -1);
-        colorUtil = TransactionColorUtil.getInstance(this);
+        mColorUtil = GanderColorUtil.getInstance(this);
 
-        appBarLayout = findViewById(R.id.gander_details_appbar);
-        appBarLayout.setBackgroundColor(colorUtil.getTransactionColor(HttpTransaction.Status.values()[statusOrdinal], responseCode));
+        mAppBarLayout = findViewById(R.id.gander_details_appbar);
+        mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(HttpTransaction.Status.values()[statusOrdinal], responseCode));
         Toolbar toolbar = findViewById(R.id.gander_details_toolbar);
         setSupportActionBar(toolbar);
-        title = findViewById(R.id.gander_details_toolbar_title);
+        mTitleView = findViewById(R.id.gander_details_toolbar_title);
 
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -94,11 +90,11 @@ public class TransactionDetailsActivity extends BaseGanderActivity implements Se
         TabLayout tabLayout = findViewById(R.id.gander_details_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        viewModel = ViewModelProviders.of(this).get(TransactionDetailViewModel.class);
-        viewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransaction>() {
+        mViewModel = ViewModelProviders.of(this).get(TransactionDetailViewModel.class);
+        mViewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransaction>() {
             @Override
             public void onChanged(@Nullable HttpTransaction transaction) {
-                TransactionDetailsActivity.this.transaction = transaction;
+                TransactionDetailsActivity.this.mTransaction = transaction;
                 populateUI();
             }
         });
@@ -107,42 +103,18 @@ public class TransactionDetailsActivity extends BaseGanderActivity implements Se
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gander_details_menu, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.search);
-
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setOnQueryTextListener(this);
-        searchView.setIconifiedByDefault(true);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        debouncer.consume(newText);
-        return true;
-    }
-
-    @Override
-    public void onEmit(String key) {
-        searchKey = key;
-        for (TransactionFragment fragment : adapter.fragments) {
-            fragment.onSearchUpdated(searchKey);
-        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_text) {
-            if (transaction != null)
-                share(FormatUtils.getShareText(this, transaction));
+            if (mTransaction != null)
+                share(FormatUtils.getShareText(this, mTransaction));
             return true;
         } else if (item.getItemId() == R.id.share_curl) {
-            if (transaction != null)
-                share(FormatUtils.getShareCurlCommand(transaction));
+            if (mTransaction != null)
+                share(FormatUtils.getShareCurlCommand(mTransaction));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -150,28 +122,28 @@ public class TransactionDetailsActivity extends BaseGanderActivity implements Se
     }
 
     private void populateUI() {
-        if (transaction != null) {
-            title.setText(transaction.getMethod().concat(" ").concat(transaction.getPath()));
-            for (TransactionFragment fragment : adapter.fragments) {
-                fragment.transactionUpdated(transaction);
+        if (mTransaction != null) {
+            mTitleView.setText(mTransaction.getMethod().concat(" ").concat(mTransaction.getPath()));
+            for (TransactionFragment fragment : mAdapter.fragments) {
+                fragment.transactionUpdated(mTransaction);
             }
-            appBarLayout.setBackgroundColor(colorUtil.getTransactionColor(transaction));
+            mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(mTransaction));
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new TransactionOverviewFragment(), getString(R.string.gander_overview));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.gander_request));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.gander_response));
-        viewPager.setAdapter(adapter);
+        mAdapter = new Adapter(getSupportFragmentManager());
+        mAdapter.addFragment(new TransactionOverviewFragment(), getString(R.string.gander_overview));
+        mAdapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.gander_request));
+        mAdapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.gander_response));
+        viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override
             public void onPageSelected(int position) {
-                selectedTabPosition = position;
+                SELECTED_TAB_POSITION = position;
             }
         });
-        viewPager.setCurrentItem(selectedTabPosition);
+        viewPager.setCurrentItem(SELECTED_TAB_POSITION);
     }
 
     private void share(String content) {

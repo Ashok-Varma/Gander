@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.FormatUtils;
-import com.ashokvarma.gander.internal.support.TransactionColorUtil;
+import com.ashokvarma.gander.internal.support.GanderColorUtil;
 
 /**
  * Class description
@@ -24,37 +24,39 @@ import com.ashokvarma.gander.internal.support.TransactionColorUtil;
  */
 public class TransactionAdapter extends PagedListAdapter<HttpTransaction, RecyclerView.ViewHolder> {
 
-    private final LayoutInflater layoutInflater;
-    private final TransactionColorUtil colorUtil;
+    private final LayoutInflater mLayoutInflater;
+    private final GanderColorUtil mColorUtil;
 
-    private Listener listener;
+    private Listener mListener;
     private String mSearchKey;
 
-    protected TransactionAdapter(Context context, ListDiffUtil listDiffUtil) {
+    TransactionAdapter(Context context, ListDiffUtil listDiffUtil) {
         super(listDiffUtil);
 
-        layoutInflater = LayoutInflater.from(context);
-        colorUtil = TransactionColorUtil.getInstance(context);
+        mLayoutInflater = LayoutInflater.from(context);
+        mColorUtil = GanderColorUtil.getInstance(context);
 
         registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                if (listener != null) {
+                if (mListener != null) {
                     // in the database inserts only occur at the top
-                    listener.onItemsInserted(positionStart);
+                    mListener.onItemsInserted(positionStart);
                 }
             }
         });
     }
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public TransactionAdapter setListener(Listener listener) {
+        this.mListener = listener;
+        return this;
     }
 
-    public void setSearchKey(String searchKey) {
+    public TransactionAdapter setSearchKey(String searchKey) {
         this.mSearchKey = searchKey;
+        return this;
     }
 
     private static final int EMPTY_VIEW = 1;
@@ -73,10 +75,10 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TRANSACTION_VIEW) {
-            return new TransactionViewHolder(layoutInflater.inflate(R.layout.gander_list_item_transaction, parent, false));
+            return new TransactionViewHolder(mLayoutInflater.inflate(R.layout.gander_list_item_transaction, parent, false));
         } else {
             //(viewType == EMPTY_VIEW)
-            return new EmptyTransactionViewHolder(layoutInflater.inflate(R.layout.gander_list_item_empty_transaction, parent, false));
+            return new EmptyTransactionViewHolder(mLayoutInflater.inflate(R.layout.gander_list_item_empty_transaction, parent, false));
         }
     }
 
@@ -102,7 +104,7 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
                 holder.code.setText("!!!");
             }
 
-            int color = colorUtil.getTransactionColor(transaction, true);
+            int color = mColorUtil.getTransactionColor(transaction, true);
             holder.path.setTextColor(color);
             holder.code.setTextColor(color);
         }
@@ -145,9 +147,9 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null) {
+                    if (mListener != null) {
                         HttpTransaction transaction = getItem(getAdapterPosition());
-                        listener.onTransactionClicked(transaction);
+                        mListener.onTransactionClicked(transaction);
                     }
                 }
             });

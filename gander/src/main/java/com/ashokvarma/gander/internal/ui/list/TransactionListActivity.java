@@ -17,63 +17,68 @@ import android.view.MenuItem;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
-import com.ashokvarma.gander.internal.support.Debouncer;
 import com.ashokvarma.gander.internal.support.NotificationHelper;
+import com.ashokvarma.gander.internal.support.event.Callback;
+import com.ashokvarma.gander.internal.support.event.Debouncer;
+import com.ashokvarma.gander.internal.support.event.Sampler;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
 import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 
-public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener, Debouncer.Callback<String> {
+public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener {
 
-    private TransactionAdapter transactionAdapter;
-    private ListDiffUtil listDiffUtil;
-    private RecyclerView recyclerView;
-    private TransactionListViewModel viewModel;
-    private Debouncer<String> debouncer = new Debouncer<>(400, this);
+    private TransactionAdapter mTransactionAdapter;
+    private ListDiffUtil mListDiffUtil;
+    private RecyclerView mRecyclerView;
+    private TransactionListViewModel mViewModel;
+    private LiveData<PagedList<HttpTransaction>> mCurrentSubscription;
+
+    // 300 mills delay min. Max no limit
+    private Debouncer<String> mSearchDebouncer = new Debouncer<>(300, new Callback<String>() {
+        @Override
+        public void onEmit(String event) {
+            loadResults(event, mViewModel.getTransactions(event));
+        }
+    });
+
+    // 100 mills delay. batch all changes in 100 mills and emit last item at the end of 100 mills
+    private Sampler<TransactionListWithSearchKeyModel> mTransactionSampler = new Sampler<>(100, new Callback<TransactionListWithSearchKeyModel>() {
+        @Override
+        public void onEmit(TransactionListWithSearchKeyModel event) {
+            mListDiffUtil.setSearchKey(event.mSearchKey);
+            mTransactionAdapter.setSearchKey(event.mSearchKey).submitList(event.pagedList);
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_list);
+        setContentView(R.layout.gander_act_transaction_list);
         Toolbar toolbar = findViewById(R.id.gander_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setSubtitle(getApplicationName());
 
-        recyclerView = findViewById(R.id.gander_txn_list);
-        listDiffUtil = new ListDiffUtil();
-        transactionAdapter = new TransactionAdapter(this, listDiffUtil);
-        transactionAdapter.setListener(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mRecyclerView = findViewById(R.id.gander_transaction_list);
+        mListDiffUtil = new ListDiffUtil();
+        mTransactionAdapter = new TransactionAdapter(this, mListDiffUtil).setListener(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        recyclerView.setAdapter(transactionAdapter);
+        mRecyclerView.setAdapter(mTransactionAdapter);
 
-        viewModel = ViewModelProviders.of(this).get(TransactionListViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(TransactionListViewModel.class);
 
-        loadResults(null);
+        loadResults(null, mViewModel.getTransactions(null));
     }
 
-    private void loadResults(String searchKey) {
-        subscribeTo(searchKey, viewModel.getTransactions(searchKey));
-    }
-
-    @Override
-    public void onEmit(String key) {
-        loadResults(key);
-    }
-
-    private LiveData<PagedList<HttpTransaction>> currentSubscription;
-
-    private void subscribeTo(final String searchKey, LiveData<PagedList<HttpTransaction>> pagedListLiveData) {
-        if (currentSubscription != null && currentSubscription.hasObservers()) {
-            currentSubscription.removeObservers(this);
+    private void loadResults(final String searchKey, LiveData<PagedList<HttpTransaction>> pagedListLiveData) {
+        if (mCurrentSubscription != null && mCurrentSubscription.hasObservers()) {
+            mCurrentSubscription.removeObservers(this);
         }
-        currentSubscription = pagedListLiveData;
-        currentSubscription.observe(TransactionListActivity.this, new Observer<PagedList<HttpTransaction>>() {
+        mCurrentSubscription = pagedListLiveData;
+        mCurrentSubscription.observe(TransactionListActivity.this, new Observer<PagedList<HttpTransaction>>() {
             @Override
-            public void onChanged(@Nullable PagedList<HttpTransaction> itemAndPeople) {
-                listDiffUtil.setSearchKey(searchKey);
-                transactionAdapter.setSearchKey(searchKey);
-                transactionAdapter.submitList(itemAndPeople);
+            public void onChanged(@Nullable PagedList<HttpTransaction> transactionPagedList) {
+                mTransactionSampler.consume(new TransactionListWithSearchKeyModel(searchKey, transactionPagedList));
             }
         });
     }
@@ -85,7 +90,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
     @Override
     public void onItemsInserted(int firstInsertedItemPosition) {
-        recyclerView.smoothScrollToPosition(firstInsertedItemPosition);
+        mRecyclerView.smoothScrollToPosition(firstInsertedItemPosition);
     }
 
     @Override
@@ -102,7 +107,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear) {
-            viewModel.clearAll();
+            mViewModel.clearAll();
             NotificationHelper.clearBuffer();
             return true;
         } else if (item.getItemId() == R.id.browse_sql) {
@@ -121,7 +126,7 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        debouncer.consume(newText);
+        mSearchDebouncer.consume(newText);
         return true;
     }
 
@@ -129,5 +134,15 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         ApplicationInfo applicationInfo = getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : getString(stringId);
+    }
+
+    static class TransactionListWithSearchKeyModel {
+        final String mSearchKey;
+        final PagedList<HttpTransaction> pagedList;
+
+        TransactionListWithSearchKeyModel(String mSearchKey, PagedList<HttpTransaction> pagedList) {
+            this.mSearchKey = mSearchKey;
+            this.pagedList = pagedList;
+        }
     }
 }

@@ -2,13 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/gander_ic_search_white_24dp"
-        android:title="@string/gander_search"
-        android:visible="true"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="collapseActionView|ifRoom" />
-    <item
         android:icon="@drawable/gander_ic_share_white_24dp"
         android:title="@string/gander_share"
         app:showAsAction="always">

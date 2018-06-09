@@ -1,6 +1,7 @@
 package com.ashokvarma.gander;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.ashokvarma.gander.internal.data.GanderDatabase;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -63,22 +64,22 @@ public class GanderInterceptor implements Interceptor {
     private static final Period DEFAULT_RETENTION = Period.ONE_WEEK;
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private final Context context;
-    private final GanderDatabase ganderDatabase;
-    private final NotificationHelper notificationHelper;
-    private RetentionManager retentionManager;
-    private boolean showNotification;
-    private long maxContentLength = 250000L;
+    private final Context mContext;
+    private final GanderDatabase mGanderDatabase;
+    private final NotificationHelper mNotificationHelper;
+    private RetentionManager mRetentionManager;
+    private boolean mShowNotification;
+    private long mMaxContentLength = 250000L;
 
     /**
-     * @param context The current Context.
+     * @param context          The current Context.
      * @param showNotification true to show a notification, false to suppress it.
      */
     public GanderInterceptor(Context context, boolean showNotification) {
-        this.context = context.getApplicationContext();
-        ganderDatabase = GanderDatabase.getInstance(context);
-        notificationHelper = new NotificationHelper(this.context);
-        retentionManager = new RetentionManager(this.context, DEFAULT_RETENTION);
+        this.mContext = context.getApplicationContext();
+        mGanderDatabase = GanderDatabase.getInstance(context);
+        mNotificationHelper = new NotificationHelper(this.mContext);
+        mRetentionManager = new RetentionManager(this.mContext, DEFAULT_RETENTION);
         showNotification(showNotification);// to avoid un-necessary channel creation it's requested in constructor
     }
 
@@ -90,7 +91,7 @@ public class GanderInterceptor implements Interceptor {
      * @return The {@link GanderInterceptor} instance.
      */
     public GanderInterceptor maxContentLength(long max) {
-        this.maxContentLength = max;
+        this.mMaxContentLength = max;
         return this;
     }
 
@@ -102,7 +103,7 @@ public class GanderInterceptor implements Interceptor {
      * @return The {@link GanderInterceptor} instance.
      */
     public GanderInterceptor retainDataFor(Period period) {
-        retentionManager = new RetentionManager(context, period);
+        mRetentionManager = new RetentionManager(mContext, period);
         return this;
     }
 
@@ -112,9 +113,9 @@ public class GanderInterceptor implements Interceptor {
      * @param show true to show a notification, false to suppress it.
      */
     private void showNotification(boolean show) {
-        showNotification = show;
-        if (showNotification) {
-            notificationHelper.setUpChannelIfNecessary();
+        mShowNotification = show;
+        if (mShowNotification) {
+            mNotificationHelper.setUpChannelIfNecessary();
         }
     }
 
@@ -122,6 +123,30 @@ public class GanderInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
+        HttpTransaction transaction = createTransactionFromRequest(request);
+        long startNs = System.nanoTime();
+
+        try {
+            Response response = chain.proceed(request);
+
+            long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
+            updateTransactionFromResponse(transaction, response, tookMs);
+
+            return response;
+        } catch (Exception e) {
+            transaction.setError(e.toString());
+            update(transaction);
+
+            throw e;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Conversion from Request Response to HttpTransaction
+    ///////////////////////////////////////////////////////////////////////////
+
+    @NonNull
+    private HttpTransaction createTransactionFromRequest(Request request) throws IOException {
         RequestBody requestBody = request.body();
         boolean hasRequestBody = requestBody != null;
 
@@ -133,15 +158,16 @@ public class GanderInterceptor implements Interceptor {
 
         transaction.setRequestHeaders(toHttpHeaderList(request.headers()));
         if (hasRequestBody) {
-            if (requestBody.contentType() != null) {
-                transaction.setRequestContentType(requestBody.contentType().toString());
+            MediaType contentType = requestBody.contentType();
+            if (contentType != null) {
+                transaction.setRequestContentType(contentType.toString());
             }
             if (requestBody.contentLength() != -1) {
                 transaction.setRequestContentLength(requestBody.contentLength());
             }
         }
 
-        transaction.setRequestBodyIsPlainText(!bodyHasUnsupportedEncoding(request.headers()));
+        transaction.setRequestBodyIsPlainText(bodyHasSupportedEncoding(request.headers()));
         if (hasRequestBody && transaction.requestBodyIsPlainText()) {
             BufferedSource source = getNativeSource(new Buffer(), bodyGzipped(request.headers()));
             Buffer buffer = source.buffer();
@@ -158,19 +184,10 @@ public class GanderInterceptor implements Interceptor {
             }
         }
 
-        create(transaction);
+        return create(transaction);// need to be sequential to get the id
+    }
 
-        long startNs = System.nanoTime();
-        Response response;
-        try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
-            transaction.setError(e.toString());
-            update(transaction);
-            throw e;
-        }
-        long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
-
+    private void updateTransactionFromResponse(HttpTransaction transaction, Response response, long tookMs) throws IOException {
         ResponseBody responseBody = response.body();
 
         transaction.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
@@ -180,25 +197,31 @@ public class GanderInterceptor implements Interceptor {
         transaction.setResponseCode(response.code());
         transaction.setResponseMessage(response.message());
 
-        transaction.setResponseContentLength(responseBody.contentLength());
-        if (responseBody.contentType() != null) {
-            transaction.setResponseContentType(responseBody.contentType().toString());
+        if (responseBody != null) {
+            transaction.setResponseContentLength(responseBody.contentLength());
+            MediaType contentType = responseBody.contentType();
+            if (contentType != null) {
+                transaction.setResponseContentType(contentType.toString());
+            }
         }
         transaction.setResponseHeaders(toHttpHeaderList(response.headers()));
 
-        transaction.setResponseBodyIsPlainText(!bodyHasUnsupportedEncoding(response.headers()));
+        transaction.setResponseBodyIsPlainText(bodyHasSupportedEncoding(response.headers()));
         if (HttpHeaders.hasBody(response) && transaction.responseBodyIsPlainText()) {
             BufferedSource source = getNativeSource(response);
             source.request(Long.MAX_VALUE);
             Buffer buffer = source.buffer();
             Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
+            MediaType contentType = null;
+            if (responseBody != null) {
+                contentType = responseBody.contentType();
+            }
             if (contentType != null) {
                 try {
                     charset = contentType.charset(UTF8);
                 } catch (UnsupportedCharsetException e) {
                     update(transaction);
-                    return response;
+                    return;
                 }
             }
             if (isPlaintext(buffer)) {
@@ -210,26 +233,34 @@ public class GanderInterceptor implements Interceptor {
         }
 
         update(transaction);
-
-        return response;
     }
 
-    private void create(HttpTransaction transaction) {
-        long transactionId = ganderDatabase.httpTransactionDao().insertTransaction(transaction);
+    ///////////////////////////////////////////////////////////////////////////
+    // Database update/create
+    ///////////////////////////////////////////////////////////////////////////
+
+    private HttpTransaction create(HttpTransaction transaction) {
+        long transactionId = mGanderDatabase.httpTransactionDao().insertTransaction(transaction);
         transaction.setId(transactionId);
-        if (showNotification) {
-            notificationHelper.show(transaction);
+        if (mShowNotification) {
+            mNotificationHelper.show(transaction);
         }
-        retentionManager.doMaintenance();
+        mRetentionManager.doMaintenance();
+        return transaction;
     }
 
     private void update(HttpTransaction transaction) {
-        int updatedTransactionCount = ganderDatabase.httpTransactionDao().updateTransaction(transaction);
+        int updatedTransactionCount = mGanderDatabase.httpTransactionDao().updateTransaction(transaction);
 
-        if (showNotification && updatedTransactionCount > 0) {
-            notificationHelper.show(transaction);
+        if (mShowNotification && updatedTransactionCount > 0) {
+            mNotificationHelper.show(transaction);
         }
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Body Helper Methods
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns true if the body in question probably contains human readable text. Uses a small sample
@@ -255,11 +286,11 @@ public class GanderInterceptor implements Interceptor {
         }
     }
 
-    private boolean bodyHasUnsupportedEncoding(Headers headers) {
+    private boolean bodyHasSupportedEncoding(Headers headers) {
         String contentEncoding = headers.get("Content-Encoding");
-        return contentEncoding != null &&
-                !contentEncoding.equalsIgnoreCase("identity") &&
-                !contentEncoding.equalsIgnoreCase("gzip");
+        return contentEncoding == null ||
+                contentEncoding.equalsIgnoreCase("identity") ||
+                contentEncoding.equalsIgnoreCase("gzip");
     }
 
     private boolean bodyGzipped(Headers headers) {
@@ -269,15 +300,15 @@ public class GanderInterceptor implements Interceptor {
 
     private String readFromBuffer(Buffer buffer, Charset charset) {
         long bufferSize = buffer.size();
-        long maxBytes = Math.min(bufferSize, maxContentLength);
+        long maxBytes = Math.min(bufferSize, mMaxContentLength);
         String body = "";
         try {
             body = buffer.readString(maxBytes, charset);
         } catch (EOFException e) {
-            body += context.getString(R.string.gander_body_unexpected_eof);
+            body += mContext.getString(R.string.gander_body_unexpected_eof);
         }
-        if (bufferSize > maxContentLength) {
-            body += context.getString(R.string.gander_body_content_truncated);
+        if (bufferSize > mMaxContentLength) {
+            body += mContext.getString(R.string.gander_body_content_truncated);
         }
         return body;
     }
@@ -293,8 +324,8 @@ public class GanderInterceptor implements Interceptor {
 
     private BufferedSource getNativeSource(Response response) throws IOException {
         if (bodyGzipped(response.headers())) {
-            BufferedSource source = response.peekBody(maxContentLength).source();
-            if (source.buffer().size() < maxContentLength) {
+            BufferedSource source = response.peekBody(mMaxContentLength).source();
+            if (source.buffer().size() < mMaxContentLength) {
                 return getNativeSource(source, true);
             } else {
                 Logger.w("gzip encoded response was too long");
@@ -302,6 +333,10 @@ public class GanderInterceptor implements Interceptor {
         }
         return response.body().source();
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Header Converter
+    ///////////////////////////////////////////////////////////////////////////
 
     private List<HttpHeader> toHttpHeaderList(Headers headers) {
         List<HttpHeader> httpHeaders = new ArrayList<>();

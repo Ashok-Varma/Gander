@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="status_bar_padding">24dp</dimen>
+    <dimen name="gander_status_bar_padding">24dp</dimen>
+    <!--<dimen name="gander_navigation_bar_padding">48dp</dimen>-->
 </resources>

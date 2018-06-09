@@ -19,12 +19,12 @@ import android.content.Context;
 public abstract class GanderDatabase extends RoomDatabase {
     public abstract TransactionDao httpTransactionDao();
 
-    private static GanderDatabase ganderDatabase;
+    private static GanderDatabase GANDER_DATABASE_INSTANCE;
 
     public static GanderDatabase getInstance(Context context) {
-        if (ganderDatabase == null) {
-            ganderDatabase = Room.databaseBuilder(context, GanderDatabase.class, "GanderDatabase").build();
+        if (GANDER_DATABASE_INSTANCE == null) {
+            GANDER_DATABASE_INSTANCE = Room.databaseBuilder(context, GanderDatabase.class, "GanderDatabase").build();
         }
-        return ganderDatabase;
+        return GANDER_DATABASE_INSTANCE;
     }
 }

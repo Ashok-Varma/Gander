@@ -20,8 +20,8 @@ import com.ashokvarma.gander.internal.data.TransactionDao;
  * @since 03/06/18
  */
 public class TransactionListViewModel extends AndroidViewModel {
-    private LiveData<PagedList<HttpTransaction>> transactions;
-    private final TransactionDao transactionDao;
+    private LiveData<PagedList<HttpTransaction>> mTransactions;
+    private final TransactionDao mTransactionDao;
 
     private final static PagedList.Config config
             = new PagedList.Config.Builder()
@@ -33,26 +33,26 @@ public class TransactionListViewModel extends AndroidViewModel {
 
     public TransactionListViewModel(Application application) {
         super(application);
-        transactionDao = GanderDatabase.getInstance(application).httpTransactionDao();
-        DataSource.Factory<Integer, HttpTransaction> factory = transactionDao.getAllTransactions();
-        transactions = new LivePagedListBuilder<>(factory, config).build();
+        mTransactionDao = GanderDatabase.getInstance(application).httpTransactionDao();
+        DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactions();
+        mTransactions = new LivePagedListBuilder<>(factory, config).build();
     }
 
     public LiveData<PagedList<HttpTransaction>> getTransactions(String key) {
         if (key == null || key.trim().length() == 0) {
-            return transactions;
+            return mTransactions;
         } else {
-            DataSource.Factory<Integer, HttpTransaction> factory = transactionDao.getAllTransactionsWith(key, TransactionDao.SEARCH_DEFAULT);
+            DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SEARCH_DEFAULT);
             return new LivePagedListBuilder<>(factory, config).build();
         }
     }
 
     public void deleteItem(HttpTransaction transaction) {
-        new deleteAsyncTask(transactionDao).execute(transaction);
+        new deleteAsyncTask(mTransactionDao).execute(transaction);
     }
 
     public void clearAll() {
-        new clearAsyncTask(transactionDao).execute();
+        new clearAsyncTask(mTransactionDao).execute();
     }
 
     private static class deleteAsyncTask extends AsyncTask<HttpTransaction, Void, Integer> {

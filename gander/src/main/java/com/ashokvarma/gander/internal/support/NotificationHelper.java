@@ -9,7 +9,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.text.SpannableStringBuilder;
+import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.LongSparseArray;
 
@@ -33,94 +33,93 @@ public class NotificationHelper {
     private static final int NOTIFICATION_ID = 1139;// in case if someone uses chuck
     private static final int BUFFER_SIZE = 10;
 
-    private static final LongSparseArray<HttpTransaction> transactionBuffer = new LongSparseArray<>();
-    private static int transactionCount;
+    private static final LongSparseArray<HttpTransaction> TRANSACTION_BUFFER = new LongSparseArray<>();
+    private static int TRANSACTION_COUNT;
 
-    private final Context context;
-    private final NotificationManager notificationManager;
-    private final TransactionColorUtil colorUtil;
-//    private Method setChannelId;
+    private final Context mContext;
+    private final NotificationManager mNotificationManager;
+    private final GanderColorUtil mColorUtil;
 
     public static synchronized void clearBuffer() {
-        transactionBuffer.clear();
-        transactionCount = 0;
+        TRANSACTION_BUFFER.clear();
+        TRANSACTION_COUNT = 0;
     }
 
     private static synchronized void addToBuffer(HttpTransaction transaction) {
         if (transaction.getStatus() == HttpTransaction.Status.Requested) {
-            transactionCount++;
+            TRANSACTION_COUNT++;
         }
-        transactionBuffer.put(transaction.getId(), transaction);
-        if (transactionBuffer.size() > BUFFER_SIZE) {
-            transactionBuffer.removeAt(0);
+        TRANSACTION_BUFFER.put(transaction.getId(), transaction);
+        if (TRANSACTION_BUFFER.size() > BUFFER_SIZE) {
+            TRANSACTION_BUFFER.removeAt(0);
         }
     }
 
     public NotificationHelper(Context context) {
-        this.context = context;
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        colorUtil = TransactionColorUtil.getInstance(context);
+        this.mContext = context;
+        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mColorUtil = GanderColorUtil.getInstance(context);
     }
 
     public void setUpChannelIfNecessary() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(
+            mNotificationManager.createNotificationChannel(
                     new NotificationChannel(CHANNEL_ID,
-                            context.getString(R.string.notification_category), NotificationManager.IMPORTANCE_LOW));
+                            mContext.getString(R.string.gander_notification_category), NotificationManager.IMPORTANCE_LOW));
         }
     }
 
     public synchronized void show(HttpTransaction transaction) {
         addToBuffer(transaction);
         if (!BaseGanderActivity.isInForeground()) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(context, 0, Gander.getLaunchIntent(context), 0))
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                    .setContentIntent(PendingIntent.getActivity(mContext, 0, Gander.getLaunchIntent(mContext), 0))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.gander_ic_notification_white_24dp)
-                    .setColor(ContextCompat.getColor(context, R.color.gander_colorPrimary))
-                    .setContentTitle(context.getString(R.string.gander_notification_title));
+                    .setColor(ContextCompat.getColor(mContext, R.color.gander_colorPrimary))
+                    .setContentTitle(mContext.getString(R.string.gander_notification_title));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
             int count = 0;
-            for (int i = transactionBuffer.size() - 1; i >= 0; i--) {
+            for (int i = TRANSACTION_BUFFER.size() - 1; i >= 0; i--) {
                 if (count < BUFFER_SIZE) {
                     if (count == 0) {
-                        builder.setContentText(getNotificationText(transactionBuffer.valueAt(i)));
+                        builder.setContentText(getNotificationText(TRANSACTION_BUFFER.valueAt(i)));
                     }
-                    inboxStyle.addLine(getNotificationText(transactionBuffer.valueAt(i)));
+                    inboxStyle.addLine(getNotificationText(TRANSACTION_BUFFER.valueAt(i)));
                 }
                 count++;
             }
             builder.setAutoCancel(true);
             builder.setStyle(inboxStyle);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                builder.setSubText(String.valueOf(transactionCount));
+                builder.setSubText(String.valueOf(TRANSACTION_COUNT));
             } else {
-                builder.setNumber(transactionCount);
+                builder.setNumber(TRANSACTION_COUNT);
             }
             builder.addAction(getClearAction());
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
+            mNotificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
 
     private CharSequence getNotificationText(HttpTransaction transaction) {
-        int color = colorUtil.getTransactionColor(transaction);
+        int color = mColorUtil.getTransactionColor(transaction);
         String text = transaction.getNotificationText();
         // Simple span no Truss required
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
-        spannableStringBuilder.setSpan(new ForegroundColorSpan(color), 0, text.length(), SPAN_INCLUSIVE_EXCLUSIVE);
-        return spannableStringBuilder;
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new ForegroundColorSpan(color), 0, text.length(), SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     @NonNull
     private NotificationCompat.Action getClearAction() {
-        CharSequence clearTitle = context.getString(R.string.gander_clear);
-        Intent deleteIntent = new Intent(context, ClearTransactionsService.class);
-        PendingIntent intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
+        CharSequence clearTitle = mContext.getString(R.string.gander_clear);
+        Intent deleteIntent = new Intent(mContext, ClearTransactionsService.class);
+        PendingIntent intent = PendingIntent.getService(mContext, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Action(R.drawable.gander_ic_delete_white_24dp, clearTitle, intent);
     }
 
     public void dismiss() {
-        notificationManager.cancel(NOTIFICATION_ID);
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 }

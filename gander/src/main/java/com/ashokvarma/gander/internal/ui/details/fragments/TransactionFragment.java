@@ -4,6 +4,4 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
 
 public interface TransactionFragment {
     void transactionUpdated(HttpTransaction transaction);
-
-    void onSearchUpdated(String searchKey);
 }
