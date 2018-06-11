@@ -70,7 +70,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
             mSearchKey = searchKey;
             mHeaderSearchIndices = highlightSearchKeyword(mHeadersView, mSearchKey);
             mBodySearchIndices = highlightSearchKeyword(mBodyView, mSearchKey);
-            updateSearchCount(0, searchKey);
+            updateSearchCount(1, searchKey);
         }
     });
 

@@ -1,7 +1,7 @@
 <resources>
-    <string name="gander_app_name">Gander</string>
+    <string name="app_name">Gander</string>
 
-    <string name="gander_name">@string/gander_app_name</string>
+    <string name="gander_name">Gander</string>
     <string name="gander_loading">Loading …</string>
     <string name="gander_notification_title">Recording HTTP activity</string>
     <string name="gander_clear">Clear</string>
