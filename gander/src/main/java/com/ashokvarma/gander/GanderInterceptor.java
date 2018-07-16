@@ -190,9 +190,19 @@ public class GanderInterceptor implements Interceptor {
     private void updateTransactionFromResponse(HttpTransaction transaction, Response response, long tookMs) throws IOException {
         ResponseBody responseBody = response.body();
 
+        if (response.cacheResponse() != null) {
+            // receivedResponseAtMillis, sentRequestAtMillis =>
+            // If response is being served from the cache then these are the timestamp of the original response.
+            // So using calculated time
+            transaction.setResponseDate(new Date());
+            transaction.setTookMs(tookMs);
+        } else {
+            // most accurate time, will not include the delay by other interceptors
+            transaction.setTookMs(response.receivedResponseAtMillis() - response.sentRequestAtMillis());
+            transaction.setRequestDate(new Date(response.sentRequestAtMillis()));
+            transaction.setResponseDate(new Date(response.receivedResponseAtMillis()));
+        }
         transaction.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
-        transaction.setResponseDate(new Date());
-        transaction.setTookMs(tookMs);
         transaction.setProtocol(response.protocol().toString());
         transaction.setResponseCode(response.code());
         transaction.setResponseMessage(response.message());

@@ -29,8 +29,9 @@ android {
 }
 
 dependencies {
-    debugImplementation project(':gander')
-    releaseImplementation project(':gander-no-op')
+    implementation project(':gander')
+//    debugImplementation project(':gander')
+//    releaseImplementation project(':gander-no-op')
 
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
 

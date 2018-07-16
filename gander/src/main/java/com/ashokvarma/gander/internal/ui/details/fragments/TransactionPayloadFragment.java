@@ -151,9 +151,11 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
             mSearchFab.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
             mSearchBar.setBackgroundColor(color);
             if (mType == TYPE_REQUEST) {
+                mSearchView.setHint(R.string.gander_search_request_hint);
                 populateHeaderText(mTransaction.getRequestHeadersString(true));
                 populateBody(mTransaction.requestBodyIsPlainText());
             } else if (mType == TYPE_RESPONSE) {
+                mSearchView.setHint(R.string.gander_search_response_hint);
                 populateHeaderText(mTransaction.getResponseHeadersString(true));
                 populateBody(mTransaction.responseBodyIsPlainText());
             }

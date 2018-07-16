@@ -59,40 +59,53 @@
             android:id="@+id/gander_details_search"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:background="@null"
-            android:textColor="#FFFFFF" />
+            android:imeOptions="actionSearch"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#33FFFFFF"
+            android:textCursorDrawable="@drawable/search_cursor"
+            android:textSize="16sp" />
+        <!--android:textCursorDrawable="@null" />-->
 
         <TextView
             android:id="@+id/gander_details_search_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textColor="#AEAEAE"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
+            android:textColor="#88FFFFFF"
             tools:text="1/2" />
 
         <ImageView
             android:id="@+id/gander_details_search_close"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:background="?selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="5dp"
             android:src="@drawable/gander_ic_close_white_24dp" />
 
         <ImageView
             android:id="@+id/gander_details_search_prev"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:background="?selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="5dp"
             android:src="@drawable/gander_ic_arrow_up_white_24dp" />
 
         <ImageView
             android:id="@+id/gander_details_search_next"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:background="?selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="5dp"
             android:src="@drawable/gander_ic_arrow_down_white_24dp" />
 
     </LinearLayout>
