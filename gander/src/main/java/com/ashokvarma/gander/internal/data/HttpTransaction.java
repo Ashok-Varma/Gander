@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
 import com.ashokvarma.gander.internal.support.FormatUtils;
 
@@ -278,11 +279,11 @@ public class HttpTransaction {
         Failed
     }
 
-    public String getFormattedRequestBody() {
+    public CharSequence getFormattedRequestBody() {
         return formatBody(requestBody, requestContentType);
     }
 
-    public String getFormattedResponseBody() {
+    public CharSequence getFormattedResponseBody() {
         return formatBody(responseBody, responseContentType);
     }
 
@@ -354,14 +355,17 @@ public class HttpTransaction {
         }
     }
 
-    private String formatBody(String body, String contentType) {
-        if (contentType != null && contentType.toLowerCase().contains("json")) {
-            return FormatUtils.formatJson(body);
-        } else if (contentType != null && contentType.toLowerCase().contains("xml")) {
-            return FormatUtils.formatXml(body);
-        } else {
-            return body;
+    private CharSequence formatBody(String body, @Nullable String contentType) {
+        if (contentType != null) {
+            if (contentType.toLowerCase().contains("json")) {
+                return FormatUtils.formatJson(body);
+            } else if (contentType.toLowerCase().contains("xml")) {
+                return FormatUtils.formatXml(body);
+            } else if (contentType.toLowerCase().contains("form-urlencoded")) {
+                return FormatUtils.formatFormEncoded(body);
+            }
         }
+        return body;
     }
 
     private String formatBytes(long bytes) {

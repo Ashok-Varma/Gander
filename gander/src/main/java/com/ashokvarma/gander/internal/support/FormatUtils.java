@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
@@ -11,11 +12,13 @@ import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,8 +51,8 @@ public class FormatUtils {
     }
 
     @NonNull
-    public static List<Integer> indexOf(String text, String criteria) {
-        text = text.toLowerCase();
+    public static List<Integer> indexOf(CharSequence charSequence, String criteria) {
+        String text = charSequence.toString().toLowerCase();
         criteria = criteria.toLowerCase();
 
         List<Integer> startPositions = new ArrayList<>();
@@ -94,16 +97,23 @@ public class FormatUtils {
         return String.format(Locale.US, "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
-    public static String formatJson(String json) {
+    public static CharSequence formatJson(String json) {
         try {
-            JSONObject jsonObject = new JSONObject(json);
-            return jsonObject.toString(4);
+            json = json.trim();
+            if (json.startsWith("[")) {
+                JSONArray jsonArray = new JSONArray(json);
+                return jsonArray.toString(4);
+            } else {
+                JSONObject jsonObject = new JSONObject(json);
+                return jsonObject.toString(4);
+            }
         } catch (Exception e) {
+            Logger.e("non json content", e);
             return json;
         }
     }
 
-    public static String formatXml(String xml) {
+    public static CharSequence formatXml(String xml) {
         try {
             Transformer serializer = SAXTransformerFactory.newInstance().newTransformer();
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -113,12 +123,37 @@ public class FormatUtils {
             serializer.transform(xmlSource, res);
             return new String(((ByteArrayOutputStream) res.getOutputStream()).toByteArray());
         } catch (Exception e) {
+            Logger.e("non xml content", e);
             return xml;
         }
     }
 
-    public static String getShareText(Context context, HttpTransaction transaction) {
-        StringBuilder text = new StringBuilder();
+    public static CharSequence formatFormEncoded(String formEncoded) {
+        try {
+            Truss truss = new Truss();
+            if (formEncoded != null) {
+                formEncoded = URLDecoder.decode(formEncoded, "UTF-8");
+                String[] pairs = formEncoded.split("&");
+                for (String pair : pairs) {
+                    if (pair.contains("=")) {
+                        int idx = pair.indexOf("=");
+
+                        truss.pushSpan(new StyleSpan(android.graphics.Typeface.BOLD));
+                        truss.append(pair.substring(0, idx)).append("= ");
+                        truss.popSpan();
+                        truss.append(pair.substring(idx + 1)).append("\n");
+                    }
+                }
+            }
+            return truss.build();
+        } catch (Exception e) {
+            Logger.e("non form url content content", e);
+            return formEncoded;
+        }
+    }
+
+    public static CharSequence getShareText(Context context, HttpTransaction transaction) {
+        SpannableStringBuilder text = new SpannableStringBuilder();
         text.append(context.getString(R.string.gander_url)).append(": ").append(v(transaction.getUrl())).append("\n");
         text.append(context.getString(R.string.gander_method)).append(": ").append(v(transaction.getMethod())).append("\n");
         text.append(context.getString(R.string.gander_protocol)).append(": ").append(v(transaction.getProtocol())).append("\n");
@@ -135,7 +170,7 @@ public class FormatUtils {
         text.append(context.getString(R.string.gander_total_size)).append(": ").append(v(transaction.getTotalSizeString())).append("\n");
         text.append("\n");
         text.append("---------- ").append(context.getString(R.string.gander_request)).append(" ----------\n\n");
-        String headers = formatHeaders(transaction.getRequestHeaders(), false).toString();
+        CharSequence headers = formatHeaders(transaction.getRequestHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
@@ -143,13 +178,13 @@ public class FormatUtils {
                 context.getString(R.string.gander_body_omitted));
         text.append("\n\n");
         text.append("---------- ").append(context.getString(R.string.gander_response)).append(" ----------\n\n");
-        headers = formatHeaders(transaction.getResponseHeaders(), false).toString();
+        headers = formatHeaders(transaction.getResponseHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
         text.append((transaction.responseBodyIsPlainText()) ? v(transaction.getFormattedResponseBody()) :
                 context.getString(R.string.gander_body_omitted));
-        return text.toString();
+        return text;
     }
 
     public static String getShareCurlCommand(HttpTransaction transaction) {
@@ -174,7 +209,7 @@ public class FormatUtils {
         return curlCmd.toString();
     }
 
-    private static String v(String string) {
-        return (string != null) ? string : "";
+    private static CharSequence v(CharSequence charSequence) {
+        return (charSequence != null) ? charSequence : "";
     }
 }

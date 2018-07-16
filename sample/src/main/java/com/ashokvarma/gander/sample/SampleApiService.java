@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -59,6 +61,13 @@ public class SampleApiService {
 
         @POST("/post")
         Call<Void> post(@Body Data body);
+
+        @POST("/post")
+        @FormUrlEncoded
+        @Headers({
+                "ContentType: application/x-www-form-urlencoded",
+        })
+        Call<Void> postForm(@Field("param_string") String string, @Field("param_string_null") String stringNil, @Field("param_double") double param2, @Field("param_int") int param3, @Field("param_bool") boolean param4);
 
         @PATCH("/patch")
         Call<Void> patch(@Body Data body);

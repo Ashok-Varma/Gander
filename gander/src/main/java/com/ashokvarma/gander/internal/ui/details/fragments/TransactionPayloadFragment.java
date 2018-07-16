@@ -181,7 +181,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
             TextUtil.asyncSetText(mExecutor, new TextUtil.AsyncTextProvider() {
                 @Override
                 public CharSequence getText() {
-                    String body = null;
+                    CharSequence body = null;
                     String searchKey = mSearchKey;
                     if (mType == TYPE_REQUEST) {
                         body = mTransaction.getFormattedRequestBody();

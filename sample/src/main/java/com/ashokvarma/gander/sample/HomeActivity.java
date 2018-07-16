@@ -88,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
         };
         api.get().enqueue(cb);
         api.post(new SampleApiService.Data("posted")).enqueue(cb);
+        api.postForm("I Am String", null, 2.34567891, 1234, false).enqueue(cb);
         api.patch(new SampleApiService.Data("patched")).enqueue(cb);
         api.put(new SampleApiService.Data("put")).enqueue(cb);
         api.delete().enqueue(cb);

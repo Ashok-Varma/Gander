@@ -146,7 +146,7 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         viewPager.setCurrentItem(SELECTED_TAB_POSITION);
     }
 
-    private void share(String content) {
+    private void share(CharSequence content) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, content);
