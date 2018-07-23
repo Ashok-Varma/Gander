@@ -1,7 +1,6 @@
-<p align="center"><img src="https://raw.githubusercontent.com/jbeguna04/Gander/master/LogoDesigns/logotype1.png"/></p>
+![Gander](LogoDesigns/logotype1.png)
 
 # Gander
-##### Thanks to [Jeff Gilfelt][jgilfeltLink] for his amazing library [Chuck][chuckLink]. This repo is a fork from Chuck, later on moved and released as separate project, since chuck is no longer maintained.
 
 ## What is this library about?
 Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.
@@ -92,6 +91,10 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 ## Acknowledgements
 Chuck (parent repo)
 - [Chuck][chuckLink] - Copyright Jeff Gilfelt, Inc.
+##### Thanks to [Jeff Gilfelt][jgilfeltLink] for his amazing library [Chuck][chuckLink]. This repo is a fork from Chuck, later on moved and released as separate project, since chuck is no longer maintained.
+
+Awesome Icon Designer
+- [Jibbie Eguna][jbeguna04Link] - He contributed the Icon to Gander.
 
 Gander uses the following open source libraries:
 - [OkHttp][okhttpLink] - Copyright Square, Inc.
@@ -123,3 +126,4 @@ License
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt
 [okhttpLink]: https://github.com/square/okhttp
+[jbeguna04Link]: https://github.com/jbeguna04
