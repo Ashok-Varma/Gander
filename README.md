@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/jbeguna04/Gander/master/LogoDesigns/logotype1.png"/></p>
+
 # Gander
 ##### Thanks to [Jeff Gilfelt][jgilfeltLink] for his amazing library [Chuck][chuckLink]. This repo is a fork from Chuck, later on moved and released as separate project, since chuck is no longer maintained.
 
