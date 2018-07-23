@@ -1,4 +1,5 @@
-![Gander](LogoDesigns/logotype1.png)
+<p align="center"><img src="https://raw.githubusercontent.com/Ashok-Varma/Gander/master/LogoDesigns/logotype1.1.png"/></p>
+
 
 # Gander
 
