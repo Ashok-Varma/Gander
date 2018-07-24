@@ -35,7 +35,7 @@ releaseCompile 'com.ashokvarma.android:gander-no-op:1.2.0'
 ```
 If you want this in library in both release and compile, then try this : 
 ```gradle
-compile 'com.ashokvarma.android:sharedpref-manager:1.2.0'
+compile 'com.ashokvarma.android:gander:1.2.0'
 ```
 
 
