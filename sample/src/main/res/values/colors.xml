@@ -3,4 +3,5 @@
     <color name="colorPrimary">#607D8B</color>
     <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#616161</color>
+    <color name="ic_launcher_background">#48D7C9</color>
 </resources>
