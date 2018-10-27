@@ -49,12 +49,12 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
         });
     }
 
-    public TransactionAdapter setListener(Listener listener) {
+    TransactionAdapter setListener(Listener listener) {
         this.mListener = listener;
         return this;
     }
 
-    public TransactionAdapter setSearchKey(String searchKey) {
+    TransactionAdapter setSearchKey(String searchKey) {
         this.mSearchKey = searchKey;
         return this;
     }

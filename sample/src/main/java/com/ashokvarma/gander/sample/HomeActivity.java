@@ -114,5 +114,8 @@ public class HomeActivity extends AppCompatActivity {
         api.deny().enqueue(cb);
         api.cache("Mon").enqueue(cb);
         api.cache(30).enqueue(cb);
+
+        // large data 60MB Request and 60MB response (PrecomputedText magic test)
+        api.post(new SampleApiService.VeryLargeData()).enqueue(cb);
     }
 }

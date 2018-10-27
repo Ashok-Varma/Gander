@@ -46,12 +46,8 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     private TextView mHeadersView;
     private TextView mBodyView;
     private NestedScrollView mScrollParentView;
-    private View mLinearParentView;
     private FloatingActionButton mSearchFab;
     private View mSearchBar;
-    private View mSearchBarPrev;
-    private View mSearchBarNext;
-    private View mSearchBarClose;
     private EditText mSearchView;
     private TextView mSearchCountView;
 
@@ -88,6 +84,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getArguments() != null;
         mType = getArguments().getInt(ARG_TYPE);
         mColorUtil = GanderColorUtil.getInstance(getContext());
         setRetainInstance(true);
@@ -100,19 +97,18 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
         mHeadersView = view.findViewById(R.id.gander_details_headers);
         mBodyView = view.findViewById(R.id.gander_details_body);
         mScrollParentView = view.findViewById(R.id.gander_details_scroll_parent);
-        mLinearParentView = view.findViewById(R.id.gander_details_linear_parent);
         mSearchFab = view.findViewById(R.id.gander_details_search_fab);
         mSearchBar = view.findViewById(R.id.gander_details_search_bar);
-        mSearchBarPrev = view.findViewById(R.id.gander_details_search_prev);
-        mSearchBarNext = view.findViewById(R.id.gander_details_search_next);
-        mSearchBarClose = view.findViewById(R.id.gander_details_search_close);
+        View searchBarPrev = view.findViewById(R.id.gander_details_search_prev);
+        View searchBarNext = view.findViewById(R.id.gander_details_search_next);
+        View searchBarClose = view.findViewById(R.id.gander_details_search_close);
         mSearchView = view.findViewById(R.id.gander_details_search);
         mSearchCountView = view.findViewById(R.id.gander_details_search_count);
 
         mSearchFab.setOnClickListener(this);
-        mSearchBarPrev.setOnClickListener(this);
-        mSearchBarNext.setOnClickListener(this);
-        mSearchBarClose.setOnClickListener(this);
+        searchBarPrev.setOnClickListener(this);
+        searchBarNext.setOnClickListener(this);
+        searchBarClose.setOnClickListener(this);
 
         mSearchView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -200,14 +196,8 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
                 }
 
                 @Override
-                public void setText(final CharSequence charSequence) {
-                    mBodyView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBodyView.setText(charSequence, TextView.BufferType.SPANNABLE);
-//                            updateSearchCount(1);
-                        }
-                    });
+                public TextView getTextView() {
+                    return mBodyView;
                 }
             });
         }
@@ -312,13 +302,13 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.gander_details_search_fab) {
-            mSearchFab.setVisibility(View.GONE);
+            mSearchFab.hide();
             mSearchBar.setVisibility(View.VISIBLE);
             mScrollParentView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.gander_search_bar_height), 0, mScrollParentView.getBottom());
             showKeyboard();
         } else if (id == R.id.gander_details_search_close) {
             if (TextUtil.isNullOrWhiteSpace(mSearchKey)) {
-                mSearchFab.setVisibility(View.VISIBLE);
+                mSearchFab.show();
                 mSearchBar.setVisibility(View.GONE);
                 mScrollParentView.setPadding(0, 0, 0, mScrollParentView.getBottom());
                 hideKeyboard();

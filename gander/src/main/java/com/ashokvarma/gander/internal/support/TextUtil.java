@@ -1,6 +1,9 @@
 package com.ashokvarma.gander.internal.support;
 
 
+import android.text.PrecomputedText;
+import android.widget.TextView;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
@@ -20,23 +23,30 @@ public class TextUtil {
      * because the callable which is formatting Json, Xml will now be done in background thread
      */
     public static void asyncSetText(Executor bgExecutor, final AsyncTextProvider asyncTextProvider) {
-        // construct precompute related parameters using the TextView that we will set the text on.
-//        final PrecomputedText.Params params = textView.getTextMetricsParams();
+        final PrecomputedText.Params params = asyncTextProvider.getTextView().getTextMetricsParams();
         final Reference<AsyncTextProvider> asyncTextProviderReference = new WeakReference<>(asyncTextProvider);
+
         bgExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                AsyncTextProvider asyncTextProvider = asyncTextProviderReference.get();
-                if (asyncTextProvider == null) return;
                 try {
-                    CharSequence longString = asyncTextProvider.getText();
-                    asyncTextProvider = null;//clear ref
-//                final PrecomputedText precomputedText = PrecomputedText.create(longString, params);
-
-                    asyncTextProvider = asyncTextProviderReference.get();
+                    AsyncTextProvider asyncTextProvider = asyncTextProviderReference.get();
                     if (asyncTextProvider == null) return;
-//                        asyncTextProvider.setText(precomputedText);
-                    asyncTextProvider.setText(longString);
+                    // get text from background
+                    CharSequence longString = asyncTextProvider.getText();
+                    // pre-compute Text before setting on text view. so UI thread can be free from calculating text paint
+                    final PrecomputedText precomputedText = PrecomputedText.create(longString, params);
+
+                    asyncTextProvider.getTextView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            AsyncTextProvider asyncTextProviderInternal = asyncTextProviderReference.get();
+                            if (asyncTextProviderInternal == null) return;
+                            // set pre computed text
+                            TextView textView = asyncTextProviderInternal.getTextView();
+                            textView.setText(precomputedText, TextView.BufferType.SPANNABLE);
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -47,7 +57,7 @@ public class TextUtil {
     public interface AsyncTextProvider {
         CharSequence getText();
 
-        void setText(final CharSequence charSequence);
+        TextView getTextView();
     }
 
     public static boolean isNullOrWhiteSpace(CharSequence text) {

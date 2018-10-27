@@ -23,7 +23,7 @@ public class TransactionDetailViewModel extends AndroidViewModel {
         mTransactionDao = GanderDatabase.getInstance(application).httpTransactionDao();
     }
 
-    public LiveData<HttpTransaction> getTransactionWithId(long id) {
+    LiveData<HttpTransaction> getTransactionWithId(long id) {
         return mTransactionDao.getTransactionsWithId(id);
     }
 }

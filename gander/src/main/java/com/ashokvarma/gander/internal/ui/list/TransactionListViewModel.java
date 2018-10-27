@@ -38,7 +38,7 @@ public class TransactionListViewModel extends AndroidViewModel {
         mTransactions = new LivePagedListBuilder<>(factory, config).build();
     }
 
-    public LiveData<PagedList<HttpTransaction>> getTransactions(String key) {
+    LiveData<PagedList<HttpTransaction>> getTransactions(String key) {
         if (key == null || key.trim().length() == 0) {
             return mTransactions;
         } else {
@@ -51,7 +51,7 @@ public class TransactionListViewModel extends AndroidViewModel {
         new deleteAsyncTask(mTransactionDao).execute(transaction);
     }
 
-    public void clearAll() {
+    void clearAll() {
         new clearAsyncTask(mTransactionDao).execute();
     }
 

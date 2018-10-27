@@ -28,7 +28,7 @@ import retrofit2.http.Query;
  * @version 1.0
  * @since 02/06/18
  */
-public class SampleApiService {
+class SampleApiService {
 
     static HttpbinApi getInstance(OkHttpClient client) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -55,12 +55,29 @@ public class SampleApiService {
         }
     }
 
+    // estimated size 60 MB
+    static class VeryLargeData {
+        final String data;
+
+        VeryLargeData() {
+
+            StringBuilder stringBuilder = new StringBuilder(20_000_000);
+            for (int i = 1; i < 200_000; i++) {
+                stringBuilder.append("The quick brown fox jumps over the lazy dog over and over again many times,100 word sentence formed.");
+            }
+            this.data = stringBuilder.toString();
+        }
+    }
+
     interface HttpbinApi {
         @GET("/get")
         Call<Void> get();
 
         @POST("/post")
         Call<Void> post(@Body Data body);
+
+        @POST("/post")
+        Call<Void> post(@Body VeryLargeData body);
 
         @POST("/post")
         @FormUrlEncoded

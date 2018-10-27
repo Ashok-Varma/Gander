@@ -58,7 +58,6 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     AppBarLayout mAppBarLayout;
 
     private HttpTransaction mTransaction;
-    private String mSearchKey;
     TransactionDetailViewModel mViewModel;
     GanderColorUtil mColorUtil;
 
