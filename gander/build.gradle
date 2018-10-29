@@ -44,15 +44,15 @@ android {
 }
 
 dependencies {
-    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
-    api "com.android.support:design:$supportLibVersion"
-    api "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
 
-    api "android.arch.persistence.room:runtime:$roomVersion"
+    compile "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
-    api "android.arch.paging:runtime:$pagingVersion"
-    api "android.arch.lifecycle:extensions:$viewModelVersion"
+    compile "android.arch.paging:runtime:$pagingVersion"
+    compile "android.arch.lifecycle:extensions:$viewModelVersion"
 }
 
 // Place it at the end of the file
