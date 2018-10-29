@@ -1,6 +1,8 @@
 package com.ashokvarma.gander.internal.support;
 
 
+import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.PrecomputedText;
 import android.widget.TextView;
 
@@ -23,7 +25,6 @@ public class TextUtil {
      * because the callable which is formatting Json, Xml will now be done in background thread
      */
     public static void asyncSetText(Executor bgExecutor, final AsyncTextProvider asyncTextProvider) {
-        final PrecomputedText.Params params = asyncTextProvider.getTextView().getTextMetricsParams();
         final Reference<AsyncTextProvider> asyncTextProviderReference = new WeakReference<>(asyncTextProvider);
 
         bgExecutor.execute(new Runnable() {
@@ -35,7 +36,14 @@ public class TextUtil {
                     // get text from background
                     CharSequence longString = asyncTextProvider.getText();
                     // pre-compute Text before setting on text view. so UI thread can be free from calculating text paint
-                    final PrecomputedText precomputedText = PrecomputedText.create(longString, params);
+                    CharSequence updateText;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        PrecomputedText.Params params = asyncTextProvider.getTextView().getTextMetricsParams();
+                        updateText = PrecomputedText.create(longString, params);
+                    } else {
+                        updateText = longString;
+                    }
+                    final CharSequence updateTextFinal = updateText;
 
                     asyncTextProvider.getTextView().post(new Runnable() {
                         @Override
@@ -44,7 +52,7 @@ public class TextUtil {
                             if (asyncTextProviderInternal == null) return;
                             // set pre computed text
                             TextView textView = asyncTextProviderInternal.getTextView();
-                            textView.setText(precomputedText, TextView.BufferType.SPANNABLE);
+                            textView.setText(updateTextFinal, TextView.BufferType.SPANNABLE);
                         }
                     });
                 } catch (Exception e) {
@@ -57,7 +65,7 @@ public class TextUtil {
     public interface AsyncTextProvider {
         CharSequence getText();
 
-        TextView getTextView();
+        AppCompatTextView getTextView();
     }
 
     public static boolean isNullOrWhiteSpace(CharSequence text) {

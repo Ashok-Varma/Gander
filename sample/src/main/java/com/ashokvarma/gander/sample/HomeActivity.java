@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                 // Add a GanderInterceptor instance to your OkHttp client
                 .addInterceptor(
                         new GanderInterceptor(context, true)
-                                .maxContentLength(20_000_000L)
+                                .maxContentLength(250000L)
                                 .retainDataFor(GanderInterceptor.Period.FOREVER)
                 )
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -120,6 +120,6 @@ public class HomeActivity extends AppCompatActivity {
         api.cache(30).enqueue(cb);
 
         // large data 60MB Request and 60MB response (PrecomputedText magic test)
-        api.post(new SampleApiService.VeryLargeData()).enqueue(cb);
+//        api.post(new SampleApiService.VeryLargeData()).enqueue(cb);
     }
 }

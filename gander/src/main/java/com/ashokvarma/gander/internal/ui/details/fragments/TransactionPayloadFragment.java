@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -44,7 +45,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     private static final String ARG_TYPE = "type";
 
     private TextView mHeadersView;
-    private TextView mBodyView;
+    private AppCompatTextView mBodyView;
     private NestedScrollView mScrollParentView;
     private FloatingActionButton mSearchFab;
     private View mSearchBar;
@@ -196,7 +197,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
                 }
 
                 @Override
-                public TextView getTextView() {
+                public AppCompatTextView getTextView() {
                     return mBodyView;
                 }
             });
