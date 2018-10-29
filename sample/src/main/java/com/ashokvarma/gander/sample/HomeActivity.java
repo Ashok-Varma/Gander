@@ -119,7 +119,8 @@ public class HomeActivity extends AppCompatActivity {
         api.cache("Mon").enqueue(cb);
         api.cache(30).enqueue(cb);
 
-        // large data 60MB Request and 60MB response (PrecomputedText magic test)
-//        api.post(new SampleApiService.VeryLargeData()).enqueue(cb);
+        // tested with 60 MB as well. Since max size stored is 1 MB in database it won't be any different
+        // large data 1MB Request and 2MB response (PrecomputedText magic test)
+        api.post(new SampleApiService.VeryLargeData()).enqueue(cb);
     }
 }

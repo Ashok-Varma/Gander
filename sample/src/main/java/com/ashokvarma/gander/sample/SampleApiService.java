@@ -55,14 +55,14 @@ class SampleApiService {
         }
     }
 
-    // estimated size 60 MB
+    // estimated size 1 MB
     static class VeryLargeData {
         final String data;
 
         VeryLargeData() {
 
-            StringBuilder stringBuilder = new StringBuilder(20_000_000);
-            for (int i = 1; i < 200_000; i++) {
+            StringBuilder stringBuilder = new StringBuilder(1_000_000);// 100 * 10_000
+            for (int i = 1; i < 10_000; i++) {
                 stringBuilder.append("The quick brown fox jumps over the lazy dog over and over again many times,100 word sentence formed.");
             }
             this.data = stringBuilder.toString();
