@@ -91,7 +91,7 @@ public class GanderInterceptor implements Interceptor {
      * @return The {@link GanderInterceptor} instance.
      */
     public GanderInterceptor maxContentLength(long max) {
-        this.mMaxContentLength = max;
+        this.mMaxContentLength = Math.min(max, 2097152L);// 2 MB Max in a BLOB SQLite.
         return this;
     }
 

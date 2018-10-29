@@ -64,7 +64,11 @@ public class HomeActivity extends AppCompatActivity {
     private OkHttpClient getClient(Context context) {
         return new OkHttpClient.Builder()
                 // Add a GanderInterceptor instance to your OkHttp client
-                .addInterceptor(new GanderInterceptor(context, true))
+                .addInterceptor(
+                        new GanderInterceptor(context, true)
+                                .maxContentLength(20_000_000L)
+                                .retainDataFor(GanderInterceptor.Period.FOREVER)
+                )
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
     }
