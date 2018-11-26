@@ -30,12 +30,12 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugCompile 'com.ashokvarma.android:gander:1.3.3'
-releaseCompile 'com.ashokvarma.android:gander-no-op:1.3.3'
+debugImplementation 'com.ashokvarma.android:gander:1.3.3'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:1.3.3'
 ```
 If you want this in library in both release and compile, then try this : 
 ```gradle
-compile 'com.ashokvarma.android:gander:1.3.3'
+implementation 'com.ashokvarma.android:gander:1.3.3'
 ```
 
 
