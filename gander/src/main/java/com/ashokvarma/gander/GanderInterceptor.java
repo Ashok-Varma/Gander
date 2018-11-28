@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
@@ -70,6 +73,7 @@ public class GanderInterceptor implements Interceptor {
     private RetentionManager mRetentionManager;
     private boolean mShowNotification;
     private long mMaxContentLength = 250000L;
+    private volatile Set<String> headersToRedact = Collections.emptySet();
 
     /**
      * @param context          The current Context.
@@ -117,6 +121,13 @@ public class GanderInterceptor implements Interceptor {
         if (mShowNotification) {
             mNotificationHelper.setUpChannelIfNecessary();
         }
+    }
+
+    public void redactHeader(String name) {
+        Set<String> newHeadersToRedact = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        newHeadersToRedact.addAll(headersToRedact);
+        newHeadersToRedact.add(name);
+        headersToRedact = newHeadersToRedact;
     }
 
     @Override
