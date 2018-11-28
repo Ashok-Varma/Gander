@@ -123,11 +123,12 @@ public class GanderInterceptor implements Interceptor {
         }
     }
 
-    public void redactHeader(String name) {
+    public GanderInterceptor redactHeader(String name) {
         Set<String> newHeadersToRedact = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         newHeadersToRedact.addAll(headersToRedact);
         newHeadersToRedact.add(name);
         headersToRedact = newHeadersToRedact;
+        return this;
     }
 
     @Override
