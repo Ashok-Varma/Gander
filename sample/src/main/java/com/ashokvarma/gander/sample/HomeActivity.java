@@ -13,6 +13,8 @@ import android.view.View;
 import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.GanderInterceptor;
 
+import java.util.UUID;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -60,7 +62,6 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private OkHttpClient getClient(Context context) {
         return new OkHttpClient.Builder()
                 // Add a GanderInterceptor instance to your OkHttp client
@@ -68,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
                         new GanderInterceptor(context, true)
                                 .maxContentLength(250000L)
                                 .retainDataFor(GanderInterceptor.Period.FOREVER)
+                                .redactHeader("Authorization")
                 )
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -101,6 +103,7 @@ public class HomeActivity extends AppCompatActivity {
         api.status(500).enqueue(cb);
         api.delay(9).enqueue(cb);
         api.delay(15).enqueue(cb);
+        api.bearer(UUID.randomUUID().toString()).enqueue(cb);
         api.redirectTo("https://http2.akamai.com").enqueue(cb);
         api.redirect(3).enqueue(cb);
         api.redirectRelative(2).enqueue(cb);
