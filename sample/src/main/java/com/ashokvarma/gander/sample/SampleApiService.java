@@ -102,6 +102,9 @@ class SampleApiService {
         @DELETE("/delete")
         Call<Void> delete();
 
+        @GET("/bearer")
+        Call<Void> bearer(@Header("Authorization") String token);
+
         @GET("/status/{code}")
         Call<Void> status(@Path("code") int code);
 

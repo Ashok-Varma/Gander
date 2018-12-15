@@ -64,6 +64,8 @@ public class GanderInterceptor implements Interceptor {
         return this;
     }
 
+    public GanderInterceptor redactHeader(String name) { return this; }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         return chain.proceed(chain.request());
