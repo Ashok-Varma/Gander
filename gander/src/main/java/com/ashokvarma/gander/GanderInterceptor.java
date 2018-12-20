@@ -271,7 +271,7 @@ public class GanderInterceptor implements Interceptor {
         long transactionId = mGanderDatabase.httpTransactionDao().insertTransaction(transaction);
         transaction.setId(transactionId);
         if (mShowNotification) {
-            mNotificationHelper.show(transaction);
+            mNotificationHelper.show(transaction, stickyNotification);
         }
         mRetentionManager.doMaintenance();
         return transaction;
@@ -281,7 +281,7 @@ public class GanderInterceptor implements Interceptor {
         int updatedTransactionCount = mGanderDatabase.httpTransactionDao().updateTransaction(transaction);
 
         if (mShowNotification && updatedTransactionCount > 0) {
-            mNotificationHelper.show(transaction);
+            mNotificationHelper.show(transaction, stickyNotification);
         }
     }
 
