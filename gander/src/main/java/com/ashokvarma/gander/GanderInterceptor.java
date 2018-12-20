@@ -74,6 +74,7 @@ public class GanderInterceptor implements Interceptor {
     private boolean mShowNotification;
     private long mMaxContentLength = 250000L;
     private volatile Set<String> headersToRedact = Collections.emptySet();
+    private boolean stickyNotification = false;
 
     /**
      * @param context          The current Context.
@@ -128,6 +129,11 @@ public class GanderInterceptor implements Interceptor {
         newHeadersToRedact.addAll(headersToRedact);
         newHeadersToRedact.add(name);
         headersToRedact = newHeadersToRedact;
+        return this;
+    }
+
+    public GanderInterceptor setSticky(boolean sticky) {
+        this.stickyNotification = sticky;
         return this;
     }
 
