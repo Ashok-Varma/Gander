@@ -69,7 +69,7 @@ public class NotificationHelper {
         }
     }
 
-    public synchronized void show(HttpTransaction transaction) {
+    public synchronized void show(HttpTransaction transaction, boolean stickyNotification) {
         addToBuffer(transaction);
         if (!BaseGanderActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
@@ -77,6 +77,7 @@ public class NotificationHelper {
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.gander_ic_notification_white_24dp)
                     .setColor(ContextCompat.getColor(mContext, R.color.gander_colorPrimary))
+                    .setOngoing(stickyNotification)
                     .setContentTitle(mContext.getString(R.string.gander_notification_title));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
