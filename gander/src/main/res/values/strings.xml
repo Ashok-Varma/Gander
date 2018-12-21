@@ -4,7 +4,8 @@
     <string name="gander_name">Gander</string>
     <string name="gander_loading">Loading …</string>
     <string name="gander_notification_title">Recording HTTP activity</string>
-    <string name="gander_clear">Clear</string>
+    <string name="gander_clear">"Clear "</string>
+    <string name="gander_dismiss">dismiss</string>
     <string name="gander_browse_sql_database">Browse SQLite database</string>
     <string name="gander_overview">Overview</string>
     <string name="gander_request">Request</string>

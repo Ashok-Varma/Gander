@@ -2,6 +2,7 @@ package com.ashokvarma.gander;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.ashokvarma.gander.internal.data.GanderDatabase;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -63,29 +64,58 @@ public class GanderInterceptor implements Interceptor {
         FOREVER
     }
 
-
+    @NonNull
     private static final Period DEFAULT_RETENTION = Period.ONE_WEEK;
+    @NonNull
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
+    @NonNull
     private final Context mContext;
+    @NonNull
     private final GanderDatabase mGanderDatabase;
-    private final NotificationHelper mNotificationHelper;
+    @Nullable
+    private NotificationHelper mNotificationHelper;
+    @NonNull
     private RetentionManager mRetentionManager;
-    private boolean mShowNotification;
     private long mMaxContentLength = 250000L;
+    @NonNull
     private volatile Set<String> headersToRedact = Collections.emptySet();
     private boolean stickyNotification = false;
 
     /**
-     * @param context          The current Context.
-     * @param showNotification true to show a notification, false to suppress it.
+     * @param context The current Context.
      */
-    public GanderInterceptor(Context context, boolean showNotification) {
+    public GanderInterceptor(@NonNull Context context) {
         this.mContext = context.getApplicationContext();
         mGanderDatabase = GanderDatabase.getInstance(context);
-        mNotificationHelper = new NotificationHelper(this.mContext);
         mRetentionManager = new RetentionManager(this.mContext, DEFAULT_RETENTION);
-        showNotification(showNotification);// to avoid un-necessary channel creation it's requested in constructor
+    }
+
+    /**
+     * Control whether a notification is shown while HTTP activity is recorded.
+     *
+     * @param sticky true to show a sticky notification.
+     * @return The {@link GanderInterceptor} instance.
+     */
+    @NonNull
+    public GanderInterceptor showNotification(boolean sticky) {
+        this.stickyNotification = sticky;
+        mNotificationHelper = new NotificationHelper(this.mContext);
+        return this;
+    }
+
+
+    /**
+     * Set the retention period for HTTP transaction data captured by this interceptor.
+     * The default is one week.
+     *
+     * @param period the period for which to retain HTTP transaction data.
+     * @return The {@link GanderInterceptor} instance.
+     */
+    @NonNull
+    public GanderInterceptor retainDataFor(Period period) {
+        mRetentionManager = new RetentionManager(mContext, period);
+        return this;
     }
 
     /**
@@ -95,45 +125,24 @@ public class GanderInterceptor implements Interceptor {
      * @param max the maximum length (in bytes) for request/response content.
      * @return The {@link GanderInterceptor} instance.
      */
+    @NonNull
     public GanderInterceptor maxContentLength(long max) {
         this.mMaxContentLength = Math.min(max, 999999L);// close to => 1 MB Max in a BLOB SQLite.
         return this;
     }
 
     /**
-     * Set the retention period for HTTP transaction data captured by this interceptor.
-     * The default is one week.
+     * Set headers names that shouldn't be stored by gander
      *
-     * @param period the peroid for which to retain HTTP transaction data.
+     * @param name the name of header to redact
      * @return The {@link GanderInterceptor} instance.
      */
-    public GanderInterceptor retainDataFor(Period period) {
-        mRetentionManager = new RetentionManager(mContext, period);
-        return this;
-    }
-
-    /**
-     * Control whether a notification is shown while HTTP activity is recorded.
-     *
-     * @param show true to show a notification, false to suppress it.
-     */
-    private void showNotification(boolean show) {
-        mShowNotification = show;
-        if (mShowNotification) {
-            mNotificationHelper.setUpChannelIfNecessary();
-        }
-    }
-
+    @NonNull
     public GanderInterceptor redactHeader(String name) {
         Set<String> newHeadersToRedact = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         newHeadersToRedact.addAll(headersToRedact);
         newHeadersToRedact.add(name);
         headersToRedact = newHeadersToRedact;
-        return this;
-    }
-
-    public GanderInterceptor setSticky(boolean sticky) {
-        this.stickyNotification = sticky;
         return this;
     }
 
@@ -164,7 +173,7 @@ public class GanderInterceptor implements Interceptor {
     ///////////////////////////////////////////////////////////////////////////
 
     @NonNull
-    private HttpTransaction createTransactionFromRequest(Request request) throws IOException {
+    private HttpTransaction createTransactionFromRequest(@NonNull Request request) throws IOException {
         RequestBody requestBody = request.body();
         boolean hasRequestBody = requestBody != null;
 
@@ -205,7 +214,7 @@ public class GanderInterceptor implements Interceptor {
         return create(transaction);// need to be sequential to get the id
     }
 
-    private void updateTransactionFromResponse(HttpTransaction transaction, Response response, long tookMs) throws IOException {
+    private void updateTransactionFromResponse(@NonNull HttpTransaction transaction, @NonNull Response response, long tookMs) throws IOException {
         ResponseBody responseBody = response.body();
 
         if (response.cacheResponse() != null) {
@@ -267,20 +276,21 @@ public class GanderInterceptor implements Interceptor {
     // Database update/create
     ///////////////////////////////////////////////////////////////////////////
 
-    private HttpTransaction create(HttpTransaction transaction) {
+    @NonNull
+    private HttpTransaction create(@NonNull HttpTransaction transaction) {
         long transactionId = mGanderDatabase.httpTransactionDao().insertTransaction(transaction);
         transaction.setId(transactionId);
-        if (mShowNotification) {
+        if (mNotificationHelper != null) {
             mNotificationHelper.show(transaction, stickyNotification);
         }
         mRetentionManager.doMaintenance();
         return transaction;
     }
 
-    private void update(HttpTransaction transaction) {
+    private void update(@NonNull HttpTransaction transaction) {
         int updatedTransactionCount = mGanderDatabase.httpTransactionDao().updateTransaction(transaction);
 
-        if (mShowNotification && updatedTransactionCount > 0) {
+        if (mNotificationHelper != null && updatedTransactionCount > 0) {
             mNotificationHelper.show(transaction, stickyNotification);
         }
     }
@@ -294,7 +304,7 @@ public class GanderInterceptor implements Interceptor {
      * Returns true if the body in question probably contains human readable text. Uses a small sample
      * of code points to detect unicode control characters commonly used in binary file signatures.
      */
-    private boolean isPlaintext(Buffer buffer) {
+    private boolean isPlaintext(@NonNull Buffer buffer) {
         try {
             Buffer prefix = new Buffer();
             long byteCount = buffer.size() < 64 ? buffer.size() : 64;
@@ -314,19 +324,20 @@ public class GanderInterceptor implements Interceptor {
         }
     }
 
-    private boolean bodyHasSupportedEncoding(Headers headers) {
+    private boolean bodyHasSupportedEncoding(@NonNull Headers headers) {
         String contentEncoding = headers.get("Content-Encoding");
         return contentEncoding == null ||
                 contentEncoding.equalsIgnoreCase("identity") ||
                 contentEncoding.equalsIgnoreCase("gzip");
     }
 
-    private boolean bodyGzipped(Headers headers) {
+    private boolean bodyGzipped(@NonNull Headers headers) {
         String contentEncoding = headers.get("Content-Encoding");
         return "gzip".equalsIgnoreCase(contentEncoding);
     }
 
-    private String readFromBuffer(Buffer buffer, Charset charset) {
+    @NonNull
+    private String readFromBuffer(@NonNull Buffer buffer, @NonNull Charset charset) {
         long bufferSize = buffer.size();
         long maxBytes = Math.min(bufferSize, mMaxContentLength);
         String body = "";
@@ -341,7 +352,8 @@ public class GanderInterceptor implements Interceptor {
         return body;
     }
 
-    private BufferedSource getNativeSource(BufferedSource input, boolean isGzipped) {
+    @NonNull
+    private BufferedSource getNativeSource(@NonNull BufferedSource input, boolean isGzipped) {
         if (isGzipped) {
             GzipSource source = new GzipSource(input);
             return Okio.buffer(source);
@@ -350,7 +362,8 @@ public class GanderInterceptor implements Interceptor {
         }
     }
 
-    private BufferedSource getNativeSource(Response response) throws IOException {
+    @NonNull
+    private BufferedSource getNativeSource(@NonNull Response response) throws IOException {
         if (bodyGzipped(response.headers())) {
             BufferedSource source = response.peekBody(mMaxContentLength).source();
             if (source.buffer().size() < mMaxContentLength) {
@@ -365,8 +378,8 @@ public class GanderInterceptor implements Interceptor {
     ///////////////////////////////////////////////////////////////////////////
     // Header Converter
     ///////////////////////////////////////////////////////////////////////////
-
-    private List<HttpHeader> toHttpHeaderList(Headers headers) {
+    @NonNull
+    private List<HttpHeader> toHttpHeaderList(@NonNull Headers headers) {
         List<HttpHeader> httpHeaders = new ArrayList<>();
         for (int i = 0, count = headers.size(); i < count; i++) {
             if (headersToRedact.contains(headers.name(i))) {

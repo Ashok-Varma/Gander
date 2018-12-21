@@ -30,7 +30,7 @@ import static android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
 public class NotificationHelper {
 
     private static final String CHANNEL_ID = "gander_notif";
-    private static final int NOTIFICATION_ID = 1139;// in case if someone uses chuck
+    private static final int NOTIFICATION_ID = 1139;
     private static final int BUFFER_SIZE = 10;
 
     private static final LongSparseArray<HttpTransaction> TRANSACTION_BUFFER = new LongSparseArray<>();
@@ -59,13 +59,15 @@ public class NotificationHelper {
         this.mContext = context;
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mColorUtil = GanderColorUtil.getInstance(context);
+        setUpChannelIfNecessary();
     }
 
-    public void setUpChannelIfNecessary() {
+    private void setUpChannelIfNecessary() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mNotificationManager.createNotificationChannel(
-                    new NotificationChannel(CHANNEL_ID,
-                            mContext.getString(R.string.gander_notification_category), NotificationManager.IMPORTANCE_LOW));
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, mContext.getString(R.string.gander_notification_category), NotificationManager.IMPORTANCE_LOW);
+            channel.setShowBadge(false);
+
+            mNotificationManager.createNotificationChannel(channel);
         }
     }
 
@@ -98,6 +100,7 @@ public class NotificationHelper {
             } else {
                 builder.setNumber(TRANSACTION_COUNT);
             }
+            builder.addAction(getDismissAction());
             builder.addAction(getClearAction());
             mNotificationManager.notify(NOTIFICATION_ID, builder.build());
         }
@@ -118,6 +121,14 @@ public class NotificationHelper {
         Intent deleteIntent = new Intent(mContext, ClearTransactionsService.class);
         PendingIntent intent = PendingIntent.getService(mContext, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Action(R.drawable.gander_ic_delete_white_24dp, clearTitle, intent);
+    }
+
+    @NonNull
+    private NotificationCompat.Action getDismissAction() {
+        CharSequence dismissTitle = mContext.getString(R.string.gander_dismiss);
+        Intent dismissIntent = new Intent(mContext, DismissNotificationService.class);
+        PendingIntent intent = PendingIntent.getService(mContext, 12, dismissIntent, PendingIntent.FLAG_ONE_SHOT);
+        return new NotificationCompat.Action(0, dismissTitle, intent);
     }
 
     public void dismiss() {

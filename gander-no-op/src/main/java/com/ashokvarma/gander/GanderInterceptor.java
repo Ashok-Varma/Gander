@@ -39,7 +39,30 @@ public class GanderInterceptor implements Interceptor {
     /**
      * @param context The current Context.
      */
-    public GanderInterceptor(Context context, boolean showNotification) {
+    public GanderInterceptor(Context context) {
+    }
+
+    /**
+     * Control whether a notification is shown while HTTP activity is recorded.
+     *
+     * @param sticky true to show a sticky notification.
+     * @return The {@link GanderInterceptor} instance.
+     */
+
+    public GanderInterceptor showNotification(boolean sticky) {
+        return this;
+    }
+
+
+    /**
+     * Set the retention period for HTTP transaction data captured by this interceptor.
+     * The default is one week.
+     *
+     * @param period the period for which to retain HTTP transaction data.
+     * @return The {@link GanderInterceptor} instance.
+     */
+    public GanderInterceptor retainDataFor(Period period) {
+        return this;
     }
 
     /**
@@ -54,19 +77,14 @@ public class GanderInterceptor implements Interceptor {
     }
 
     /**
-     * Set the retention period for HTTP transaction data captured by this interceptor.
-     * The default is one week.
+     * Set headers names that shouldn't be stored by gander
      *
-     * @param period the peroid for which to retain HTTP transaction data.
+     * @param name the name of header to redact
      * @return The {@link GanderInterceptor} instance.
      */
-    public GanderInterceptor retainDataFor(Period period) {
+    public GanderInterceptor redactHeader(String name) {
         return this;
     }
-
-    public GanderInterceptor redactHeader(String name) { return this; }
-
-    public GanderInterceptor setSticky(boolean sticky) { return this; }
 
     @Override
     public Response intercept(Chain chain) throws IOException {

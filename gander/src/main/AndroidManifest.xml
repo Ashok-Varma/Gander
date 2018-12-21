@@ -6,6 +6,9 @@
         <service
             android:name=".internal.support.ClearTransactionsService"
             android:exported="false" />
+        <service
+            android:name=".internal.support.DismissNotificationService"
+            android:exported="false" />
 
         <activity
             android:name=".internal.ui.list.TransactionListActivity"

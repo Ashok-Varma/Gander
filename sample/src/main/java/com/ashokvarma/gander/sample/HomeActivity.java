@@ -66,7 +66,8 @@ public class HomeActivity extends AppCompatActivity {
         return new OkHttpClient.Builder()
                 // Add a GanderInterceptor instance to your OkHttp client
                 .addInterceptor(
-                        new GanderInterceptor(context, true)
+                        new GanderInterceptor(context)
+                                .showNotification(true)
                                 .maxContentLength(250000L)
                                 .retainDataFor(GanderInterceptor.Period.FOREVER)
                                 .redactHeader("Authorization")

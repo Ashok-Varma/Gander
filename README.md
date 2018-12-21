@@ -21,12 +21,6 @@ Gander requires Android 4.1+ and OkHttp 3.x.
 
 **Warning**: The data generated and stored when using this interceptor may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. It is intended for use during development, and not in release builds or other production deployments.
 
-You can redact headers that may contain sensitive information by calling `redactHeader()`.
-```java
-interceptor.redactHeader("Authorization");
-interceptor.redactHeader("Cookie");
-```
-
 ## Setup
 
 ### Download
@@ -36,12 +30,12 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugImplementation 'com.ashokvarma.android:gander:1.3.3'
-releaseImplementation 'com.ashokvarma.android:gander-no-op:1.3.3'
+debugImplementation 'com.ashokvarma.android:gander:1.4.0'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:1.4.0'
 ```
 If you want this in library in both release and compile, then try this : 
 ```gradle
-implementation 'com.ashokvarma.android:gander:1.3.3'
+implementation 'com.ashokvarma.android:gander:1.4.0'
 ```
 
 
@@ -50,7 +44,7 @@ implementation 'com.ashokvarma.android:gander:1.3.3'
 <dependency>
   <groupId>com.ashokvarma.android</groupId>
   <artifactId>gander</artifactId>
-  <version>1.3.3</version>
+  <version>1.4.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -63,22 +57,59 @@ In your application code, create an instance of `GanderInterceptor` (you'll need
 
 ```java
 OkHttpClient client = new OkHttpClient.Builder()
-  .addInterceptor(new GanderInterceptor(context, true))
+  .addInterceptor(new GanderInterceptor(context))
   .build();
 ```
 
 That's it! Gander will now record all HTTP interactions made by your OkHttp client.
-You can optionally disable the notification by passing false in constructor `new GanderInterceptor(context, false)`
 
-#### Other Features
+##### Show Sticky/Normal Notification
+```java
+new GanderInterceptor(context).showNotification(true/false)
+```
+
+### Other Settings
+##### Check stored data
 Launch the Gander UI directly within your app with the intent from `Gander.getLaunchIntent()`.
 ```java
 startActivity(Gander.getLaunchIntent(this));
 ```
-Add app shortcut to your app
+
+##### Add app shortcut to your app
 ```java
 Gander.addAppShortcut(this);
-``` 
+```
+
+##### Redact Headers
+You can redact headers that may contain sensitive information by calling `redactHeader()`.
+```java
+new GanderInterceptor(context)
+    .redactHeader("Authorization")
+    .redactHeader("Cookie");
+```
+
+##### Max Length
+Set Response Max length to store
+```java
+new GanderInterceptor(context).maxContentLength(10240L)//the maximum length (in bytes)
+```
+
+##### Retention Period
+Set the retention period for HTTP transaction data captured
+```java
+new GanderInterceptor(context).retainDataFor(Period.ONE_WEEK)
+```
+
+##### Chaining
+You can chain all the chain and pass it to OkHttp
+```java
+new OkHttpClient.Builder()
+.addInterceptor(new GanderInterceptor(context)
+                     .showNotification(false)
+                     .maxContentLength(250000L)
+                     .retainDataFor(GanderInterceptor.Period.FOREVER)
+                     .redactHeader("Authorization"))
+```
 
 ## FAQ
 - Why are some of my request headers missing?
@@ -128,7 +159,7 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/1.3.3/gander-1.3.3.aar
+[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/1.4.0/gander-1.4.0.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt
