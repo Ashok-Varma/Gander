@@ -383,7 +383,7 @@ public class GanderInterceptor implements Interceptor {
         List<HttpHeader> httpHeaders = new ArrayList<>();
         for (int i = 0, count = headers.size(); i < count; i++) {
             if (headersToRedact.contains(headers.name(i))) {
-                httpHeaders.add(new HttpHeader(headers.name(i), "██"));
+                httpHeaders.add(new HttpHeader(headers.name(i), "\u2588\u2588\u2588\u2588"));
             } else {
                 httpHeaders.add(new HttpHeader(headers.name(i), headers.value(i)));
             }
