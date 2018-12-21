@@ -53,7 +53,7 @@ or Download [the latest JAR][mavenAarDownload]
 
 ### Usage
 
-In your application code, create an instance of `GanderInterceptor` (you'll need to provide it with a `Context`, because Android) and add it as an interceptor when building your OkHttp client:
+In your application code, create an instance of `GanderInterceptor` and add it as an interceptor when building your OkHttp client:
 
 ```java
 OkHttpClient client = new OkHttpClient.Builder()
@@ -61,9 +61,10 @@ OkHttpClient client = new OkHttpClient.Builder()
   .build();
 ```
 
-That's it! Gander will now record all HTTP interactions made by your OkHttp client.
+That's it! Gander will now record all HTTP interactions made by this OkHttp client.
 
 ##### Show Sticky/Normal Notification
+Sticky => true and Normal => false
 ```java
 new GanderInterceptor(context).showNotification(true/false)
 ```
