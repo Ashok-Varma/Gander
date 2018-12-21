@@ -102,7 +102,7 @@ new GanderInterceptor(context).retainDataFor(Period.ONE_WEEK)
 ```
 
 ##### Chaining
-You can chain all the chain and pass it to OkHttp
+You can chain all the method calls and pass it to OkHttp
 ```java
 new OkHttpClient.Builder()
 .addInterceptor(new GanderInterceptor(context)
