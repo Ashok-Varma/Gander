@@ -38,7 +38,9 @@ def defSecret = System.env.gradlePublishSecret
 
 if (!defKey || !defUser || !defSecret) {
 // This is for local build
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def file = new File("${project.rootProject.projectDir}/local.properties")
+    if (file.exists())
+        properties.load( file.newDataInputStream())
 } else {
 // This is for remote build set System Properties in travis system
     properties.setProperty("bintray.user", defUser)
