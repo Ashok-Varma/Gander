@@ -2,7 +2,7 @@ package com.ashokvarma.gander.internal.support.event;
 
 
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Class description

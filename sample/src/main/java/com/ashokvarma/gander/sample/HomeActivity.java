@@ -4,22 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.GanderInterceptor;
-
-import java.util.UUID;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.util.UUID;
 
 public class HomeActivity extends AppCompatActivity {
 
