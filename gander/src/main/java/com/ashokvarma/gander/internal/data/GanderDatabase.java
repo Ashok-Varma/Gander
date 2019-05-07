@@ -23,7 +23,9 @@ public abstract class GanderDatabase extends RoomDatabase {
 
     public static GanderDatabase getInstance(Context context) {
         if (GANDER_DATABASE_INSTANCE == null) {
-            GANDER_DATABASE_INSTANCE = Room.databaseBuilder(context, GanderDatabase.class, "GanderDatabase").build();
+            GANDER_DATABASE_INSTANCE = Room.databaseBuilder(context, GanderDatabase.class, "GanderDatabase")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return GANDER_DATABASE_INSTANCE;
     }
