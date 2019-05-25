@@ -1,7 +1,9 @@
-package com.ashokvarma.gander.internal.data;
+package com.ashokvarma.gander.persistence;
 
 
 import androidx.room.TypeConverter;
+
+import com.ashokvarma.gander.internal.data.HttpHeader;
 import com.ashokvarma.gander.internal.support.TextUtil;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
  * @version 1.0
  * @since 03/06/18
  */
-public class RoomTypeConverters {
+class RoomTypeConverters {
     @TypeConverter
     public static Date fromLongToDate(Long value) {
         return value == null ? null : new Date(value);

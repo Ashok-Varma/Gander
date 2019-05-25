@@ -3,8 +3,9 @@ package com.ashokvarma.gander.internal.support;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.GanderInterceptor;
-import com.ashokvarma.gander.internal.data.GanderDatabase;
+import com.ashokvarma.gander.internal.data.GanderStorage;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -22,13 +23,13 @@ public class RetentionManager {
 
     private static long LAST_CLEAN_UP;
 
-    private final GanderDatabase mGanderDatabase;
+    private final GanderStorage mGanderStorage;
     private final long mPeriod;
     private final long mCleanupFrequency;
     private final SharedPreferences mPrefs;
 
     public RetentionManager(Context context, GanderInterceptor.Period retentionPeriod) {
-        this.mGanderDatabase = GanderDatabase.getInstance(context);
+        this.mGanderStorage = Gander.getGanderStorage();
         mPeriod = toMillis(retentionPeriod);
         mPrefs = context.getSharedPreferences(PREFS_NAME, 0);
         mCleanupFrequency = (retentionPeriod == GanderInterceptor.Period.ONE_HOUR) ?
@@ -59,7 +60,7 @@ public class RetentionManager {
     }
 
     private void deleteSince(long threshold) {
-        long rows = mGanderDatabase.httpTransactionDao().deleteTransactionsBefore(new Date(threshold));
+        long rows = mGanderStorage.getTransactionDao().deleteTransactionsBefore(new Date(threshold));
         Logger.i(rows + " transactions deleted");
     }
 

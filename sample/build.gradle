@@ -30,7 +30,9 @@ android {
 
 dependencies {
     implementation project(':gander')
+    implementation project(':gander-persistence')
 //    debugImplementation project(':gander')
+//    debugImplementation project(':gander-persistence')
 //    releaseImplementation project(':gander-no-op')
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"

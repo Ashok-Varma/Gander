@@ -1,26 +1,16 @@
 package com.ashokvarma.gander;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.ashokvarma.gander.internal.data.GanderDatabase;
+
+import com.ashokvarma.gander.internal.data.GanderStorage;
 import com.ashokvarma.gander.internal.data.HttpHeader;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.Logger;
 import com.ashokvarma.gander.internal.support.NotificationHelper;
 import com.ashokvarma.gander.internal.support.RetentionManager;
-import okhttp3.Headers;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.GzipSource;
-import okio.Okio;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -33,6 +23,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.internal.http.HttpHeaders;
+import okio.Buffer;
+import okio.BufferedSource;
+import okio.GzipSource;
+import okio.Okio;
 
 /**
  * Class description
@@ -70,7 +73,7 @@ public class GanderInterceptor implements Interceptor {
     @NonNull
     private final Context mContext;
     @NonNull
-    private final GanderDatabase mGanderDatabase;
+    private final GanderStorage mGanderStorage;
     @Nullable
     private NotificationHelper mNotificationHelper;
     @NonNull
@@ -85,7 +88,7 @@ public class GanderInterceptor implements Interceptor {
      */
     public GanderInterceptor(@NonNull Context context) {
         this.mContext = context.getApplicationContext();
-        mGanderDatabase = GanderDatabase.getInstance(context);
+        mGanderStorage = Gander.getGanderStorage();
         mRetentionManager = new RetentionManager(this.mContext, DEFAULT_RETENTION);
     }
 
@@ -276,7 +279,7 @@ public class GanderInterceptor implements Interceptor {
 
     @NonNull
     private HttpTransaction create(@NonNull HttpTransaction transaction) {
-        long transactionId = mGanderDatabase.httpTransactionDao().insertTransaction(transaction);
+        long transactionId = mGanderStorage.getTransactionDao().insertTransaction(transaction);
         transaction.setId(transactionId);
         if (mNotificationHelper != null) {
             mNotificationHelper.show(transaction, stickyNotification);
@@ -286,7 +289,7 @@ public class GanderInterceptor implements Interceptor {
     }
 
     private void update(@NonNull HttpTransaction transaction) {
-        int updatedTransactionCount = mGanderDatabase.httpTransactionDao().updateTransaction(transaction);
+        int updatedTransactionCount = mGanderStorage.getTransactionDao().updateTransaction(transaction);
 
         if (mNotificationHelper != null && updatedTransactionCount > 0) {
             mNotificationHelper.show(transaction, stickyNotification);

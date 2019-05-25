@@ -1,15 +1,13 @@
-package com.ashokvarma.gander.internal.data;
+package com.ashokvarma.gander.persistence;
 
-import android.net.Uri;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-import androidx.annotation.Nullable;
+import com.ashokvarma.gander.internal.data.HttpHeader;
 
-import com.ashokvarma.gander.internal.support.FormatUtils;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Class description
@@ -18,33 +16,58 @@ import java.util.Locale;
  * @version 1.0
  * @since 02/06/18
  */
-public class HttpTransaction {
+@Entity(tableName = "HttpTransaction")
+public class PersistentHttpTransaction {
 
+    @PrimaryKey(autoGenerate = true)
     private long id;
+    @ColumnInfo(name = "request_date")
     private Date requestDate;
+    @ColumnInfo(name = "response_date")
     private Date responseDate;
+    @ColumnInfo(name = "took_ms")
     private Long tookMs;
 
+    @ColumnInfo(name = "protocol")
     private String protocol;
+    @ColumnInfo(name = "method")
     private String method;
+    @ColumnInfo(name = "url")
     private String url;
+    @ColumnInfo(name = "host")
     private String host;
+    @ColumnInfo(name = "path")
     private String path;
+    @ColumnInfo(name = "scheme")
     private String scheme;
 
+    @ColumnInfo(name = "request_content_length")
     private Long requestContentLength;
+    @ColumnInfo(name = "request_content_type")
     private String requestContentType;
+    @ColumnInfo(name = "request_headers")
     private List<HttpHeader> requestHeaders;
+    @ColumnInfo(name = "request_body", typeAffinity = ColumnInfo.TEXT)
     private String requestBody;
+    @ColumnInfo(name = "request_body_is_plain_text")
     private boolean requestBodyIsPlainText = true;
 
+    @ColumnInfo(name = "response_code")
     private Integer responseCode;
+    @ColumnInfo(name = "response_message")
     private String responseMessage;
+    @ColumnInfo(name = "error")
     private String error;
+
+    @ColumnInfo(name = "response_content_length")
     private Long responseContentLength;
+    @ColumnInfo(name = "response_content_type")
     private String responseContentType;
+    @ColumnInfo(name = "response_headers")
     private List<HttpHeader> responseHeaders;
+    @ColumnInfo(name = "response_body", typeAffinity = ColumnInfo.TEXT)
     private String responseBody;
+    @ColumnInfo(name = "response_body_is_plain_text")
     private boolean responseBodyIsPlainText = true;
 
     public long getId() {
@@ -230,130 +253,4 @@ public class HttpTransaction {
     public void setResponseBodyIsPlainText(boolean responseBodyIsPlainText) {
         this.responseBodyIsPlainText = responseBodyIsPlainText;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Extra Setters
-    ///////////////////////////////////////////////////////////////////////////
-    public void setUrlHostPathSchemeFromUrl(String url) {
-        setUrl(url);
-        Uri uri = Uri.parse(url);
-        setHost(uri.getHost());
-        setPath(uri.getPath() + ((uri.getQuery() != null) ? "?" + uri.getQuery() : ""));
-        setScheme(uri.getScheme());
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Extras Getters
-    ///////////////////////////////////////////////////////////////////////////
-    public enum Status {
-        Requested,
-        Complete,
-        Failed
-    }
-
-    public CharSequence getFormattedRequestBody() {
-        return formatBody(requestBody, requestContentType);
-    }
-
-    public CharSequence getFormattedResponseBody() {
-        return formatBody(responseBody, responseContentType);
-    }
-
-    public Status getStatus() {
-        if (error != null) {
-            return Status.Failed;
-        } else if (responseCode == null) {
-            return Status.Requested;
-        } else {
-            return Status.Complete;
-        }
-    }
-
-    public String getNotificationText() {
-        switch (getStatus()) {
-            case Failed:
-                return " ! ! !  " + path;
-            case Requested:
-                return " . . .  " + path;
-            default:
-                return String.valueOf(responseCode) + " " + path;
-        }
-    }
-
-    public boolean isSsl() {
-        return scheme.toLowerCase().equals("https");
-    }
-
-    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.US);
-
-    public String getRequestStartTimeString() {
-        return (requestDate != null) ? TIME_ONLY_FMT.format(requestDate) : null;
-    }
-
-    public String getRequestDateString() {
-        return (requestDate != null) ? requestDate.toString() : null;
-    }
-
-    public String getResponseDateString() {
-        return (responseDate != null) ? responseDate.toString() : null;
-    }
-
-    public String getDurationString() {
-        return (tookMs != null) ? +tookMs + " ms" : null;
-    }
-
-    public String getRequestSizeString() {
-        return formatBytes((requestContentLength != null) ? requestContentLength : 0);
-    }
-
-    public String getResponseSizeString() {
-        return (responseContentLength != null) ? formatBytes(responseContentLength) : null;
-    }
-
-    public String getTotalSizeString() {
-        long reqBytes = (requestContentLength != null) ? requestContentLength : 0;
-        long resBytes = (responseContentLength != null) ? responseContentLength : 0;
-        return formatBytes(reqBytes + resBytes);
-    }
-
-    public String getResponseSummaryText() {
-        switch (getStatus()) {
-            case Failed:
-                return error;
-            case Requested:
-                return null;
-            default:
-                return String.valueOf(responseCode) + " " + responseMessage;
-        }
-    }
-
-    private CharSequence formatBody(String body, @Nullable String contentType) {
-        if (contentType != null) {
-            if (contentType.toLowerCase().contains("json")) {
-                return FormatUtils.formatJson(body);
-            } else if (contentType.toLowerCase().contains("xml")) {
-                return FormatUtils.formatXml(body);
-            } else if (contentType.toLowerCase().contains("form-urlencoded")) {
-                return FormatUtils.formatFormEncoded(body);
-            }
-        }
-        return body;
-    }
-
-    private String formatBytes(long bytes) {
-        return FormatUtils.formatByteCount(bytes, true);
-    }
-
-    public CharSequence getResponseHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getResponseHeaders(), withMarkup);
-    }
-
-    public CharSequence getRequestHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getRequestHeaders(), withMarkup);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // for UI not related to model.
-    ///////////////////////////////////////////////////////////////////////////
-    public String searchKey;
 }
