@@ -2,12 +2,14 @@ package com.ashokvarma.gander.internal.ui.list;
 
 import android.app.Application;
 import android.os.AsyncTask;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
-import com.ashokvarma.gander.internal.data.GanderDatabase;
+
+import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.data.TransactionDao;
 
@@ -32,7 +34,7 @@ public class TransactionListViewModel extends AndroidViewModel {
 
     public TransactionListViewModel(Application application) {
         super(application);
-        mTransactionDao = GanderDatabase.getInstance(application).httpTransactionDao();
+        mTransactionDao = Gander.getGanderStorage().getTransactionDao();
         DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactions();
         mTransactions = new LivePagedListBuilder<>(factory, config).build();
     }
@@ -41,7 +43,7 @@ public class TransactionListViewModel extends AndroidViewModel {
         if (key == null || key.trim().length() == 0) {
             return mTransactions;
         } else {
-            DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SEARCH_DEFAULT);
+            DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SearchType.DEFAULT);
             return new LivePagedListBuilder<>(factory, config).build();
         }
     }

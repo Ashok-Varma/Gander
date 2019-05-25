@@ -2,11 +2,11 @@ apply plugin: 'com.android.library'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'Gander'
+    bintrayName = 'Gander Persistence'
 
     publishedGroupId = 'com.ashokvarma.android'
-    libraryName = 'Gander'
-    artifact = 'gander'
+    libraryName = 'Gander Persistence'
+    artifact = 'gander-persistence'
 
     libraryDescription = 'Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.'
 
@@ -40,19 +40,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
-    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    api project(':gander')
 
-    api "com.google.android.material:material:$materialComponentsVersion"
-    api "androidx.appcompat:appcompat:$appCompatVersion"
-
+    api "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     api "androidx.paging:paging-runtime:$pagingVersion"
-    api "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion"
 }
-
-// Place it at the end of the file
-apply from: 'install_lib.gradle'
-apply from: 'bintray_lib.gradle'

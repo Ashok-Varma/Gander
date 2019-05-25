@@ -14,6 +14,11 @@ Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander inte
 1. Apps using Gander will display a notification showing a summary of ongoing HTTP activity. Tapping on the notification launches the full Gander UI. Apps can optionally suppress the notification, and launch the Gander UI directly from within their own interface. HTTP interactions and their contents can be exported via a share intent.
 2. Search HTTP Activity and also request and response 
 3. The main Gander activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
+4. Gander Provides following variants
+    - Persistence : Saves logs to disk and TTL can be controlled
+    - In Memory Database : Logs will be in memory as long as the app lifecycle. 
+    - No Op : This does nothing. So if users want Gander only in debug builds they can releaseCompile NoOp without dealing with variants, if(Build.DEBUG) ..etc 
+ 
 
 ![Multi-Window](assets/multiwindow.gif) 
 
@@ -30,12 +35,26 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugImplementation 'com.ashokvarma.android:gander:2.0.3'
-releaseImplementation 'com.ashokvarma.android:gander-no-op:2.0.3'
+debugImplementation 'com.ashokvarma.android:gander:3.0.0-alpha1'
+
+// if persistence is needed (Uses Room to store the calls in DB)
+debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha1'
+
+// if persistence is not needed (Data lost once app is dead)
+debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha1'
+
+
+releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0-alpha1'
 ```
-If you want this in library in both release and compile, then try this : 
+If you want this in library in both release and debug builds, then try this : 
 ```gradle
-implementation 'com.ashokvarma.android:gander:2.0.3'
+implementation 'com.ashokvarma.android:gander:3.0.0-alpha1'
+
+// if persistence is needed (Uses Room to store the calls in DB)
+implementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha1'
+
+// if persistence is not needed (Data lost once app is dead)
+implementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha1'
 ```
 
 
@@ -44,7 +63,7 @@ implementation 'com.ashokvarma.android:gander:2.0.3'
 <dependency>
   <groupId>com.ashokvarma.android</groupId>
   <artifactId>gander</artifactId>
-  <version>2.0.3</version>
+  <version>3.0.0-alpha1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -53,7 +72,19 @@ or Download [the latest JAR][mavenAarDownload]
 
 ### Usage
 
-In your application code, create an instance of `GanderInterceptor` and add it as an interceptor when building your OkHttp client:
+In your application onCreate
+```java
+  @Override
+    public void onCreate() {
+        super.onCreate();
+        // For Persistence (Uses Room to store the calls in DB)
+        Gander.setGanderStorage(GanderPersistence.getInstance(this));
+        // For In Memory DB (Data lost once app is dead)
+        Gander.setGanderStorage(GanderIMDB.getInstance());
+    }
+```
+
+Create an instance of `GanderInterceptor` and add it as an interceptor when building your OkHttp client:
 
 ```java
 OkHttpClient client = new OkHttpClient.Builder()
@@ -160,7 +191,7 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/2.0.3/gander-2.0.3.aar
+[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/3.0.0-alpha1/gander-3.0.0-alpha1.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt

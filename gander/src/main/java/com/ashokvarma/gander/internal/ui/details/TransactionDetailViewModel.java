@@ -1,9 +1,11 @@
 package com.ashokvarma.gander.internal.ui.details;
 
 import android.app.Application;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import com.ashokvarma.gander.internal.data.GanderDatabase;
+
+import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.data.TransactionDao;
 
@@ -19,7 +21,7 @@ public class TransactionDetailViewModel extends AndroidViewModel {
 
     public TransactionDetailViewModel(Application application) {
         super(application);
-        mTransactionDao = GanderDatabase.getInstance(application).httpTransactionDao();
+        mTransactionDao = Gander.getGanderStorage().getTransactionDao();
     }
 
     LiveData<HttpTransaction> getTransactionWithId(long id) {
