@@ -7,8 +7,7 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.support.annotation.Nullable;
-
+import androidx.annotation.Nullable;
 import com.ashokvarma.gander.internal.ui.list.TransactionListActivity;
 
 import java.util.Collections;

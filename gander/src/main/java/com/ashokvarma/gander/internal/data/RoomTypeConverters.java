@@ -1,7 +1,7 @@
 package com.ashokvarma.gander.internal.data;
 
-import android.arch.persistence.room.TypeConverter;
 
+import androidx.room.TypeConverter;
 import com.ashokvarma.gander.internal.support.TextUtil;
 
 import java.util.ArrayList;

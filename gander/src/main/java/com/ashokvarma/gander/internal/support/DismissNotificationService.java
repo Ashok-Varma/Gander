@@ -2,7 +2,7 @@ package com.ashokvarma.gander.internal.support;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Class description

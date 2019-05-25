@@ -2,8 +2,7 @@ package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
-
+import androidx.core.content.ContextCompat;
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 

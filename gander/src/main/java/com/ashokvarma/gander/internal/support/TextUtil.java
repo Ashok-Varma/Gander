@@ -2,9 +2,9 @@ package com.ashokvarma.gander.internal.support;
 
 
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.PrecomputedText;
 import android.widget.TextView;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

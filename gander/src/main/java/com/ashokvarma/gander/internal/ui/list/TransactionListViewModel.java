@@ -1,13 +1,12 @@
 package com.ashokvarma.gander.internal.ui.list;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.DataSource;
-import android.arch.paging.LivePagedListBuilder;
-import android.arch.paging.PagedList;
 import android.os.AsyncTask;
-
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 import com.ashokvarma.gander.internal.data.GanderDatabase;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.data.TransactionDao;

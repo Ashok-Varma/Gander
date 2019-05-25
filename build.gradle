@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
 
@@ -33,11 +33,12 @@ ext {
     compileSdkVersion = 28
 
     versionCode = 18
-    versionName = "1.4.0"
+    versionName = '1.4.0'
 
-    supportLibVersion = '28.0.0'
-    viewModelVersion = '1.1.1'
-    pagingVersion = "1.0.1"
+    androidXCompatVersion = '1.0.2'
+    androidXMaterialVersion = '1.0.0-rc01'
+    viewModelVersion = '2.0.0'
+    pagingVersion = '2.1.0'
     roomVersion = '1.1.1'
     okhttp3Version = '3.12.0'
     retrofitVersion = '2.5.0'

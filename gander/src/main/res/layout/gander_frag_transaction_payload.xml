@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".internal.ui.details.TransactionDetailsActivity">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/gander_details_scroll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,16 +27,16 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/gander_details_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true" />
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gander_details_search_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
