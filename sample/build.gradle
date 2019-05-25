@@ -33,7 +33,7 @@ dependencies {
 //    debugImplementation project(':gander')
 //    releaseImplementation project(':gander-no-op')
 
-    implementation "androidx.appcompat:appcompat:$androidXCompatVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
