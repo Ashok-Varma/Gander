@@ -99,37 +99,37 @@ class PersistentTransactionDao implements TransactionDao {
             = new Function<PersistentHttpTransaction, HttpTransaction>() {
         @Override
         public HttpTransaction apply(PersistentHttpTransaction input) {
-            HttpTransaction httpTransaction = new HttpTransaction();
+            HttpTransaction.Builder httpTransactionBuilder = HttpTransaction.newBuilder();
 
-            httpTransaction.setId(input.getId());
-            httpTransaction.setRequestDate(input.getRequestDate());
-            httpTransaction.setResponseDate(input.getResponseDate());
-            httpTransaction.setTookMs(input.getTookMs());
+            httpTransactionBuilder.setId(input.getId());
+            httpTransactionBuilder.setRequestDate(input.getRequestDate());
+            httpTransactionBuilder.setResponseDate(input.getResponseDate());
+            httpTransactionBuilder.setTookMs(input.getTookMs());
 
-            httpTransaction.setProtocol(input.getProtocol());
-            httpTransaction.setMethod(input.getMethod());
-            httpTransaction.setUrl(input.getUrl());
-            httpTransaction.setHost(input.getHost());
-            httpTransaction.setPath(input.getPath());
-            httpTransaction.setScheme(input.getScheme());
+            httpTransactionBuilder.setProtocol(input.getProtocol());
+            httpTransactionBuilder.setMethod(input.getMethod());
+            httpTransactionBuilder.setUrl(input.getUrl());
+            httpTransactionBuilder.setHost(input.getHost());
+            httpTransactionBuilder.setPath(input.getPath());
+            httpTransactionBuilder.setScheme(input.getScheme());
 
-            httpTransaction.setRequestContentLength(input.getRequestContentLength());
-            httpTransaction.setRequestContentType(input.getRequestContentType());
-            httpTransaction.setRequestHeaders(input.getRequestHeaders());
-            httpTransaction.setRequestBody(input.getRequestBody());
-            httpTransaction.setRequestBodyIsPlainText(input.requestBodyIsPlainText());
+            httpTransactionBuilder.setRequestContentLength(input.getRequestContentLength());
+            httpTransactionBuilder.setRequestContentType(input.getRequestContentType());
+            httpTransactionBuilder.setRequestHeaders(input.getRequestHeaders());
+            httpTransactionBuilder.setRequestBody(input.getRequestBody());
+            httpTransactionBuilder.setRequestBodyIsPlainText(input.requestBodyIsPlainText());
 
-            httpTransaction.setResponseCode(input.getResponseCode());
-            httpTransaction.setResponseMessage(input.getResponseMessage());
-            httpTransaction.setError(input.getError());
-            httpTransaction.setResponseContentLength(input.getResponseContentLength());
-            httpTransaction.setResponseContentType(input.getResponseContentType());
-            httpTransaction.setResponseHeaders(input.getResponseHeaders());
-            httpTransaction.setResponseBody(input.getResponseBody());
-            httpTransaction.setResponseBodyIsPlainText(input.responseBodyIsPlainText());
+            httpTransactionBuilder.setResponseCode(input.getResponseCode());
+            httpTransactionBuilder.setResponseMessage(input.getResponseMessage());
+            httpTransactionBuilder.setError(input.getError());
+            httpTransactionBuilder.setResponseContentLength(input.getResponseContentLength());
+            httpTransactionBuilder.setResponseContentType(input.getResponseContentType());
+            httpTransactionBuilder.setResponseHeaders(input.getResponseHeaders());
+            httpTransactionBuilder.setResponseBody(input.getResponseBody());
+            httpTransactionBuilder.setResponseBodyIsPlainText(input.responseBodyIsPlainText());
 
 
-            return httpTransaction;
+            return httpTransactionBuilder.build();
         }
     };
 
