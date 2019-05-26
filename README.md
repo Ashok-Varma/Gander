@@ -35,26 +35,26 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugImplementation 'com.ashokvarma.android:gander:3.0.0-alpha3'
+debugImplementation 'com.ashokvarma.android:gander:3.0.0-alpha4'
 
 // if persistence is needed (Uses Room to store the calls in DB)
-debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha3'
+debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha4'
 
 // if persistence is not needed (Data lost once app is dead)
-debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha3'
+debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha4'
 
 
-releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0-alpha3'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0-alpha4'
 ```
 If you want this in library in both release and debug builds, then try this : 
 ```gradle
-implementation 'com.ashokvarma.android:gander:3.0.0-alpha3'
+implementation 'com.ashokvarma.android:gander:3.0.0-alpha4'
 
 // if persistence is needed (Uses Room to store the calls in DB)
-implementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha3'
+implementation 'com.ashokvarma.android:gander-persistence:3.0.0-alpha4'
 
 // if persistence is not needed (Data lost once app is dead)
-implementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha3'
+implementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha4'
 ```
 
 
@@ -63,7 +63,7 @@ implementation 'com.ashokvarma.android:gander-imdb:3.0.0-alpha3'
 <dependency>
   <groupId>com.ashokvarma.android</groupId>
   <artifactId>gander</artifactId>
-  <version>3.0.0-alpha3</version>
+  <version>3.0.0-alpha4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -191,7 +191,7 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/3.0.0-alpha3/gander-3.0.0-alpha3.aar
+[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/3.0.0-alpha4/gander-3.0.0-alpha4.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt

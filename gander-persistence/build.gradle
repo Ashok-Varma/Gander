@@ -49,3 +49,7 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     api "androidx.paging:paging-runtime:$pagingVersion"
 }
+
+// Place it at the end of the file
+apply from: '../.bintray/install_lib.gradle'
+apply from: '../.bintray/bintray_lib.gradle'
