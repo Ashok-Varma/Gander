@@ -1,1 +1,1 @@
-include ':sample', ':gander', ':gander-no-op', ':gander-persistence'
+include ':sample', ':gander', ':gander-no-op', ':gander-persistence', ':gander-imdb'
