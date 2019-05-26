@@ -77,14 +77,19 @@ class PersistentTransactionDao implements TransactionDao {
         switch (searchType) {
             case DEFAULT:
                 factory = roomTransactionDao.getAllTransactions(endWildCard, doubleSideWildCard);
+                break;
             case INCLUDE_REQUEST:
                 factory = roomTransactionDao.getAllTransactionsIncludeRequest(endWildCard, doubleSideWildCard);
+                break;
             case INCLUDE_RESPONSE:
                 factory = roomTransactionDao.getAllTransactionsIncludeResponse(endWildCard, doubleSideWildCard);
+                break;
             case INCLUDE_REQUEST_RESPONSE:
                 factory = roomTransactionDao.getAllTransactionsIncludeRequestResponse(endWildCard, doubleSideWildCard);
+                break;
             default:
                 factory = roomTransactionDao.getAllTransactions(endWildCard, doubleSideWildCard);
+                break;
         }
 
         return factory.map(PERSISTENT_TO_DATA_TRANSACTION_FUNCTION);
@@ -106,7 +111,7 @@ class PersistentTransactionDao implements TransactionDao {
             httpTransaction.setUrl(input.getUrl());
             httpTransaction.setHost(input.getHost());
             httpTransaction.setPath(input.getPath());
-            httpTransaction.setScheme(input.getHost());
+            httpTransaction.setScheme(input.getScheme());
 
             httpTransaction.setRequestContentLength(input.getRequestContentLength());
             httpTransaction.setRequestContentType(input.getRequestContentType());
@@ -144,7 +149,7 @@ class PersistentTransactionDao implements TransactionDao {
             persistentHttpTransaction.setUrl(input.getUrl());
             persistentHttpTransaction.setHost(input.getHost());
             persistentHttpTransaction.setPath(input.getPath());
-            persistentHttpTransaction.setScheme(input.getHost());
+            persistentHttpTransaction.setScheme(input.getScheme());
 
             persistentHttpTransaction.setRequestContentLength(input.getRequestContentLength());
             persistentHttpTransaction.setRequestContentType(input.getRequestContentType());
