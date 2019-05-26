@@ -162,8 +162,7 @@ public class GanderInterceptor implements Interceptor {
 
             return response;
         } catch (Exception e) {
-            transaction.setError(e.toString());
-            update(transaction);
+            update(transaction.toBuilder().setError(e.toString()).build());
 
             throw e;
         }
@@ -178,25 +177,26 @@ public class GanderInterceptor implements Interceptor {
         RequestBody requestBody = request.body();
         boolean hasRequestBody = requestBody != null;
 
-        HttpTransaction transaction = new HttpTransaction();
-        transaction.setRequestDate(new Date());
+        HttpTransaction.Builder transactionBuilder = HttpTransaction.newBuilder();
+        transactionBuilder.setRequestDate(new Date());
 
-        transaction.setMethod(request.method());
-        transaction.setUrlHostPathSchemeFromUrl(request.url().toString());
+        transactionBuilder.setMethod(request.method());
+        transactionBuilder.setUrlHostPathSchemeFromUrl(request.url().toString());
 
-        transaction.setRequestHeaders(toHttpHeaderList(request.headers()));
+        transactionBuilder.setRequestHeaders(toHttpHeaderList(request.headers()));
         if (hasRequestBody) {
             MediaType contentType = requestBody.contentType();
             if (contentType != null) {
-                transaction.setRequestContentType(contentType.toString());
+                transactionBuilder.setRequestContentType(contentType.toString());
             }
             if (requestBody.contentLength() != -1) {
-                transaction.setRequestContentLength(requestBody.contentLength());
+                transactionBuilder.setRequestContentLength(requestBody.contentLength());
             }
         }
 
-        transaction.setRequestBodyIsPlainText(bodyHasSupportedEncoding(request.headers()));
-        if (hasRequestBody && transaction.requestBodyIsPlainText()) {
+        boolean requestBodyIsPlainText = bodyHasSupportedEncoding(request.headers());
+        transactionBuilder.setRequestBodyIsPlainText(requestBodyIsPlainText);
+        if (hasRequestBody && requestBodyIsPlainText) {
             BufferedSource source = getNativeSource(new Buffer(), bodyGzipped(request.headers()));
             Buffer buffer = source.buffer();
             requestBody.writeTo(buffer);
@@ -206,46 +206,48 @@ public class GanderInterceptor implements Interceptor {
                 charset = contentType.charset(UTF8);
             }
             if (isPlaintext(buffer)) {
-                transaction.setRequestBody(readFromBuffer(buffer, charset));
+                transactionBuilder.setRequestBody(readFromBuffer(buffer, charset));
             } else {
-                transaction.setResponseBodyIsPlainText(false);
+                transactionBuilder.setResponseBodyIsPlainText(false);
             }
         }
 
-        return create(transaction);// need to be sequential to get the id
+        return create(transactionBuilder.build());// need to be sequential to get the id
     }
 
     private void updateTransactionFromResponse(@NonNull HttpTransaction transaction, @NonNull Response response, long tookMs) throws IOException {
         ResponseBody responseBody = response.body();
+        HttpTransaction.Builder newTransactionBuilder = transaction.toBuilder();
 
         if (response.cacheResponse() != null) {
             // receivedResponseAtMillis, sentRequestAtMillis =>
             // If response is being served from the cache then these are the timestamp of the original response.
             // So using calculated time
-            transaction.setResponseDate(new Date());
-            transaction.setTookMs(tookMs);
+            newTransactionBuilder.setResponseDate(new Date());
+            newTransactionBuilder.setTookMs(tookMs);
         } else {
             // most accurate time, will not include the delay by other interceptors
-            transaction.setTookMs(response.receivedResponseAtMillis() - response.sentRequestAtMillis());
-            transaction.setRequestDate(new Date(response.sentRequestAtMillis()));
-            transaction.setResponseDate(new Date(response.receivedResponseAtMillis()));
+            newTransactionBuilder.setTookMs(response.receivedResponseAtMillis() - response.sentRequestAtMillis());
+            newTransactionBuilder.setRequestDate(new Date(response.sentRequestAtMillis()));
+            newTransactionBuilder.setResponseDate(new Date(response.receivedResponseAtMillis()));
         }
-        transaction.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
-        transaction.setProtocol(response.protocol().toString());
-        transaction.setResponseCode(response.code());
-        transaction.setResponseMessage(response.message());
+        newTransactionBuilder.setRequestHeaders(toHttpHeaderList(response.request().headers())); // includes headers added/modified/removed later in the chain
+        newTransactionBuilder.setProtocol(response.protocol().toString());
+        newTransactionBuilder.setResponseCode(response.code());
+        newTransactionBuilder.setResponseMessage(response.message());
 
         if (responseBody != null) {
-            transaction.setResponseContentLength(responseBody.contentLength());
+            newTransactionBuilder.setResponseContentLength(responseBody.contentLength());
             MediaType contentType = responseBody.contentType();
             if (contentType != null) {
-                transaction.setResponseContentType(contentType.toString());
+                newTransactionBuilder.setResponseContentType(contentType.toString());
             }
         }
-        transaction.setResponseHeaders(toHttpHeaderList(response.headers()));
+        newTransactionBuilder.setResponseHeaders(toHttpHeaderList(response.headers()));
 
-        transaction.setResponseBodyIsPlainText(bodyHasSupportedEncoding(response.headers()));
-        if (HttpHeaders.hasBody(response) && transaction.responseBodyIsPlainText()) {
+        boolean responseBodyIsPlainText = bodyHasSupportedEncoding(response.headers());
+        newTransactionBuilder.setResponseBodyIsPlainText(responseBodyIsPlainText);
+        if (HttpHeaders.hasBody(response) && responseBodyIsPlainText) {
             BufferedSource source = getNativeSource(response);
             source.request(Long.MAX_VALUE);
             Buffer buffer = source.buffer();
@@ -258,19 +260,19 @@ public class GanderInterceptor implements Interceptor {
                 try {
                     charset = contentType.charset(UTF8);
                 } catch (UnsupportedCharsetException e) {
-                    update(transaction);
+                    update(newTransactionBuilder.build());
                     return;
                 }
             }
             if (isPlaintext(buffer)) {
-                transaction.setResponseBody(readFromBuffer(buffer.clone(), charset));
+                newTransactionBuilder.setResponseBody(readFromBuffer(buffer.clone(), charset));
             } else {
-                transaction.setResponseBodyIsPlainText(false);
+                newTransactionBuilder.setResponseBodyIsPlainText(false);
             }
-            transaction.setResponseContentLength(buffer.size());
+            newTransactionBuilder.setResponseContentLength(buffer.size());
         }
 
-        update(transaction);
+        update(newTransactionBuilder.build());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -280,12 +282,12 @@ public class GanderInterceptor implements Interceptor {
     @NonNull
     private HttpTransaction create(@NonNull HttpTransaction transaction) {
         long transactionId = mGanderStorage.getTransactionDao().insertTransaction(transaction);
-        transaction.setId(transactionId);
+        HttpTransaction newTransaction = transaction.toBuilder().setId(transactionId).build();
         if (mNotificationHelper != null) {
-            mNotificationHelper.show(transaction, stickyNotification);
+            mNotificationHelper.show(newTransaction, stickyNotification);
         }
         mRetentionManager.doMaintenance();
-        return transaction;
+        return newTransaction;
     }
 
     private void update(@NonNull HttpTransaction transaction) {
