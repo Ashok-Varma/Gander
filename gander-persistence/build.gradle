@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'Gander Persistence'
+    bintrayName = 'GanderPersistence'
 
     publishedGroupId = 'com.ashokvarma.android'
-    libraryName = 'Gander Persistence'
+    libraryName = 'GanderPersistence'
     artifact = 'gander-persistence'
 
     libraryDescription = 'Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.'
