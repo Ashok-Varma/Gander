@@ -2,14 +2,8 @@ package com.ashokvarma.gander.internal.data;
 
 import android.net.Uri;
 
-import androidx.annotation.Nullable;
-
-import com.ashokvarma.gander.internal.support.FormatUtils;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Class description
@@ -241,119 +235,4 @@ public class HttpTransaction {
         setPath(uri.getPath() + ((uri.getQuery() != null) ? "?" + uri.getQuery() : ""));
         setScheme(uri.getScheme());
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Extras Getters
-    ///////////////////////////////////////////////////////////////////////////
-    public enum Status {
-        Requested,
-        Complete,
-        Failed
-    }
-
-    public CharSequence getFormattedRequestBody() {
-        return formatBody(requestBody, requestContentType);
-    }
-
-    public CharSequence getFormattedResponseBody() {
-        return formatBody(responseBody, responseContentType);
-    }
-
-    public Status getStatus() {
-        if (error != null) {
-            return Status.Failed;
-        } else if (responseCode == null) {
-            return Status.Requested;
-        } else {
-            return Status.Complete;
-        }
-    }
-
-    public String getNotificationText() {
-        switch (getStatus()) {
-            case Failed:
-                return " ! ! !  " + path;
-            case Requested:
-                return " . . .  " + path;
-            default:
-                return String.valueOf(responseCode) + " " + path;
-        }
-    }
-
-    public boolean isSsl() {
-        return scheme.toLowerCase().equals("https");
-    }
-
-    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.US);
-
-    public String getRequestStartTimeString() {
-        return (requestDate != null) ? TIME_ONLY_FMT.format(requestDate) : null;
-    }
-
-    public String getRequestDateString() {
-        return (requestDate != null) ? requestDate.toString() : null;
-    }
-
-    public String getResponseDateString() {
-        return (responseDate != null) ? responseDate.toString() : null;
-    }
-
-    public String getDurationString() {
-        return (tookMs != null) ? +tookMs + " ms" : null;
-    }
-
-    public String getRequestSizeString() {
-        return formatBytes((requestContentLength != null) ? requestContentLength : 0);
-    }
-
-    public String getResponseSizeString() {
-        return (responseContentLength != null) ? formatBytes(responseContentLength) : null;
-    }
-
-    public String getTotalSizeString() {
-        long reqBytes = (requestContentLength != null) ? requestContentLength : 0;
-        long resBytes = (responseContentLength != null) ? responseContentLength : 0;
-        return formatBytes(reqBytes + resBytes);
-    }
-
-    public String getResponseSummaryText() {
-        switch (getStatus()) {
-            case Failed:
-                return error;
-            case Requested:
-                return null;
-            default:
-                return String.valueOf(responseCode) + " " + responseMessage;
-        }
-    }
-
-    private CharSequence formatBody(String body, @Nullable String contentType) {
-        if (contentType != null) {
-            if (contentType.toLowerCase().contains("json")) {
-                return FormatUtils.formatJson(body);
-            } else if (contentType.toLowerCase().contains("xml")) {
-                return FormatUtils.formatXml(body);
-            } else if (contentType.toLowerCase().contains("form-urlencoded")) {
-                return FormatUtils.formatFormEncoded(body);
-            }
-        }
-        return body;
-    }
-
-    private String formatBytes(long bytes) {
-        return FormatUtils.formatByteCount(bytes, true);
-    }
-
-    public CharSequence getResponseHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getResponseHeaders(), withMarkup);
-    }
-
-    public CharSequence getRequestHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getRequestHeaders(), withMarkup);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // for UI not related to model.
-    ///////////////////////////////////////////////////////////////////////////
-    public String searchKey;
 }

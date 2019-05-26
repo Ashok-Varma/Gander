@@ -12,6 +12,7 @@ import androidx.paging.PagedList;
 import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.data.TransactionDao;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 /**
  * Class description
@@ -21,7 +22,7 @@ import com.ashokvarma.gander.internal.data.TransactionDao;
  * @since 03/06/18
  */
 public class TransactionListViewModel extends AndroidViewModel {
-    private LiveData<PagedList<HttpTransaction>> mTransactions;
+    private LiveData<PagedList<HttpTransactionUIHelper>> mTransactions;
     private final TransactionDao mTransactionDao;
 
     private final static PagedList.Config config
@@ -35,15 +36,15 @@ public class TransactionListViewModel extends AndroidViewModel {
     public TransactionListViewModel(Application application) {
         super(application);
         mTransactionDao = Gander.getGanderStorage().getTransactionDao();
-        DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactions();
+        DataSource.Factory<Integer, HttpTransactionUIHelper> factory = mTransactionDao.getAllTransactions().map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION);
         mTransactions = new LivePagedListBuilder<>(factory, config).build();
     }
 
-    LiveData<PagedList<HttpTransaction>> getTransactions(String key) {
+    LiveData<PagedList<HttpTransactionUIHelper>> getTransactions(String key) {
         if (key == null || key.trim().length() == 0) {
             return mTransactions;
         } else {
-            DataSource.Factory<Integer, HttpTransaction> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SearchType.DEFAULT);
+            DataSource.Factory<Integer, HttpTransactionUIHelper> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SearchType.DEFAULT).map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION);
             return new LivePagedListBuilder<>(factory, config).build();
         }
     }

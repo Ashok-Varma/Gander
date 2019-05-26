@@ -2,9 +2,11 @@ package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
 import android.graphics.Color;
+
 import androidx.core.content.ContextCompat;
+
 import com.ashokvarma.gander.R;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 /**
  * Class description
@@ -48,24 +50,24 @@ public class GanderColorUtil {
         return TRANSACTION_COLOR_UTIL_INSTANCE;
     }
 
-    public int getTransactionColor(HttpTransaction transaction) {
-        return getTransactionColor(transaction, false);
+    public int getTransactionColor(HttpTransactionUIHelper transactionUIHelper) {
+        return getTransactionColor(transactionUIHelper, false);
     }
 
-    public int getTransactionColor(HttpTransaction transaction, boolean txtColors) {
-        HttpTransaction.Status status = transaction.getStatus();
-        Integer responseCode = transaction.getResponseCode();
+    public int getTransactionColor(HttpTransactionUIHelper transactionUIHelper, boolean txtColors) {
+        HttpTransactionUIHelper.Status status = transactionUIHelper.getStatus();
+        Integer responseCode = transactionUIHelper.getResponseCode();
         return getTransactionColor(status, responseCode, txtColors);
     }
 
-    public int getTransactionColor(HttpTransaction.Status status, Integer responseCode) {
+    public int getTransactionColor(HttpTransactionUIHelper.Status status, Integer responseCode) {
         return getTransactionColor(status, responseCode, false);
     }
 
-    private int getTransactionColor(HttpTransaction.Status status, Integer responseCode, boolean txtColors) {
-        if (status == HttpTransaction.Status.Failed) {
+    private int getTransactionColor(HttpTransactionUIHelper.Status status, Integer responseCode, boolean txtColors) {
+        if (status == HttpTransactionUIHelper.Status.Failed) {
             return mColorError;
-        } else if (status == HttpTransaction.Status.Requested) {
+        } else if (status == HttpTransactionUIHelper.Status.Requested) {
             return mColorRequested;
         } else if (responseCode >= 500) {
             return mColor500;

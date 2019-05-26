@@ -15,19 +15,21 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+
 import com.ashokvarma.gander.R;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.FormatUtils;
 import com.ashokvarma.gander.internal.support.GanderColorUtil;
 import com.ashokvarma.gander.internal.support.HighlightSpan;
 import com.ashokvarma.gander.internal.support.TextUtil;
 import com.ashokvarma.gander.internal.support.event.Callback;
 import com.ashokvarma.gander.internal.support.event.Debouncer;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
 
     private int mType;
     private GanderColorUtil mColorUtil;
-    private HttpTransaction mTransaction;
+    private HttpTransactionUIHelper mTransactionUIHelper;
 
     private String mSearchKey;
     private int mCurrentSearchIndex = 0;
@@ -136,24 +138,24 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
     }
 
     @Override
-    public void transactionUpdated(HttpTransaction transaction) {
-        this.mTransaction = transaction;
+    public void transactionUpdated(HttpTransactionUIHelper transactionUIHelper) {
+        this.mTransactionUIHelper = transactionUIHelper;
         populateUI();
     }
 
     private void populateUI() {
-        if (isAdded() && mTransaction != null) {
-            int color = mColorUtil.getTransactionColor(mTransaction);
+        if (isAdded() && mTransactionUIHelper != null) {
+            int color = mColorUtil.getTransactionColor(mTransactionUIHelper);
             mSearchFab.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
             mSearchBar.setBackgroundColor(color);
             if (mType == TYPE_REQUEST) {
                 mSearchView.setHint(R.string.gander_search_request_hint);
-                populateHeaderText(mTransaction.getRequestHeadersString(true));
-                populateBody(mTransaction.requestBodyIsPlainText());
+                populateHeaderText(mTransactionUIHelper.getRequestHeadersString(true));
+                populateBody(mTransactionUIHelper.requestBodyIsPlainText());
             } else if (mType == TYPE_RESPONSE) {
                 mSearchView.setHint(R.string.gander_search_response_hint);
-                populateHeaderText(mTransaction.getResponseHeadersString(true));
-                populateBody(mTransaction.responseBodyIsPlainText());
+                populateHeaderText(mTransactionUIHelper.getResponseHeadersString(true));
+                populateBody(mTransactionUIHelper.responseBodyIsPlainText());
             }
 //            updateSearchCount(1);
         }
@@ -180,9 +182,9 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
                     CharSequence body = null;
                     String searchKey = mSearchKey;
                     if (mType == TYPE_REQUEST) {
-                        body = mTransaction.getFormattedRequestBody();
+                        body = mTransactionUIHelper.getFormattedRequestBody();
                     } else if (mType == TYPE_RESPONSE) {
-                        body = mTransaction.getFormattedResponseBody();
+                        body = mTransactionUIHelper.getFormattedResponseBody();
                     }
                     if (TextUtil.isNullOrWhiteSpace(body) || TextUtil.isNullOrWhiteSpace(searchKey)) {
                         return body;

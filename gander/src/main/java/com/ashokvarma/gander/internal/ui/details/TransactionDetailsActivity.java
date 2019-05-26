@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -15,11 +16,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
+
 import com.ashokvarma.gander.R;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.FormatUtils;
 import com.ashokvarma.gander.internal.support.GanderColorUtil;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionFragment;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionOverviewFragment;
 import com.ashokvarma.gander.internal.ui.details.fragments.TransactionPayloadFragment;
@@ -42,7 +44,7 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
     private static final String ARG_TRANSACTION_RESPONSE_CODE = "transaction_response_code";
 
-    public static void start(Context context, long transactionId, HttpTransaction.Status status, Integer responseCode) {
+    public static void start(Context context, long transactionId, HttpTransactionUIHelper.Status status, Integer responseCode) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
         intent.putExtra(ARG_TRANSACTION_ID, transactionId);
         intent.putExtra(ARG_TRANSACTION_STATUS, status.ordinal());
@@ -56,7 +58,7 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     Adapter mAdapter;
     AppBarLayout mAppBarLayout;
 
-    private HttpTransaction mTransaction;
+    private HttpTransactionUIHelper mTransaction;
     TransactionDetailViewModel mViewModel;
     GanderColorUtil mColorUtil;
 
@@ -65,12 +67,12 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gander_act_transaction_details);
         long transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
-        int statusOrdinal = getIntent().getIntExtra(ARG_TRANSACTION_STATUS, HttpTransaction.Status.Requested.ordinal());
+        int statusOrdinal = getIntent().getIntExtra(ARG_TRANSACTION_STATUS, HttpTransactionUIHelper.Status.Requested.ordinal());
         int responseCode = getIntent().getIntExtra(ARG_TRANSACTION_RESPONSE_CODE, -1);
         mColorUtil = GanderColorUtil.getInstance(this);
 
         mAppBarLayout = findViewById(R.id.gander_details_appbar);
-        mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(HttpTransaction.Status.values()[statusOrdinal], responseCode));
+        mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(HttpTransactionUIHelper.Status.values()[statusOrdinal], responseCode));
         Toolbar toolbar = findViewById(R.id.gander_details_toolbar);
         setSupportActionBar(toolbar);
         mTitleView = findViewById(R.id.gander_details_toolbar_title);
@@ -89,9 +91,9 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         mViewModel = ViewModelProviders.of(this).get(TransactionDetailViewModel.class);
-        mViewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransaction>() {
+        mViewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransactionUIHelper>() {
             @Override
-            public void onChanged(@Nullable HttpTransaction transaction) {
+            public void onChanged(@Nullable HttpTransactionUIHelper transaction) {
                 TransactionDetailsActivity.this.mTransaction = transaction;
                 populateUI();
             }

@@ -4,10 +4,13 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.ashokvarma.gander.Gander;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.data.TransactionDao;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
+
+import static com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION;
 
 /**
  * Class description
@@ -24,7 +27,7 @@ public class TransactionDetailViewModel extends AndroidViewModel {
         mTransactionDao = Gander.getGanderStorage().getTransactionDao();
     }
 
-    LiveData<HttpTransaction> getTransactionWithId(long id) {
-        return mTransactionDao.getTransactionsWithId(id);
+    LiveData<HttpTransactionUIHelper> getTransactionWithId(long id) {
+        return Transformations.map(mTransactionDao.getTransactionsWithId(id), HTTP_TRANSACTION_UI_HELPER_FUNCTION);
     }
 }

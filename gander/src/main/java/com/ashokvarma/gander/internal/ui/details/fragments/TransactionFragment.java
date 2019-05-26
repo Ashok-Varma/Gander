@@ -1,7 +1,7 @@
 package com.ashokvarma.gander.internal.ui.details.fragments;
 
-import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 public interface TransactionFragment {
-    void transactionUpdated(HttpTransaction transaction);
+    void transactionUpdated(HttpTransactionUIHelper transactionUIHelper);
 }
