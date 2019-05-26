@@ -6,13 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.ashokvarma.gander.R;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.support.FormatUtils;
 import com.ashokvarma.gander.internal.support.GanderColorUtil;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 /**
  * Class description
@@ -21,7 +23,7 @@ import com.ashokvarma.gander.internal.support.GanderColorUtil;
  * @version 1.0
  * @since 03/06/18
  */
-public class TransactionAdapter extends PagedListAdapter<HttpTransaction, RecyclerView.ViewHolder> {
+public class TransactionAdapter extends PagedListAdapter<HttpTransactionUIHelper, RecyclerView.ViewHolder> {
 
     private final LayoutInflater mLayoutInflater;
     private final GanderColorUtil mColorUtil;
@@ -83,27 +85,27 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder genericHolder, int position) {
-        HttpTransaction transaction = getItem(position);
-        if (transaction != null) {
+        HttpTransactionUIHelper transactionUIHelper = getItem(position);
+        if (transactionUIHelper != null) {
             TransactionViewHolder holder = ((TransactionViewHolder) genericHolder);
-            holder.path.setText(getHighlightedText(transaction.getMethod().concat(" ").concat(transaction.getPath())));
-            holder.host.setText(getHighlightedText(transaction.getHost()));
-            holder.start.setText(transaction.getRequestStartTimeString());
-            holder.ssl.setVisibility(transaction.isSsl() ? View.VISIBLE : View.GONE);
-            if (transaction.getStatus() == HttpTransaction.Status.Complete) {
-                holder.code.setText(getHighlightedText(String.valueOf(transaction.getResponseCode())));
-                holder.duration.setText(transaction.getDurationString());
-                holder.size.setText(transaction.getTotalSizeString());
+            holder.path.setText(getHighlightedText(transactionUIHelper.getMethod().concat(" ").concat(transactionUIHelper.getPath())));
+            holder.host.setText(getHighlightedText(transactionUIHelper.getHost()));
+            holder.start.setText(transactionUIHelper.getRequestStartTimeString());
+            holder.ssl.setVisibility(transactionUIHelper.isSsl() ? View.VISIBLE : View.GONE);
+            if (transactionUIHelper.getStatus() == HttpTransactionUIHelper.Status.Complete) {
+                holder.code.setText(getHighlightedText(String.valueOf(transactionUIHelper.getResponseCode())));
+                holder.duration.setText(transactionUIHelper.getDurationString());
+                holder.size.setText(transactionUIHelper.getTotalSizeString());
             } else {
                 holder.code.setText(null);
                 holder.duration.setText(null);
                 holder.size.setText(null);
             }
-            if (transaction.getStatus() == HttpTransaction.Status.Failed) {
+            if (transactionUIHelper.getStatus() == HttpTransactionUIHelper.Status.Failed) {
                 holder.code.setText("!!!");
             }
 
-            int color = mColorUtil.getTransactionColor(transaction, true);
+            int color = mColorUtil.getTransactionColor(transactionUIHelper, true);
             holder.path.setTextColor(color);
             holder.code.setTextColor(color);
         }
@@ -147,7 +149,7 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        HttpTransaction transaction = getItem(getAdapterPosition());
+                        HttpTransactionUIHelper transaction = getItem(getAdapterPosition());
                         mListener.onTransactionClicked(transaction);
                     }
                 }
@@ -156,7 +158,7 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransaction, Recycl
     }
 
     interface Listener {
-        void onTransactionClicked(HttpTransaction httpTransaction);
+        void onTransactionClicked(HttpTransactionUIHelper transactionUIHelper);
 
         void onItemsInserted(int firstInsertedItemPosition);
     }
