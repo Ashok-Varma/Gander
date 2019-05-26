@@ -31,6 +31,7 @@ android {
 dependencies {
     implementation project(':gander')
     implementation project(':gander-persistence')
+    implementation project(':gander-imdb')
 //    debugImplementation project(':gander')
 //    debugImplementation project(':gander-persistence')
 //    releaseImplementation project(':gander-no-op')

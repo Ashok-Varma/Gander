@@ -45,8 +45,10 @@ android {
 dependencies {
     api project(':gander')
 
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.assertj:assertj-core:3.12.0"
+    testCompileOnly "junit:junit:$testJunit4"
+    testImplementation "org.assertj:assertj-core:$testAssertJCore"
+    testImplementation "org.mockito:mockito-core:$testMockitoCore"
+    testImplementation "androidx.arch.core:core-testing:$testArchCore"
 }
 
 // Place it at the end of the file
