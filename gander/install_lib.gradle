@@ -39,5 +39,17 @@ install {
                 }
             }
         }
+
+        pom.withXml {
+            def dependenciesNode = asNode().appendNode('dependencies')
+
+            //Add all declared 'api' dependencies to the pom.xml
+            configurations.api.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', dp.group)
+                dependencyNode.appendNode('artifactId', dp.name)
+                dependencyNode.appendNode('version', dp.version)
+            }
+        }
     }
 }
