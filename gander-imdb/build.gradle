@@ -43,7 +43,10 @@ android {
 }
 
 dependencies {
-    api project(':gander')
+    implementation project(':gander')
+
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
 
     testCompileOnly "junit:junit:$testJunit4"
     testImplementation "org.assertj:assertj-core:$testAssertJCore"

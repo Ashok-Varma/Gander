@@ -43,11 +43,11 @@ android {
 }
 
 dependencies {
-    api project(':gander')
+    implementation project(':gander')
 
-    api "android.arch.persistence.room:runtime:$roomVersion"
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
-    api "androidx.paging:paging-runtime:$pagingVersion"
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
 }
 
 // Place it at the end of the file
