@@ -35,51 +35,55 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugImplementation 'com.ashokvarma.android:gander:3.0.0-rc1'
-
 // if persistence is needed (Uses Room to store the calls in DB)
-debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0-rc1'
+debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0'
 
-// if persistence is not needed (Data lost once app is dead)
-debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0-rc1'
+// if persistence is not needed (Data retained in memory lost on app close)
+debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0'
 
 
-releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0-rc1'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0'
 ```
 If you want this in library in both release and debug builds, then try this : 
 ```gradle
-implementation 'com.ashokvarma.android:gander:3.0.0-rc1'
-
 // if persistence is needed (Uses Room to store the calls in DB)
-implementation 'com.ashokvarma.android:gander-persistence:3.0.0-rc1'
+implementation 'com.ashokvarma.android:gander-persistence:3.0.0'
 
-// if persistence is not needed (Data lost once app is dead)
-implementation 'com.ashokvarma.android:gander-imdb:3.0.0-rc1'
+// if persistence is not needed (Data retained in memory lost on app close)
+implementation 'com.ashokvarma.android:gander-imdb:3.0.0'
 ```
 
+<details>
+  <summary>or grab via Maven:</summary>
+  
+      <!--if persistence is needed (Uses Room to store the calls in DB)-->
+      <dependency>
+        <groupId>com.ashokvarma.android</groupId>
+        <artifactId>gander-persistence</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+      </dependency>
+      <!--if persistence is not needed (Data lost once app is dead)-->
+      <dependency>
+        <groupId>com.ashokvarma.android</groupId>
+        <artifactId>gander-imdb</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+      </dependency>
+</details>
 
-##### or grab via Maven:
-```xml
-<dependency>
-  <groupId>com.ashokvarma.android</groupId>
-  <artifactId>gander</artifactId>
-  <version>3.0.0-rc1</version>
-  <type>pom</type>
-</dependency>
-```
-
-or Download [the latest JAR][mavenAarDownload]
+or Download the latest Gander [Persistence JAR][persistenceMavenAarDownload] / [IMDB JAR][imdbMavenAarDownload]
 
 ### Usage
 
-In your application onCreate
+##### In your application onCreate
 ```java
   @Override
     public void onCreate() {
         super.onCreate();
         // For Persistence (Uses Room to store the calls in DB)
         Gander.setGanderStorage(GanderPersistence.getInstance(this));
-        // For In Memory DB (Data lost once app is dead)
+        // For In Memory DB (Data retained in memory lost on app close)
         Gander.setGanderStorage(GanderIMDB.getInstance());
     }
 ```
@@ -191,7 +195,8 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/3.0.0-rc1/gander-3.0.0-rc1.aar
+[persistenceMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-persistence/3.0.0/gander-persistence-3.0.0.aar
+[imdbMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-imdb/3.0.0/gander-imdb-3.0.0.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt

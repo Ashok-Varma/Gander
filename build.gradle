@@ -32,8 +32,8 @@ ext {
     targetSdkVersion = 28
     compileSdkVersion = 28
 
-    versionCode = 31
-    versionName = '3.0.0-rc2'
+    versionCode = 32
+    versionName = '3.0.0'
 
     appCompatVersion = '1.0.2'
     materialComponentsVersion = '1.0.0'
