@@ -29,14 +29,12 @@ android {
 }
 
 dependencies {
-    debugImplementation 'com.ashokvarma.android:gander:3.0.0-beta3'
-    debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.0-beta3'
-    debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.0-beta3'
-    releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.0-beta3'
-//    debugImplementation project(':gander')
-//    debugImplementation project(':gander-persistence')
-//    debugImplementation project(':gander-imdb')
-//    releaseImplementation project(':gander-no-op')
+    implementation 'com.ashokvarma.android:gander-persistence:3.0.0-rc2'
+    implementation 'com.ashokvarma.android:gander-imdb:3.0.0-rc2'
+//    implementation 'com.ashokvarma.android:gander-no-op:3.0.0-rc2'
+//    implementation project(':gander-persistence')
+//    implementation project(':gander-imdb')
+//    implementation project(':gander-no-op')
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
 

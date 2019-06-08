@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation project(':gander')
+    api project(':gander')
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.paging:paging-runtime:$pagingVersion"
