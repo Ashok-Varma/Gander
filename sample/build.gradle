@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.ashokvarma.android:gander:2.0.1'
+    implementation 'com.ashokvarma.android:gander:2.0.3'
 //    implementation project(':gander')
 //    debugImplementation project(':gander')
 //    releaseImplementation project(':gander-no-op')

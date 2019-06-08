@@ -1,7 +1,7 @@
 <p align="center"><img src="https://raw.githubusercontent.com/Ashok-Varma/Gander/master/LogoDesigns/logotype1.1.png"/></p>
 
 
-# Gander
+# Gander ![Travis_Build](https://travis-ci.com/Ashok-Varma/Gander.svg?branch=master)
 
 ## What is this library about?
 Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.
