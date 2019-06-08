@@ -30,12 +30,12 @@ Based on your IDE you can import library in one of the following ways
 ##### Gradle:
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
-debugImplementation 'com.ashokvarma.android:gander:2.0.1'
-releaseImplementation 'com.ashokvarma.android:gander-no-op:2.0.1'
+debugImplementation 'com.ashokvarma.android:gander:2.0.2'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:2.0.2'
 ```
 If you want this in library in both release and compile, then try this : 
 ```gradle
-implementation 'com.ashokvarma.android:gander:2.0.1'
+implementation 'com.ashokvarma.android:gander:2.0.2'
 ```
 
 
@@ -44,7 +44,7 @@ implementation 'com.ashokvarma.android:gander:2.0.1'
 <dependency>
   <groupId>com.ashokvarma.android</groupId>
   <artifactId>gander</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2</version>
   <type>pom</type>
 </dependency>
 ```
@@ -160,7 +160,7 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/2.0.1/gander-2.0.1.aar
+[mavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander/2.0.2/gander-2.0.2.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt
