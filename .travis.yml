@@ -11,5 +11,4 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 script:
-  - ./gradlew test
-  - ./gradlew build connectedCheck
+  - ./gradlew clean build lint test connectedCheck
