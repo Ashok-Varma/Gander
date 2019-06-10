@@ -3,7 +3,8 @@ package com.ashokvarma.gander.internal.ui.list;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
+
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 /**
  * Class description
@@ -12,7 +13,7 @@ import com.ashokvarma.gander.internal.data.HttpTransaction;
  * @version 1.0
  * @since 03/06/18
  */
-public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransaction> {
+public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransactionUIHelper> {
 
     private String mSearchKey;
 
@@ -21,16 +22,17 @@ public class ListDiffUtil extends DiffUtil.ItemCallback<HttpTransaction> {
     }
 
     @Override
-    public boolean areItemsTheSame(@NonNull HttpTransaction oldItem, @NonNull HttpTransaction newItem) {
+    public boolean areItemsTheSame(@NonNull HttpTransactionUIHelper oldItem, @NonNull HttpTransactionUIHelper newItem) {
         // might not work always due to async nature of Adapter fails in very rare race conditions but increases pref.
         newItem.searchKey = mSearchKey;
         return oldItem.getId() == newItem.getId();
     }
 
     @Override
-    public boolean areContentsTheSame(@NonNull HttpTransaction oldItem, @NonNull HttpTransaction newItem) {
+    public boolean areContentsTheSame(@NonNull HttpTransactionUIHelper oldItem, @NonNull HttpTransactionUIHelper newItem) {
         // both will non null. because of areItemsTheSame logic only non nulls come here
         // comparing only items shown in the list
+
         return areEqual(oldItem.getMethod(), newItem.getMethod()) &&
                 areEqual(oldItem.getPath(), newItem.getPath()) &&
                 areEqual(oldItem.getHost(), newItem.getHost()) &&

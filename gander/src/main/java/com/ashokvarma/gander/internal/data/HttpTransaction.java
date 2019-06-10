@@ -1,17 +1,9 @@
 package com.ashokvarma.gander.internal.data;
 
 import android.net.Uri;
-import androidx.annotation.Nullable;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import com.ashokvarma.gander.internal.support.FormatUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Class description
@@ -20,368 +12,414 @@ import java.util.Locale;
  * @version 1.0
  * @since 02/06/18
  */
-@Entity(tableName = "HttpTransaction")
 public class HttpTransaction {
 
-    @PrimaryKey(autoGenerate = true)
-    private long id;
-    @ColumnInfo(name = "request_date")
-    private Date requestDate;
-    @ColumnInfo(name = "response_date")
-    private Date responseDate;
-    @ColumnInfo(name = "took_ms")
-    private Long tookMs;
+    private final long id;
+    private final Date requestDate;
+    private final Date responseDate;
+    private final Long tookMs;
 
-    @ColumnInfo(name = "protocol")
-    private String protocol;
-    @ColumnInfo(name = "method")
-    private String method;
-    @ColumnInfo(name = "url")
-    private String url;
-    @ColumnInfo(name = "host")
-    private String host;
-    @ColumnInfo(name = "path")
-    private String path;
-    @ColumnInfo(name = "scheme")
-    private String scheme;
+    private final String protocol;
+    private final String method;
+    private final String url;
+    private final String host;
+    private final String path;
+    private final String scheme;
 
-    @ColumnInfo(name = "request_content_length")
-    private Long requestContentLength;
-    @ColumnInfo(name = "request_content_type")
-    private String requestContentType;
-    @ColumnInfo(name = "request_headers")
-    private List<HttpHeader> requestHeaders;
-    @ColumnInfo(name = "request_body", typeAffinity = ColumnInfo.TEXT)
-    private String requestBody;
-    @ColumnInfo(name = "request_body_is_plain_text")
-    private boolean requestBodyIsPlainText = true;
+    private final Long requestContentLength;
+    private final String requestContentType;
+    private final List<HttpHeader> requestHeaders;
+    private final String requestBody;
+    private final boolean requestBodyIsPlainText;
 
-    @ColumnInfo(name = "response_code")
-    private Integer responseCode;
-    @ColumnInfo(name = "response_message")
-    private String responseMessage;
-    @ColumnInfo(name = "error")
-    private String error;
+    private final Integer responseCode;
+    private final String responseMessage;
+    private final String error;
+    private final Long responseContentLength;
+    private final String responseContentType;
+    private final List<HttpHeader> responseHeaders;
+    private final String responseBody;
+    private final boolean responseBodyIsPlainText;
 
-    @ColumnInfo(name = "response_content_length")
-    private Long responseContentLength;
-    @ColumnInfo(name = "response_content_type")
-    private String responseContentType;
-    @ColumnInfo(name = "response_headers")
-    private List<HttpHeader> responseHeaders;
-    @ColumnInfo(name = "response_body", typeAffinity = ColumnInfo.TEXT)
-    private String responseBody;
-    @ColumnInfo(name = "response_body_is_plain_text")
-    private boolean responseBodyIsPlainText = true;
+    private HttpTransaction(Builder builder) {
+        this.id = builder.id;
+        this.requestDate = builder.requestDate;
+        this.responseDate = builder.responseDate;
+        this.tookMs = builder.tookMs;
+        this.protocol = builder.protocol;
+        this.method = builder.method;
+        this.url = builder.url;
+        this.host = builder.host;
+        this.path = builder.path;
+        this.scheme = builder.scheme;
+        this.requestContentLength = builder.requestContentLength;
+        this.requestContentType = builder.requestContentType;
+        this.requestHeaders = builder.requestHeaders;
+        this.requestBody = builder.requestBody;
+        this.requestBodyIsPlainText = builder.requestBodyIsPlainText;
+        this.responseCode = builder.responseCode;
+        this.responseMessage = builder.responseMessage;
+        this.error = builder.error;
+        this.responseContentLength = builder.responseContentLength;
+        this.responseContentType = builder.responseContentType;
+        this.responseHeaders = builder.responseHeaders;
+        this.responseBody = builder.responseBody;
+        this.responseBodyIsPlainText = builder.responseBodyIsPlainText;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.id = this.getId();
+        builder.requestDate = this.getRequestDate();
+        builder.responseDate = this.getResponseDate();
+        builder.tookMs = this.getTookMs();
+        builder.protocol = this.getProtocol();
+        builder.method = this.getMethod();
+        builder.url = this.getUrl();
+        builder.host = this.getHost();
+        builder.path = this.getPath();
+        builder.scheme = this.getScheme();
+        builder.requestContentLength = this.getRequestContentLength();
+        builder.requestContentType = this.getRequestContentType();
+        builder.requestHeaders = this.getRequestHeaders();
+        builder.requestBody = this.getRequestBody();
+        builder.requestBodyIsPlainText = this.requestBodyIsPlainText();
+        builder.responseCode = this.getResponseCode();
+        builder.responseMessage = this.getResponseMessage();
+        builder.error = this.getError();
+        builder.responseContentLength = this.getResponseContentLength();
+        builder.responseContentType = this.getResponseContentType();
+        builder.responseHeaders = this.getResponseHeaders();
+        builder.responseBody = this.getResponseBody();
+        builder.responseBodyIsPlainText = this.responseBodyIsPlainText();
+        return builder;
+    }
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Date getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(Date requestDate) {
-        this.requestDate = requestDate;
-    }
-
     public Date getResponseDate() {
         return responseDate;
-    }
-
-    public void setResponseDate(Date responseDate) {
-        this.responseDate = responseDate;
     }
 
     public Long getTookMs() {
         return tookMs;
     }
 
-    public void setTookMs(Long tookMs) {
-        this.tookMs = tookMs;
-    }
-
     public String getProtocol() {
         return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
     }
 
     public String getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getHost() {
         return host;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
     public String getPath() {
         return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
-
     public Long getRequestContentLength() {
         return requestContentLength;
-    }
-
-    public void setRequestContentLength(Long requestContentLength) {
-        this.requestContentLength = requestContentLength;
     }
 
     public String getRequestContentType() {
         return requestContentType;
     }
 
-    public void setRequestContentType(String requestContentType) {
-        this.requestContentType = requestContentType;
-    }
-
     public List<HttpHeader> getRequestHeaders() {
         return requestHeaders;
-    }
-
-    public void setRequestHeaders(List<HttpHeader> requestHeaders) {
-        this.requestHeaders = requestHeaders;
     }
 
     public String getRequestBody() {
         return requestBody;
     }
 
-    public void setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
-    }
-
     public boolean requestBodyIsPlainText() {
         return requestBodyIsPlainText;
-    }
-
-    public void setRequestBodyIsPlainText(boolean requestBodyIsPlainText) {
-        this.requestBodyIsPlainText = requestBodyIsPlainText;
     }
 
     public Integer getResponseCode() {
         return responseCode;
     }
 
-    public void setResponseCode(Integer responseCode) {
-        this.responseCode = responseCode;
-    }
-
     public String getResponseMessage() {
         return responseMessage;
-    }
-
-    public void setResponseMessage(String responseMessage) {
-        this.responseMessage = responseMessage;
     }
 
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
-        this.error = error;
-    }
-
     public Long getResponseContentLength() {
         return responseContentLength;
-    }
-
-    public void setResponseContentLength(Long responseContentLength) {
-        this.responseContentLength = responseContentLength;
     }
 
     public String getResponseContentType() {
         return responseContentType;
     }
 
-    public void setResponseContentType(String responseContentType) {
-        this.responseContentType = responseContentType;
-    }
-
     public List<HttpHeader> getResponseHeaders() {
         return responseHeaders;
-    }
-
-    public void setResponseHeaders(List<HttpHeader> responseHeaders) {
-        this.responseHeaders = responseHeaders;
     }
 
     public String getResponseBody() {
         return responseBody;
     }
 
-    public void setResponseBody(String responseBody) {
-        this.responseBody = responseBody;
-    }
-
     public boolean responseBodyIsPlainText() {
         return responseBodyIsPlainText;
     }
 
-    public void setResponseBodyIsPlainText(boolean responseBodyIsPlainText) {
-        this.responseBodyIsPlainText = responseBodyIsPlainText;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HttpTransaction that = (HttpTransaction) o;
+
+        if (id != that.id) return false;
+        if (requestBodyIsPlainText != that.requestBodyIsPlainText) return false;
+        if (responseBodyIsPlainText != that.responseBodyIsPlainText) return false;
+        if (requestDate != null ? !requestDate.equals(that.requestDate) : that.requestDate != null)
+            return false;
+        if (responseDate != null ? !responseDate.equals(that.responseDate) : that.responseDate != null)
+            return false;
+        if (tookMs != null ? !tookMs.equals(that.tookMs) : that.tookMs != null) return false;
+        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null)
+            return false;
+        if (method != null ? !method.equals(that.method) : that.method != null) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        if (scheme != null ? !scheme.equals(that.scheme) : that.scheme != null) return false;
+        if (requestContentLength != null ? !requestContentLength.equals(that.requestContentLength) : that.requestContentLength != null)
+            return false;
+        if (requestContentType != null ? !requestContentType.equals(that.requestContentType) : that.requestContentType != null)
+            return false;
+        if (requestHeaders != null ? !requestHeaders.equals(that.requestHeaders) : that.requestHeaders != null)
+            return false;
+        if (requestBody != null ? !requestBody.equals(that.requestBody) : that.requestBody != null)
+            return false;
+        if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null)
+            return false;
+        if (responseMessage != null ? !responseMessage.equals(that.responseMessage) : that.responseMessage != null)
+            return false;
+        if (error != null ? !error.equals(that.error) : that.error != null) return false;
+        if (responseContentLength != null ? !responseContentLength.equals(that.responseContentLength) : that.responseContentLength != null)
+            return false;
+        if (responseContentType != null ? !responseContentType.equals(that.responseContentType) : that.responseContentType != null)
+            return false;
+        if (responseHeaders != null ? !responseHeaders.equals(that.responseHeaders) : that.responseHeaders != null)
+            return false;
+        return responseBody != null ? responseBody.equals(that.responseBody) : that.responseBody == null;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Extra Setters
-    ///////////////////////////////////////////////////////////////////////////
-    public void setUrlHostPathSchemeFromUrl(String url) {
-        setUrl(url);
-        Uri uri = Uri.parse(url);
-        setHost(uri.getHost());
-        setPath(uri.getPath() + ((uri.getQuery() != null) ? "?" + uri.getQuery() : ""));
-        setScheme(uri.getScheme());
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (requestDate != null ? requestDate.hashCode() : 0);
+        result = 31 * result + (responseDate != null ? responseDate.hashCode() : 0);
+        result = 31 * result + (tookMs != null ? tookMs.hashCode() : 0);
+        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
+        result = 31 * result + (method != null ? method.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (scheme != null ? scheme.hashCode() : 0);
+        result = 31 * result + (requestContentLength != null ? requestContentLength.hashCode() : 0);
+        result = 31 * result + (requestContentType != null ? requestContentType.hashCode() : 0);
+        result = 31 * result + (requestHeaders != null ? requestHeaders.hashCode() : 0);
+        result = 31 * result + (requestBody != null ? requestBody.hashCode() : 0);
+        result = 31 * result + (requestBodyIsPlainText ? 1 : 0);
+        result = 31 * result + (responseCode != null ? responseCode.hashCode() : 0);
+        result = 31 * result + (responseMessage != null ? responseMessage.hashCode() : 0);
+        result = 31 * result + (error != null ? error.hashCode() : 0);
+        result = 31 * result + (responseContentLength != null ? responseContentLength.hashCode() : 0);
+        result = 31 * result + (responseContentType != null ? responseContentType.hashCode() : 0);
+        result = 31 * result + (responseHeaders != null ? responseHeaders.hashCode() : 0);
+        result = 31 * result + (responseBody != null ? responseBody.hashCode() : 0);
+        result = 31 * result + (responseBodyIsPlainText ? 1 : 0);
+        return result;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Extras Getters
-    ///////////////////////////////////////////////////////////////////////////
-    public enum Status {
-        Requested,
-        Complete,
-        Failed
-    }
+    public static final class Builder {
+        private long id;
+        private Date requestDate;
+        private Date responseDate;
+        private Long tookMs;
+        private String protocol;
+        private String method;
+        private String url;
+        private String host;
+        private String path;
+        private String scheme;
+        private Long requestContentLength;
+        private String requestContentType;
+        private List<HttpHeader> requestHeaders;
+        private String requestBody;
+        private boolean requestBodyIsPlainText = true;
+        private Integer responseCode;
+        private String responseMessage;
+        private String error;
+        private Long responseContentLength;
+        private String responseContentType;
+        private List<HttpHeader> responseHeaders;
+        private String responseBody;
+        private boolean responseBodyIsPlainText = true;
 
-    public CharSequence getFormattedRequestBody() {
-        return formatBody(requestBody, requestContentType);
-    }
+        private Builder() {
+        }
 
-    public CharSequence getFormattedResponseBody() {
-        return formatBody(responseBody, responseContentType);
-    }
+        public Builder setId(long val) {
+            id = val;
+            return this;
+        }
 
-    public Status getStatus() {
-        if (error != null) {
-            return Status.Failed;
-        } else if (responseCode == null) {
-            return Status.Requested;
-        } else {
-            return Status.Complete;
+        public Builder setRequestDate(Date val) {
+            requestDate = val;
+            return this;
+        }
+
+        public Builder setResponseDate(Date val) {
+            responseDate = val;
+            return this;
+        }
+
+        public Builder setTookMs(Long val) {
+            tookMs = val;
+            return this;
+        }
+
+        public Builder setProtocol(String val) {
+            protocol = val;
+            return this;
+        }
+
+        public Builder setMethod(String val) {
+            method = val;
+            return this;
+        }
+
+        public Builder setUrl(String val) {
+            url = val;
+            return this;
+        }
+
+        public Builder setHost(String val) {
+            host = val;
+            return this;
+        }
+
+        public Builder setPath(String val) {
+            path = val;
+            return this;
+        }
+
+        public Builder setScheme(String val) {
+            scheme = val;
+            return this;
+        }
+
+        public Builder setRequestContentLength(Long val) {
+            requestContentLength = val;
+            return this;
+        }
+
+        public Builder setRequestContentType(String val) {
+            requestContentType = val;
+            return this;
+        }
+
+        public Builder setRequestHeaders(List<HttpHeader> val) {
+            requestHeaders = val;
+            return this;
+        }
+
+        public Builder setRequestBody(String val) {
+            requestBody = val;
+            return this;
+        }
+
+        public Builder setRequestBodyIsPlainText(boolean val) {
+            requestBodyIsPlainText = val;
+            return this;
+        }
+
+        public Builder setResponseCode(Integer val) {
+            responseCode = val;
+            return this;
+        }
+
+        public Builder setResponseMessage(String val) {
+            responseMessage = val;
+            return this;
+        }
+
+        public Builder setError(String val) {
+            error = val;
+            return this;
+        }
+
+        public Builder setResponseContentLength(Long val) {
+            responseContentLength = val;
+            return this;
+        }
+
+        public Builder setResponseContentType(String val) {
+            responseContentType = val;
+            return this;
+        }
+
+        public Builder setResponseHeaders(List<HttpHeader> val) {
+            responseHeaders = val;
+            return this;
+        }
+
+        public Builder setResponseBody(String val) {
+            responseBody = val;
+            return this;
+        }
+
+        public Builder setResponseBodyIsPlainText(boolean val) {
+            responseBodyIsPlainText = val;
+            return this;
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Extra Setters
+        ///////////////////////////////////////////////////////////////////////////
+
+        public void setUrlHostPathSchemeFromUrl(String url) {
+            setUrl(url);
+            Uri uri = Uri.parse(url);
+            setHost(uri.getHost());
+            setPath(uri.getPath() + ((uri.getQuery() != null) ? "?" + uri.getQuery() : ""));
+            setScheme(uri.getScheme());
+        }
+
+        public HttpTransaction build() {
+            return new HttpTransaction(this);
         }
     }
-
-    public String getNotificationText() {
-        switch (getStatus()) {
-            case Failed:
-                return " ! ! !  " + path;
-            case Requested:
-                return " . . .  " + path;
-            default:
-                return String.valueOf(responseCode) + " " + path;
-        }
-    }
-
-    public boolean isSsl() {
-        return scheme.toLowerCase().equals("https");
-    }
-
-    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.US);
-
-    public String getRequestStartTimeString() {
-        return (requestDate != null) ? TIME_ONLY_FMT.format(requestDate) : null;
-    }
-
-    public String getRequestDateString() {
-        return (requestDate != null) ? requestDate.toString() : null;
-    }
-
-    public String getResponseDateString() {
-        return (responseDate != null) ? responseDate.toString() : null;
-    }
-
-    public String getDurationString() {
-        return (tookMs != null) ? +tookMs + " ms" : null;
-    }
-
-    public String getRequestSizeString() {
-        return formatBytes((requestContentLength != null) ? requestContentLength : 0);
-    }
-
-    public String getResponseSizeString() {
-        return (responseContentLength != null) ? formatBytes(responseContentLength) : null;
-    }
-
-    public String getTotalSizeString() {
-        long reqBytes = (requestContentLength != null) ? requestContentLength : 0;
-        long resBytes = (responseContentLength != null) ? responseContentLength : 0;
-        return formatBytes(reqBytes + resBytes);
-    }
-
-    public String getResponseSummaryText() {
-        switch (getStatus()) {
-            case Failed:
-                return error;
-            case Requested:
-                return null;
-            default:
-                return String.valueOf(responseCode) + " " + responseMessage;
-        }
-    }
-
-    private CharSequence formatBody(String body, @Nullable String contentType) {
-        if (contentType != null) {
-            if (contentType.toLowerCase().contains("json")) {
-                return FormatUtils.formatJson(body);
-            } else if (contentType.toLowerCase().contains("xml")) {
-                return FormatUtils.formatXml(body);
-            } else if (contentType.toLowerCase().contains("form-urlencoded")) {
-                return FormatUtils.formatFormEncoded(body);
-            }
-        }
-        return body;
-    }
-
-    private String formatBytes(long bytes) {
-        return FormatUtils.formatByteCount(bytes, true);
-    }
-
-    public CharSequence getResponseHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getResponseHeaders(), withMarkup);
-    }
-
-    public CharSequence getRequestHeadersString(boolean withMarkup) {
-        return FormatUtils.formatHeaders(getRequestHeaders(), withMarkup);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // for UI not related to model.
-    ///////////////////////////////////////////////////////////////////////////
-    @Ignore
-    public String searchKey;
 }

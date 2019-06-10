@@ -9,13 +9,16 @@ import android.os.Build;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.LongSparseArray;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+
 import com.ashokvarma.gander.Gander;
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpTransaction;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 import static android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
 
@@ -32,7 +35,7 @@ public class NotificationHelper {
     private static final int NOTIFICATION_ID = 1139;
     private static final int BUFFER_SIZE = 10;
 
-    private static final LongSparseArray<HttpTransaction> TRANSACTION_BUFFER = new LongSparseArray<>();
+    private static final LongSparseArray<HttpTransactionUIHelper> TRANSACTION_BUFFER = new LongSparseArray<>();
     private static int TRANSACTION_COUNT;
 
     private final Context mContext;
@@ -44,8 +47,8 @@ public class NotificationHelper {
         TRANSACTION_COUNT = 0;
     }
 
-    private static synchronized void addToBuffer(HttpTransaction transaction) {
-        if (transaction.getStatus() == HttpTransaction.Status.Requested) {
+    private static synchronized void addToBuffer(HttpTransactionUIHelper transaction) {
+        if (transaction.getStatus() == HttpTransactionUIHelper.Status.Requested) {
             TRANSACTION_COUNT++;
         }
         TRANSACTION_BUFFER.put(transaction.getId(), transaction);
@@ -71,7 +74,8 @@ public class NotificationHelper {
     }
 
     public synchronized void show(HttpTransaction transaction, boolean stickyNotification) {
-        addToBuffer(transaction);
+        HttpTransactionUIHelper httpTransactionUIHelper = new HttpTransactionUIHelper(transaction);
+        addToBuffer(httpTransactionUIHelper);
         if (!BaseGanderActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                     .setContentIntent(PendingIntent.getActivity(mContext, 0, Gander.getLaunchIntent(mContext), 0))
@@ -105,7 +109,7 @@ public class NotificationHelper {
         }
     }
 
-    private CharSequence getNotificationText(HttpTransaction transaction) {
+    private CharSequence getNotificationText(HttpTransactionUIHelper transaction) {
         int color = mColorUtil.getTransactionColor(transaction);
         String text = transaction.getNotificationText();
         // Simple span no Truss required

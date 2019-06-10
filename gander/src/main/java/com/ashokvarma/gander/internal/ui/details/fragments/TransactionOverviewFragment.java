@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.ashokvarma.gander.R;
-import com.ashokvarma.gander.internal.data.HttpTransaction;
+import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 
 
 public class TransactionOverviewFragment extends Fragment implements TransactionFragment {
@@ -27,7 +29,7 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
     private TextView mResponseSizeView;
     private TextView mTotalSizeView;
 
-    private HttpTransaction mTransaction;
+    private HttpTransactionUIHelper mTransactionUIHelper;
 
     public TransactionOverviewFragment() {
     }
@@ -63,25 +65,25 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
     }
 
     @Override
-    public void transactionUpdated(HttpTransaction transaction) {
-        this.mTransaction = transaction;
+    public void transactionUpdated(HttpTransactionUIHelper transactionUIHelper) {
+        this.mTransactionUIHelper = transactionUIHelper;
         populateUI();
     }
 
     private void populateUI() {
-        if (isAdded() && mTransaction != null) {
-            mUrlView.setText(mTransaction.getUrl());
-            mMethodView.setText(mTransaction.getMethod());
-            mProtocolView.setText(mTransaction.getProtocol());
-            mStatusView.setText(mTransaction.getStatus().toString());
-            mResponseView.setText(mTransaction.getResponseSummaryText());
-            mSslView.setText((mTransaction.isSsl() ? R.string.gander_yes : R.string.gander_no));
-            mRequestTimeView.setText(mTransaction.getRequestDateString());
-            mResponseTimeView.setText(mTransaction.getResponseDateString());
-            mDurationView.setText(mTransaction.getDurationString());
-            mRequestSizeView.setText(mTransaction.getRequestSizeString());
-            mResponseSizeView.setText(mTransaction.getResponseSizeString());
-            mTotalSizeView.setText(mTransaction.getTotalSizeString());
+        if (isAdded() && mTransactionUIHelper != null) {
+            mUrlView.setText(mTransactionUIHelper.getUrl());
+            mMethodView.setText(mTransactionUIHelper.getMethod());
+            mProtocolView.setText(mTransactionUIHelper.getProtocol());
+            mStatusView.setText(mTransactionUIHelper.getStatus().toString());
+            mResponseView.setText(mTransactionUIHelper.getResponseSummaryText());
+            mSslView.setText((mTransactionUIHelper.isSsl() ? R.string.gander_yes : R.string.gander_no));
+            mRequestTimeView.setText(mTransactionUIHelper.getRequestDateString());
+            mResponseTimeView.setText(mTransactionUIHelper.getResponseDateString());
+            mDurationView.setText(mTransactionUIHelper.getDurationString());
+            mRequestSizeView.setText(mTransactionUIHelper.getRequestSizeString());
+            mResponseSizeView.setText(mTransactionUIHelper.getResponseSizeString());
+            mTotalSizeView.setText(mTransactionUIHelper.getTotalSizeString());
         }
     }
 }

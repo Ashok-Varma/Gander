@@ -3,82 +3,64 @@ package com.ashokvarma.gander.internal.data;
 import androidx.annotation.IntRange;
 import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.RoomWarnings;
-import androidx.room.Update;
 
 import java.util.Date;
 
-/**
- * Class description
- *
- * @author ashok
- * @version 1.0
- * @since 03/06/18
- */
-@Dao
-public abstract class TransactionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract long insertTransaction(HttpTransaction httpTransaction);
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    public abstract int updateTransaction(HttpTransaction httpTransactions);
-
-    @Delete
-    public abstract int deleteTransactions(HttpTransaction... httpTransactions);
-
-    @Query("DELETE FROM HttpTransaction WHERE request_date < :beforeDate")
-    public abstract int deleteTransactionsBefore(Date beforeDate);
-
-    @Query("DELETE FROM HttpTransaction")
-    public abstract int clearAll();
-
-    @Query("SELECT * FROM HttpTransaction ORDER BY id DESC")
-    public abstract DataSource.Factory<Integer, HttpTransaction> getAllTransactions();
-
-    @Query("SELECT * FROM HttpTransaction WHERE id = :id")
-    public abstract LiveData<HttpTransaction> getTransactionsWithId(long id);
-
-    public static final int SEARCH_DEFAULT = 1;
-    public static final int SEARCH_INCLUDE_REQUEST = 2;
-    public static final int SEARCH_INCLUDE_RESPONSE = 3;
-    public static final int SEARCH_INCLUDE_REQUEST_RESPONSE = 4;
-
-    public DataSource.Factory<Integer, HttpTransaction> getAllTransactionsWith(String key, @IntRange(from = 1, to = 4) int searchType) {
-        String endWildCard = key + "%";
-        String doubleSideWildCard = "%" + key + "%";
-        switch (searchType) {
-            case SEARCH_DEFAULT:
-                return getAllTransactions(endWildCard, doubleSideWildCard);
-            case SEARCH_INCLUDE_REQUEST:
-                return getAllTransactionsIncludeRequest(endWildCard, doubleSideWildCard);
-            case SEARCH_INCLUDE_RESPONSE:
-                return getAllTransactionsIncludeResponse(endWildCard, doubleSideWildCard);
-            case SEARCH_INCLUDE_REQUEST_RESPONSE:
-                return getAllTransactionsIncludeRequestResponse(endWildCard, doubleSideWildCard);
-            default:
-                return getAllTransactions(endWildCard, doubleSideWildCard);
-        }
+public interface TransactionDao {
+    enum SearchType {
+        DEFAULT,
+        INCLUDE_REQUEST,
+        INCLUDE_RESPONSE,
+        INCLUDE_REQUEST_RESPONSE,
     }
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, method, url, path, host, scheme, request_date, error, response_code, took_ms, request_content_length, response_content_length, request_body_is_plain_text, response_body_is_plain_text FROM HttpTransaction WHERE protocol LIKE :endWildCard OR method LIKE :endWildCard OR url LIKE :doubleWildCard OR request_body LIKE :doubleWildCard OR response_body LIKE :doubleWildCard OR response_message LIKE :doubleWildCard OR response_code LIKE :endWildCard ORDER BY id DESC")
-    abstract DataSource.Factory<Integer, HttpTransaction> getAllTransactionsIncludeRequestResponse(String endWildCard, String doubleWildCard);
+    /**
+     * Insert if it doesn't exist Or Update if exists
+     *
+     * @param httpTransaction {@link HttpTransaction}
+     * @return return the index of transaction
+     */
+    long insertTransaction(HttpTransaction httpTransaction);
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, method, url, path, host, scheme, request_date, error, response_code, took_ms, request_content_length, response_content_length, request_body_is_plain_text, response_body_is_plain_text FROM HttpTransaction WHERE protocol LIKE :endWildCard OR method LIKE :endWildCard OR url LIKE :doubleWildCard OR response_body LIKE :doubleWildCard OR response_message LIKE :doubleWildCard OR response_code LIKE :endWildCard ORDER BY id DESC")
-    abstract DataSource.Factory<Integer, HttpTransaction> getAllTransactionsIncludeResponse(String endWildCard, String doubleWildCard);
+    /**
+     * Update if it exists
+     *
+     * @param httpTransaction {@link HttpTransaction}
+     * @return return no of updates
+     */
+    @IntRange(from = 0, to = 1)
+    int updateTransaction(HttpTransaction httpTransaction);
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, method, url, path, host, scheme, request_date, error, response_code, took_ms, request_content_length, response_content_length, request_body_is_plain_text, response_body_is_plain_text FROM HttpTransaction WHERE protocol LIKE :endWildCard OR method LIKE :endWildCard OR url LIKE :doubleWildCard OR request_body LIKE :doubleWildCard OR response_code LIKE :endWildCard ORDER BY id DESC")
-    abstract DataSource.Factory<Integer, HttpTransaction> getAllTransactionsIncludeRequest(String endWildCard, String doubleWildCard);
+    /**
+     * Delete if it exists
+     *
+     * @param httpTransactions {@link HttpTransaction}
+     * @return return no of deletes (0 to size of transactions)
+     */
+    @IntRange(from = 0)
+    int deleteTransactions(HttpTransaction... httpTransactions);
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, method, url, path, host, scheme, request_date, error, response_code, took_ms, request_content_length, response_content_length, request_body_is_plain_text, response_body_is_plain_text FROM HttpTransaction WHERE protocol LIKE :endWildCard OR method LIKE :endWildCard OR url LIKE :doubleWildCard OR response_code LIKE :endWildCard ORDER BY id DESC")
-    abstract DataSource.Factory<Integer, HttpTransaction> getAllTransactions(String endWildCard, String doubleWildCard);
+    /**
+     * Delete all transactions before specified date
+     *
+     * @param beforeDate {@link Date}
+     * @return return no of deletes
+     */
+    @IntRange(from = 0)
+    int deleteTransactionsBefore(Date beforeDate);
+
+    /**
+     * ClearAll the transactions
+     *
+     * @return return no of deletes
+     */
+    @IntRange(from = 0)
+    int clearAll();
+
+    DataSource.Factory<Integer, HttpTransaction> getAllTransactions();
+
+    LiveData<HttpTransaction> getTransactionsWithId(long id);
+
+    DataSource.Factory<Integer, HttpTransaction> getAllTransactionsWith(String key, SearchType searchType);
 
 }

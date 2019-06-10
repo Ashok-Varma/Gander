@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import com.ashokvarma.gander.internal.data.GanderStorage;
+
 /**
  * Class description
  *
@@ -13,6 +15,17 @@ import android.os.Build;
  * @since 03/06/18
  */
 public class Gander {
+
+    private static GanderStorage ganderStorage;
+
+    public static GanderStorage getGanderStorage() {
+        return ganderStorage;
+    }
+
+    public static void setGanderStorage(GanderStorage ganderStorage) {
+        Gander.ganderStorage = ganderStorage;
+    }
+
 
     /**
      * Get an Intent to launch the Gander UI directly.
