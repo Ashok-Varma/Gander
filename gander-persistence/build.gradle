@@ -45,7 +45,7 @@ android {
 dependencies {
     api project(':gander')
 
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    api "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     implementation "androidx.paging:paging-runtime:$pagingVersion"
 }
