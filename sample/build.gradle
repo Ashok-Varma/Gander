@@ -29,11 +29,11 @@ android {
 }
 
 dependencies {
-//    implementation 'com.ashokvarma.android:gander-persistence:3.0.1'
-//    implementation 'com.ashokvarma.android:gander-imdb:3.0.1'
-//    implementation 'com.ashokvarma.android:gander-no-op:3.0.1'
-    implementation project(':gander-persistence')
-    implementation project(':gander-imdb')
+    implementation 'com.ashokvarma.android:gander-persistence:3.1.0'
+    implementation 'com.ashokvarma.android:gander-imdb:3.1.0'
+//    implementation 'com.ashokvarma.android:gander-no-op:3.1.0'
+//    implementation project(':gander-persistence')
+//    implementation project(':gander-imdb')
 //    implementation project(':gander-no-op')
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"

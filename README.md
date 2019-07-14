@@ -36,21 +36,21 @@ Based on your IDE you can import library in one of the following ways
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Gander from release builds as follows:
 ```gradle
 // if persistence is needed (Uses Room to store the calls in DB)
-debugImplementation 'com.ashokvarma.android:gander-persistence:3.0.1'
+debugImplementation 'com.ashokvarma.android:gander-persistence:3.1.0'
 
 // if persistence is not needed (Data retained in memory lost on app close)
-debugImplementation 'com.ashokvarma.android:gander-imdb:3.0.1'
+debugImplementation 'com.ashokvarma.android:gander-imdb:3.1.0'
 
 
-releaseImplementation 'com.ashokvarma.android:gander-no-op:3.0.1'
+releaseImplementation 'com.ashokvarma.android:gander-no-op:3.1.0'
 ```
 If you want this in library in both release and debug builds, then try this : 
 ```gradle
 // if persistence is needed (Uses Room to store the calls in DB)
-implementation 'com.ashokvarma.android:gander-persistence:3.0.1'
+implementation 'com.ashokvarma.android:gander-persistence:3.1.0'
 
 // if persistence is not needed (Data retained in memory lost on app close)
-implementation 'com.ashokvarma.android:gander-imdb:3.0.1'
+implementation 'com.ashokvarma.android:gander-imdb:3.1.0'
 ```
 
 <details>
@@ -60,14 +60,14 @@ implementation 'com.ashokvarma.android:gander-imdb:3.0.1'
       <dependency>
         <groupId>com.ashokvarma.android</groupId>
         <artifactId>gander-persistence</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.0</version>
         <type>pom</type>
       </dependency>
       <!--if persistence is not needed (Data lost once app is dead)-->
       <dependency>
         <groupId>com.ashokvarma.android</groupId>
         <artifactId>gander-imdb</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.0</version>
         <type>pom</type>
       </dependency>
 </details>
@@ -195,8 +195,8 @@ License
 2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
 3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
-[persistenceMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-persistence/3.0.1/gander-persistence-3.0.1.aar
-[imdbMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-imdb/3.0.1/gander-imdb-3.0.1.aar
+[persistenceMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-persistence/3.1.0/gander-persistence-3.1.0.aar
+[imdbMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-imdb/3.1.0/gander-imdb-3.1.0.aar
 [googlePlayStoreLink]: https://play.google.com/store/apps/details?id=com.ashokvarma.gander.sample
 [chuckLink]: https://github.com/jgilfelt/chuck
 [jgilfeltLink]: https://github.com/jgilfelt
