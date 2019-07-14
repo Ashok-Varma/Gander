@@ -2,6 +2,7 @@ package com.ashokvarma.gander.internal.support.event;
 
 
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 
 /**
@@ -29,7 +30,7 @@ public class Debouncer<V> {
         mHandler.postDelayed(new Counter<>(event, mCallback), mInterval);
     }
 
-    public static class Counter<T> implements Runnable {
+    private static class Counter<T> implements Runnable {
         private final T mEvent;
         private final Callback<T> mCallback;
 

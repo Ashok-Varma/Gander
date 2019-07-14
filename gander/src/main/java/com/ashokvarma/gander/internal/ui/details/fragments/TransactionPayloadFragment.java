@@ -143,6 +143,28 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
         populateUI();
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.gander_details_search_fab) {
+            showSearch();
+        } else if (id == R.id.gander_details_search_close) {
+            hideOrClearSearch();
+        } else if (id == R.id.gander_details_search_prev) {
+            updateSearchCount(mCurrentSearchIndex - 1, mSearchKey);
+        } else if (id == R.id.gander_details_search_next) {
+            updateSearchCount(mCurrentSearchIndex + 1, mSearchKey);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (!isVisibleToUser) {
+            hideKeyboard();
+        }
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
     private void populateUI() {
         if (isAdded() && mTransactionUIHelper != null) {
             int color = mColorUtil.getTransactionColor(mTransactionUIHelper);
@@ -292,35 +314,21 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
         }
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (!isVisibleToUser) {
-            hideKeyboard();
-        }
-        super.setUserVisibleHint(isVisibleToUser);
+    private void showSearch() {
+        mSearchFab.hide();
+        mSearchBar.setVisibility(View.VISIBLE);
+        mScrollParentView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.gander_search_bar_height), 0, mScrollParentView.getBottom());
+        showKeyboard();
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.gander_details_search_fab) {
-            mSearchFab.hide();
-            mSearchBar.setVisibility(View.VISIBLE);
-            mScrollParentView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.gander_search_bar_height), 0, mScrollParentView.getBottom());
-            showKeyboard();
-        } else if (id == R.id.gander_details_search_close) {
-            if (TextUtil.isNullOrWhiteSpace(mSearchKey)) {
-                mSearchFab.show();
-                mSearchBar.setVisibility(View.GONE);
-                mScrollParentView.setPadding(0, 0, 0, mScrollParentView.getBottom());
-                hideKeyboard();
-            } else {
-                mSearchView.setText("");
-            }
-        } else if (id == R.id.gander_details_search_prev) {
-            updateSearchCount(mCurrentSearchIndex - 1, mSearchKey);
-        } else if (id == R.id.gander_details_search_next) {
-            updateSearchCount(mCurrentSearchIndex + 1, mSearchKey);
+    private void hideOrClearSearch() {
+        if (TextUtil.isNullOrWhiteSpace(mSearchKey)) {
+            mSearchFab.show();
+            mSearchBar.setVisibility(View.GONE);
+            mScrollParentView.setPadding(0, 0, 0, mScrollParentView.getBottom());
+            hideKeyboard();
+        } else {
+            mSearchView.setText("");
         }
     }
 }

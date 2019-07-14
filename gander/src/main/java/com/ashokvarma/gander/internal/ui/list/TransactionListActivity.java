@@ -1,9 +1,12 @@
 package com.ashokvarma.gander.internal.ui.list;
 
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -24,6 +27,7 @@ import com.ashokvarma.gander.internal.support.event.Sampler;
 import com.ashokvarma.gander.internal.ui.BaseGanderActivity;
 import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
+import com.google.android.material.appbar.AppBarLayout;
 
 public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener {
 
@@ -59,6 +63,17 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         toolbar.setSubtitle(getApplicationName());
 
         mRecyclerView = findViewById(R.id.gander_transaction_list);
+        final AppBarLayout appBarLayout = findViewById(R.id.gander_appbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            appBarLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    appBarLayout.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
+                    return insets;
+                }
+            });
+        }
+
         mListDiffUtil = new ListDiffUtil();
         mTransactionAdapter = new TransactionAdapter(this, mListDiffUtil).setListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

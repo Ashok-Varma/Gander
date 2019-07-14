@@ -2,9 +2,12 @@ package com.ashokvarma.gander.internal.ui.details;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowInsets;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -54,13 +57,12 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
 
     private static int SELECTED_TAB_POSITION = 0;
 
-    TextView mTitleView;
-    Adapter mAdapter;
-    AppBarLayout mAppBarLayout;
+    private TextView mTitleView;
+    private Adapter mAdapter;
+    private AppBarLayout mAppBarLayout;
 
     private HttpTransactionUIHelper mTransaction;
-    TransactionDetailViewModel mViewModel;
-    GanderColorUtil mColorUtil;
+    private GanderColorUtil mColorUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,14 +92,24 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         TabLayout tabLayout = findViewById(R.id.gander_details_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        mViewModel = ViewModelProviders.of(this).get(TransactionDetailViewModel.class);
-        mViewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransactionUIHelper>() {
+        TransactionDetailViewModel viewModel = ViewModelProviders.of(this).get(TransactionDetailViewModel.class);
+        viewModel.getTransactionWithId(transactionId).observe(TransactionDetailsActivity.this, new Observer<HttpTransactionUIHelper>() {
             @Override
             public void onChanged(@Nullable HttpTransactionUIHelper transaction) {
                 TransactionDetailsActivity.this.mTransaction = transaction;
                 populateUI();
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            mAppBarLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    mAppBarLayout.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
+                    return insets;
+                }
+            });
+        }
     }
 
     @Override

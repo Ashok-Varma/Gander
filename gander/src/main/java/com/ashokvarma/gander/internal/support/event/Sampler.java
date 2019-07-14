@@ -2,6 +2,7 @@ package com.ashokvarma.gander.internal.support.event;
 
 
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 
 /**
@@ -43,7 +44,7 @@ public class Sampler<V> {
         }
     }
 
-    public static class Counter<T> implements Runnable {
+    private static class Counter<T> implements Runnable {
         private T mEvent;
         private final Callback<T> mCallback;
 
