@@ -2,8 +2,8 @@
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
   <a href="https://android-arsenal.com/api?level=16"><img alt="API" src="https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat"/></a>
-  <a href="https://travis-ci.org/Ashok-Varma/Gander"><img alt="Build Status" src="https://travis-ci.com/Ashok-Varma/Gander.svg?branch=master"/></a>
-  <a href="https://androidweekly.net/issues/issue-337"><img alt="Javadoc" src="https://img.shields.io/badge/Android%20Weekly-%23370-orange.svg"/></a>
+  <a href="https://travis-ci.com/Ashok-Varma/Gander"><img alt="Build Status" src="https://travis-ci.com/Ashok-Varma/Gander.svg?branch=master"/></a>
+  <a href="https://androidweekly.net/issues/issue-337"><img alt="Javadoc" src="https://img.shields.io/badge/Android%20Weekly-%23337-orange.svg"/></a>
 </p>
 
 <p align="center"><img src="https://raw.githubusercontent.com/Ashok-Varma/Gander/master/LogoDesigns/logotype1.1.png"/></p>
