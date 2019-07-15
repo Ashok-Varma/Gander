@@ -1,7 +1,13 @@
+# Gander 
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
+  <a href="https://android-arsenal.com/api?level=16"><img alt="API" src="https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat"/></a>
+  <a href="https://travis-ci.org/Ashok-Varma/Gander"><img alt="Build Status" src="https://travis-ci.com/Ashok-Varma/Gander.svg?branch=master"/></a>
+  <a href="https://androidweekly.net/issues/issue-337"><img alt="Javadoc" src="https://img.shields.io/badge/Android%20Weekly-%23370-orange.svg"/></a>
+</p>
+
 <p align="center"><img src="https://raw.githubusercontent.com/Ashok-Varma/Gander/master/LogoDesigns/logotype1.1.png"/></p>
 
-
-# Gander ![Travis_Build](https://travis-ci.com/Ashok-Varma/Gander.svg?branch=master)
 
 ## What is this library about?
 Gander is a simple in-app HTTP inspector for Android OkHttp clients. Gander intercepts and persists all HTTP requests and responses inside your application, and provides a UI for inspecting their content.
@@ -162,6 +168,14 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 5. Minor fixes (Notification Channel Creation ..etc)
 6. Many new features (Search highlight, app shortcut, Improved Notifications ..etc)
 
+## Find this library useful? :heart:
+Support it by joining __[stargazers](https://github.com/Ashok-Varma/Gander/stargazers)__ for this repository. :star:
+    
+## Other Open Source Libraries
+1. [SqliteManager](https://github.com/Ashok-Varma/SqliteManager) : Sqlite Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Sqlite Databases.
+2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
+3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
+
 ## Acknowledgements
 Chuck (parent repo)
 - [Chuck][chuckLink] - Copyright Jeff Gilfelt, Inc.
@@ -172,6 +186,7 @@ Awesome Icon Designer
 
 Gander uses the following open source libraries:
 - [OkHttp][okhttpLink] - Copyright Square, Inc.
+
 
 License
 -------
@@ -189,11 +204,6 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-    
-## Other Open Source Libraries
-1. [SqliteManager](https://github.com/Ashok-Varma/SqliteManager) : Sqlite Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Sqlite Databases.
-2. [SharedPrefManager](https://github.com/Ashok-Varma/SharedPrefManager) : SharedPref Manager is a Dev Debug tool that helps to manage(Edit, Add, Clear) your android Shared Preferences. 
-3. [BottomNavigation](https://github.com/Ashok-Varma/BottomNavigation) : This Library helps users to use Bottom Navigation Bar (A new pattern from google) with ease and allows ton of customizations.
 
 [persistenceMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-persistence/3.1.0/gander-persistence-3.1.0.aar
 [imdbMavenAarDownload]: https://repo1.maven.org/maven2/com/ashokvarma/android/gander-imdb/3.1.0/gander-imdb-3.1.0.aar
