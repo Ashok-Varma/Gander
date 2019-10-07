@@ -47,7 +47,12 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
     private static final String ARG_TRANSACTION_RESPONSE_CODE = "transaction_response_code";
 
-    public static void start(Context context, long transactionId, HttpTransactionUIHelper.Status status, Integer responseCode) {
+    public static void start(
+            Context context,
+            long transactionId,
+            HttpTransactionUIHelper.Status status,
+            Integer responseCode
+    ) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
         intent.putExtra(ARG_TRANSACTION_ID, transactionId);
         intent.putExtra(ARG_TRANSACTION_STATUS, status.ordinal());
@@ -74,7 +79,10 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         mColorUtil = GanderColorUtil.getInstance(this);
 
         mAppBarLayout = findViewById(R.id.gander_details_appbar);
-        mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(HttpTransactionUIHelper.Status.values()[statusOrdinal], responseCode));
+        mAppBarLayout.setBackgroundColor(mColorUtil.getTransactionColor(
+                HttpTransactionUIHelper.Status.values()[statusOrdinal],
+                responseCode
+        ));
         Toolbar toolbar = findViewById(R.id.gander_details_toolbar);
         setSupportActionBar(toolbar);
         mTitleView = findViewById(R.id.gander_details_toolbar_title);
@@ -146,8 +154,14 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     private void setupViewPager(ViewPager viewPager) {
         mAdapter = new Adapter(getSupportFragmentManager());
         mAdapter.addFragment(new TransactionOverviewFragment(), getString(R.string.gander_overview));
-        mAdapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.gander_request));
-        mAdapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.gander_response));
+        mAdapter.addFragment(
+                TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST),
+                getString(R.string.gander_request)
+        );
+        mAdapter.addFragment(
+                TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE),
+                getString(R.string.gander_response)
+        );
         viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override

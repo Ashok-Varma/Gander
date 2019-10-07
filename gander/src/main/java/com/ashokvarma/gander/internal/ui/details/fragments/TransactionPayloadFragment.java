@@ -38,7 +38,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class TransactionPayloadFragment extends Fragment implements TransactionFragment, View.OnClickListener {
+public class TransactionPayloadFragment extends Fragment
+        implements TransactionFragment, View.OnClickListener {
 
     public static final int TYPE_REQUEST = 0;
     public static final int TYPE_RESPONSE = 1;
@@ -233,7 +234,11 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
             if (body instanceof Spannable) {
                 Spannable spannableBody = (Spannable) body;
                 // remove old HighlightSpans
-                HighlightSpan spansToRemove[] = spannableBody.getSpans(0, spannableBody.length() - 1, HighlightSpan.class);
+                HighlightSpan[] spansToRemove = spannableBody.getSpans(
+                        0,
+                        spannableBody.length() - 1,
+                        HighlightSpan.class
+                );
                 for (Object span : spansToRemove) {
                     spannableBody.removeSpan(span);
                 }

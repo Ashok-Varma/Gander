@@ -76,10 +76,22 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransactionUIHelper
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TRANSACTION_VIEW) {
-            return new TransactionViewHolder(mLayoutInflater.inflate(R.layout.gander_list_item_transaction, parent, false));
+            return new TransactionViewHolder(
+                    mLayoutInflater.inflate(
+                            R.layout.gander_list_item_transaction,
+                            parent,
+                            false
+                    )
+            );
         } else {
             //(viewType == EMPTY_VIEW)
-            return new EmptyTransactionViewHolder(mLayoutInflater.inflate(R.layout.gander_list_item_empty_transaction, parent, false));
+            return new EmptyTransactionViewHolder(
+                    mLayoutInflater.inflate(
+                            R.layout.gander_list_item_empty_transaction,
+                            parent,
+                            false
+                    )
+            );
         }
     }
 
@@ -88,7 +100,11 @@ public class TransactionAdapter extends PagedListAdapter<HttpTransactionUIHelper
         HttpTransactionUIHelper transactionUIHelper = getItem(position);
         if (transactionUIHelper != null) {
             TransactionViewHolder holder = ((TransactionViewHolder) genericHolder);
-            holder.path.setText(getHighlightedText(transactionUIHelper.getMethod().concat(" ").concat(transactionUIHelper.getPath())));
+            holder.path.setText(
+                    getHighlightedText(
+                            transactionUIHelper.getMethod().concat(" ").concat(transactionUIHelper.getPath())
+                    )
+            );
             holder.host.setText(getHighlightedText(transactionUIHelper.getHost()));
             holder.start.setText(transactionUIHelper.getRequestStartTimeString());
             holder.ssl.setVisibility(transactionUIHelper.isSsl() ? View.VISIBLE : View.GONE);

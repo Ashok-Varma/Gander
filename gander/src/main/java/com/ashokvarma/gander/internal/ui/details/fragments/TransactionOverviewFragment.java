@@ -41,7 +41,10 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.gander_frag_transaction_overview, container, false);
         mUrlView = view.findViewById(R.id.gander_details_url);
         mMethodView = view.findViewById(R.id.gander_details_method);

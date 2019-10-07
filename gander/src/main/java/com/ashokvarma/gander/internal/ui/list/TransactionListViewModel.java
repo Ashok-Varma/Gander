@@ -36,7 +36,8 @@ public class TransactionListViewModel extends AndroidViewModel {
     public TransactionListViewModel(Application application) {
         super(application);
         mTransactionDao = Gander.getGanderStorage().getTransactionDao();
-        DataSource.Factory<Integer, HttpTransactionUIHelper> factory = mTransactionDao.getAllTransactions().map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION);
+        DataSource.Factory<Integer, HttpTransactionUIHelper> factory =
+                mTransactionDao.getAllTransactions().map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION);
         mTransactions = new LivePagedListBuilder<>(factory, config).build();
     }
 
@@ -44,7 +45,11 @@ public class TransactionListViewModel extends AndroidViewModel {
         if (key == null || key.trim().length() == 0) {
             return mTransactions;
         } else {
-            DataSource.Factory<Integer, HttpTransactionUIHelper> factory = mTransactionDao.getAllTransactionsWith(key, TransactionDao.SearchType.DEFAULT).map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION);
+            DataSource.Factory<Integer, HttpTransactionUIHelper> factory =
+                    mTransactionDao.getAllTransactionsWith(
+                            key,
+                            TransactionDao.SearchType.DEFAULT).map(HttpTransactionUIHelper.HTTP_TRANSACTION_UI_HELPER_FUNCTION
+                    );
             return new LivePagedListBuilder<>(factory, config).build();
         }
     }

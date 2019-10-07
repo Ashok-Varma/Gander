@@ -28,6 +28,9 @@ public class TransactionDetailViewModel extends AndroidViewModel {
     }
 
     LiveData<HttpTransactionUIHelper> getTransactionWithId(long id) {
-        return Transformations.map(mTransactionDao.getTransactionsWithId(id), HTTP_TRANSACTION_UI_HELPER_FUNCTION);
+        return Transformations.map(
+                mTransactionDao.getTransactionsWithId(id),
+                HTTP_TRANSACTION_UI_HELPER_FUNCTION
+        );
     }
 }

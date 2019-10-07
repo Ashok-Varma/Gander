@@ -29,7 +29,8 @@ import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
 import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 import com.google.android.material.appbar.AppBarLayout;
 
-public class TransactionListActivity extends BaseGanderActivity implements TransactionAdapter.Listener, SearchView.OnQueryTextListener {
+public class TransactionListActivity extends BaseGanderActivity
+        implements TransactionAdapter.Listener, SearchView.OnQueryTextListener {
 
     private TransactionAdapter mTransactionAdapter;
     private ListDiffUtil mListDiffUtil;
@@ -86,7 +87,10 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
         loadResults(null, mViewModel.getTransactions(null));
     }
 
-    private void loadResults(final String searchKey, LiveData<PagedList<HttpTransactionUIHelper>> pagedListLiveData) {
+    private void loadResults(
+            final String searchKey,
+            LiveData<PagedList<HttpTransactionUIHelper>> pagedListLiveData
+    ) {
         if (mCurrentSubscription != null && mCurrentSubscription.hasObservers()) {
             mCurrentSubscription.removeObservers(this);
         }
@@ -101,7 +105,12 @@ public class TransactionListActivity extends BaseGanderActivity implements Trans
 
     @Override
     public void onTransactionClicked(HttpTransactionUIHelper transactionUIHelper) {
-        TransactionDetailsActivity.start(this, transactionUIHelper.getId(), transactionUIHelper.getStatus(), transactionUIHelper.getResponseCode());
+        TransactionDetailsActivity.start(
+                this,
+                transactionUIHelper.getId(),
+                transactionUIHelper.getStatus(),
+                transactionUIHelper.getResponseCode()
+        );
     }
 
     @Override
