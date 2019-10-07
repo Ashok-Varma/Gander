@@ -48,8 +48,6 @@ abstract class RoomTransactionDao {
         String endWildCard = key + "%";
         String doubleSideWildCard = "%" + key + "%";
         switch (searchType) {
-            case DEFAULT:
-                return getAllTransactions(endWildCard, doubleSideWildCard);
             case INCLUDE_REQUEST:
                 return getAllTransactionsIncludeRequest(endWildCard, doubleSideWildCard);
             case INCLUDE_RESPONSE:

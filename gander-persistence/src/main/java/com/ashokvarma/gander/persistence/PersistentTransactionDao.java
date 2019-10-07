@@ -75,9 +75,6 @@ class PersistentTransactionDao implements TransactionDao {
 
         DataSource.Factory<Integer, PersistentHttpTransaction> factory;
         switch (searchType) {
-            case DEFAULT:
-                factory = roomTransactionDao.getAllTransactions(endWildCard, doubleSideWildCard);
-                break;
             case INCLUDE_REQUEST:
                 factory = roomTransactionDao.getAllTransactionsIncludeRequest(endWildCard, doubleSideWildCard);
                 break;
