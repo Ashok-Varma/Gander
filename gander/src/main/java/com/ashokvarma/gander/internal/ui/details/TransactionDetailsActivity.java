@@ -2,6 +2,7 @@ package com.ashokvarma.gander.internal.ui.details;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -31,6 +33,7 @@ import com.ashokvarma.gander.internal.ui.details.fragments.TransactionPayloadFra
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,11 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     private static final String ARG_TRANSACTION_ID = "transaction_id";
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
     private static final String ARG_TRANSACTION_RESPONSE_CODE = "transaction_response_code";
+    
+    public static final int POSITION_OVERVIEW = 0;
+    public static final int POSITION_REQUEST = 1;
+    public static final int POSITION_RESPONSE = 2;
+    private static int SELECTED_TAB_POSITION = POSITION_OVERVIEW;
 
     public static void start(Context context, long transactionId, HttpTransactionUIHelper.Status status, Integer responseCode) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
@@ -54,8 +62,6 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         intent.putExtra(ARG_TRANSACTION_RESPONSE_CODE, responseCode == null ? -1 : responseCode);
         context.startActivity(intent);
     }
-
-    private static int SELECTED_TAB_POSITION = 0;
 
     private TextView mTitleView;
     private Adapter mAdapter;
@@ -122,13 +128,23 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_text) {
             if (mTransaction != null)
-                share(FormatUtils.getShareText(this, mTransaction));
+                share(FormatUtils.getShareText(this, mTransaction, SELECTED_TAB_POSITION));
             return true;
         } else if (item.getItemId() == R.id.share_curl) {
             if (mTransaction != null)
                 share(FormatUtils.getShareCurlCommand(mTransaction));
             return true;
-        } else {
+        } else if (item.getItemId() == R.id.share_file) {
+            if (mTransaction != null) {
+                File file = FormatUtils.getShareFile(this, mTransaction);
+                if (file != null) {
+                    shareFile(file);
+                } else {
+                    Toast.makeText(this, R.string.gander_failed_to_write_file, Toast.LENGTH_SHORT).show();
+                }
+            }
+            return true;
+        }else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -163,6 +179,16 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, content);
         sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, null));
+    }
+
+    private void shareFile(File file) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        Uri uri = FormatUtils.getFileUri(this, file);
+        sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
         startActivity(Intent.createChooser(sendIntent, null));
     }
 

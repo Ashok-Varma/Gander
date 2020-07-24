@@ -1,24 +1,31 @@
 package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
 import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
+import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.InputSource;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -153,8 +160,21 @@ public class FormatUtils {
         }
     }
 
-    public static CharSequence getShareText(Context context, HttpTransactionUIHelper transactionUIHelper) {
-        SpannableStringBuilder text = new SpannableStringBuilder();
+    public static CharSequence getShareText(Context context, HttpTransactionUIHelper transactionUIHelper, int position) {
+        StringBuilder text = new StringBuilder();
+        if (position == TransactionDetailsActivity.POSITION_OVERVIEW) {
+            text.append(getOverviewText(context, transactionUIHelper));
+        } else if (position == TransactionDetailsActivity.POSITION_REQUEST) {
+            text.append(getRequestText(context, transactionUIHelper));
+        } else if (position == TransactionDetailsActivity.POSITION_RESPONSE) {
+            text.append(getResponseText(context, transactionUIHelper));
+        }
+        return text;
+    }
+
+    @SuppressWarnings("all")
+    private static CharSequence getOverviewText(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append(context.getString(R.string.gander_url)).append(": ").append(v(transactionUIHelper.getUrl())).append("\n");
         text.append(context.getString(R.string.gander_method)).append(": ").append(v(transactionUIHelper.getMethod())).append("\n");
         text.append(context.getString(R.string.gander_protocol)).append(": ").append(v(transactionUIHelper.getProtocol())).append("\n");
@@ -170,6 +190,12 @@ public class FormatUtils {
         text.append(context.getString(R.string.gander_response_size)).append(": ").append(v(transactionUIHelper.getResponseSizeString())).append("\n");
         text.append(context.getString(R.string.gander_total_size)).append(": ").append(v(transactionUIHelper.getTotalSizeString())).append("\n");
         text.append("\n");
+        return text;
+    }
+
+
+    private static CharSequence getRequestText(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append("---------- ").append(context.getString(R.string.gander_request)).append(" ----------\n\n");
         CharSequence headers = formatHeaders(transactionUIHelper.getRequestHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
@@ -178,14 +204,54 @@ public class FormatUtils {
         text.append((transactionUIHelper.requestBodyIsPlainText()) ? v(transactionUIHelper.getFormattedRequestBody()) :
                 context.getString(R.string.gander_body_omitted));
         text.append("\n\n");
+        return text;
+    }
+
+    private static CharSequence getResponseText(Context context, HttpTransactionUIHelper
+            transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append("---------- ").append(context.getString(R.string.gander_response)).append(" ----------\n\n");
-        headers = formatHeaders(transactionUIHelper.getResponseHeaders(), false);
+        CharSequence headers = formatHeaders(transactionUIHelper.getResponseHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
         text.append((transactionUIHelper.responseBodyIsPlainText()) ? v(transactionUIHelper.getFormattedResponseBody()) :
                 context.getString(R.string.gander_body_omitted));
         return text;
+    }
+
+    public static File getShareFile(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        File file = new File(context.getCacheDir(), transactionUIHelper.getId() + ".txt");
+        StringBuilder text = new StringBuilder();
+        text.append(getOverviewText(context, transactionUIHelper));
+        text.append(getRequestText(context, transactionUIHelper));
+        text.append(getResponseText(context, transactionUIHelper));
+        BufferedWriter bw = null;
+        try {
+            if (!file.exists() && !file.createNewFile()) {
+                return null;
+            }
+            bw = new BufferedWriter(new FileWriter(file));
+            bw.write(text.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException ignored) {
+            }
+        }
+        return file;
+    }
+
+    public static Uri getFileUri(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return FileProvider.getUriForFile(context, context.getPackageName() + ".file.path.share", file);
+        }
+        return Uri.fromFile(file);
     }
 
     public static String getShareCurlCommand(HttpTransactionUIHelper transactionUIHelper) {
