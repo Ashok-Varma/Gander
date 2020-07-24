@@ -55,7 +55,10 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         context.startActivity(intent);
     }
 
-    private static int SELECTED_TAB_POSITION = 0;
+    public static final int POSITION_OVERVIEW = 0;
+    public static final int POSITION_REQUEST = 1;
+    public static final int POSITION_RESPONSE = 2;
+    private static int SELECTED_TAB_POSITION = POSITION_OVERVIEW;
 
     private TextView mTitleView;
     private Adapter mAdapter;
@@ -122,7 +125,7 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_text) {
             if (mTransaction != null)
-                share(FormatUtils.getShareText(this, mTransaction));
+                share(FormatUtils.getShareText(this, mTransaction, SELECTED_TAB_POSITION));
             return true;
         } else if (item.getItemId() == R.id.share_curl) {
             if (mTransaction != null)

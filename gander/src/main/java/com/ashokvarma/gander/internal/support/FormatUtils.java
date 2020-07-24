@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
 import com.ashokvarma.gander.internal.ui.HttpTransactionUIHelper;
+import com.ashokvarma.gander.internal.ui.details.TransactionDetailsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -153,8 +154,21 @@ public class FormatUtils {
         }
     }
 
-    public static CharSequence getShareText(Context context, HttpTransactionUIHelper transactionUIHelper) {
-        SpannableStringBuilder text = new SpannableStringBuilder();
+    public static CharSequence getShareText(Context context, HttpTransactionUIHelper transactionUIHelper, int position) {
+        StringBuilder text = new StringBuilder();
+        if (position == TransactionDetailsActivity.POSITION_OVERVIEW) {
+            text.append(getOverviewText(context, transactionUIHelper));
+        } else if (position == TransactionDetailsActivity.POSITION_REQUEST) {
+            text.append(getRequestText(context, transactionUIHelper));
+        } else if (position == TransactionDetailsActivity.POSITION_RESPONSE) {
+            text.append(getResponseText(context, transactionUIHelper));
+        }
+        return text;
+    }
+
+    @SuppressWarnings("all")
+    private static CharSequence getOverviewText(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append(context.getString(R.string.gander_url)).append(": ").append(v(transactionUIHelper.getUrl())).append("\n");
         text.append(context.getString(R.string.gander_method)).append(": ").append(v(transactionUIHelper.getMethod())).append("\n");
         text.append(context.getString(R.string.gander_protocol)).append(": ").append(v(transactionUIHelper.getProtocol())).append("\n");
@@ -170,6 +184,12 @@ public class FormatUtils {
         text.append(context.getString(R.string.gander_response_size)).append(": ").append(v(transactionUIHelper.getResponseSizeString())).append("\n");
         text.append(context.getString(R.string.gander_total_size)).append(": ").append(v(transactionUIHelper.getTotalSizeString())).append("\n");
         text.append("\n");
+        return text;
+    }
+
+
+    private static CharSequence getRequestText(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append("---------- ").append(context.getString(R.string.gander_request)).append(" ----------\n\n");
         CharSequence headers = formatHeaders(transactionUIHelper.getRequestHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
@@ -178,8 +198,14 @@ public class FormatUtils {
         text.append((transactionUIHelper.requestBodyIsPlainText()) ? v(transactionUIHelper.getFormattedRequestBody()) :
                 context.getString(R.string.gander_body_omitted));
         text.append("\n\n");
+        return text;
+    }
+
+    private static CharSequence getResponseText(Context context, HttpTransactionUIHelper
+            transactionUIHelper) {
+        StringBuilder text = new StringBuilder();
         text.append("---------- ").append(context.getString(R.string.gander_response)).append(" ----------\n\n");
-        headers = formatHeaders(transactionUIHelper.getResponseHeaders(), false);
+        CharSequence headers = formatHeaders(transactionUIHelper.getResponseHeaders(), false);
         if (!TextUtil.isNullOrWhiteSpace(headers)) {
             text.append(headers).append("\n");
         }
