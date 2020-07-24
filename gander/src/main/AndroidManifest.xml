@@ -21,6 +21,17 @@
             android:name=".internal.ui.details.TransactionDetailsActivity"
             android:parentActivityName=".internal.ui.list.TransactionListActivity"
             android:theme="@style/Gander.Theme" />
+
+        <provider
+            android:name=".internal.support.GanderFileProvider"
+            android:authorities="${applicationId}.file.path.share"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/gander_file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

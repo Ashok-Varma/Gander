@@ -1,13 +1,17 @@
 package com.ashokvarma.gander.internal.support;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.ashokvarma.gander.R;
 import com.ashokvarma.gander.internal.data.HttpHeader;
@@ -18,8 +22,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.InputSource;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +220,42 @@ public class FormatUtils {
         text.append((transactionUIHelper.responseBodyIsPlainText()) ? v(transactionUIHelper.getFormattedResponseBody()) :
                 context.getString(R.string.gander_body_omitted));
         return text;
+    }
+
+    public static File getShareFile(Context context, HttpTransactionUIHelper transactionUIHelper) {
+        File file = new File(context.getCacheDir(), transactionUIHelper.getId() + ".txt");
+        StringBuilder text = new StringBuilder();
+        text.append(getOverviewText(context, transactionUIHelper));
+        text.append(getRequestText(context, transactionUIHelper));
+        text.append(getResponseText(context, transactionUIHelper));
+        BufferedWriter bw = null;
+        try {
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    return null;
+                }
+            }
+            bw = new BufferedWriter(new FileWriter(file));
+            bw.write(text.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException ignored) {
+            }
+        }
+        return file;
+    }
+
+    public static Uri getFileUri(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return FileProvider.getUriForFile(context, context.getPackageName() + ".file.path.share", file);
+        }
+        return Uri.fromFile(file);
     }
 
     public static String getShareCurlCommand(HttpTransactionUIHelper transactionUIHelper) {
