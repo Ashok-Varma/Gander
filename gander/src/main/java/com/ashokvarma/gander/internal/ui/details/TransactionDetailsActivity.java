@@ -49,6 +49,11 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
     private static final String ARG_TRANSACTION_ID = "transaction_id";
     private static final String ARG_TRANSACTION_STATUS = "transaction_status";
     private static final String ARG_TRANSACTION_RESPONSE_CODE = "transaction_response_code";
+    
+    public static final int POSITION_OVERVIEW = 0;
+    public static final int POSITION_REQUEST = 1;
+    public static final int POSITION_RESPONSE = 2;
+    private static int SELECTED_TAB_POSITION = POSITION_OVERVIEW;
 
     public static void start(Context context, long transactionId, HttpTransactionUIHelper.Status status, Integer responseCode) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
@@ -57,11 +62,6 @@ public class TransactionDetailsActivity extends BaseGanderActivity {
         intent.putExtra(ARG_TRANSACTION_RESPONSE_CODE, responseCode == null ? -1 : responseCode);
         context.startActivity(intent);
     }
-
-    public static final int POSITION_OVERVIEW = 0;
-    public static final int POSITION_REQUEST = 1;
-    public static final int POSITION_RESPONSE = 2;
-    private static int SELECTED_TAB_POSITION = POSITION_OVERVIEW;
 
     private TextView mTitleView;
     private Adapter mAdapter;

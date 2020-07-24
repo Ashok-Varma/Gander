@@ -5,9 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.style.StyleSpan;
 
 import androidx.annotation.NonNull;
@@ -230,10 +228,8 @@ public class FormatUtils {
         text.append(getResponseText(context, transactionUIHelper));
         BufferedWriter bw = null;
         try {
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    return null;
-                }
+            if (!file.exists() && !file.createNewFile()) {
+                return null;
             }
             bw = new BufferedWriter(new FileWriter(file));
             bw.write(text.toString());
