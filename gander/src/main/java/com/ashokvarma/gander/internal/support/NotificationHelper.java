@@ -78,7 +78,7 @@ public class NotificationHelper {
         addToBuffer(httpTransactionUIHelper);
         if (!BaseGanderActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(mContext, 0, Gander.getLaunchIntent(mContext), 0))
+                    .setContentIntent(PendingIntent.getActivity(mContext, 0, Gander.getLaunchIntent(mContext), PendingIntent.FLAG_IMMUTABLE))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.gander_ic_notification_white_24dp)
                     .setColor(ContextCompat.getColor(mContext, R.color.gander_colorPrimary))
@@ -122,7 +122,7 @@ public class NotificationHelper {
     private NotificationCompat.Action getClearAction() {
         CharSequence clearTitle = mContext.getString(R.string.gander_clear);
         Intent deleteIntent = new Intent(mContext, ClearTransactionsService.class);
-        PendingIntent intent = PendingIntent.getService(mContext, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getService(mContext, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         return new NotificationCompat.Action(R.drawable.gander_ic_delete_white_24dp, clearTitle, intent);
     }
 
@@ -130,7 +130,7 @@ public class NotificationHelper {
     private NotificationCompat.Action getDismissAction() {
         CharSequence dismissTitle = mContext.getString(R.string.gander_dismiss);
         Intent dismissIntent = new Intent(mContext, DismissNotificationService.class);
-        PendingIntent intent = PendingIntent.getService(mContext, 12, dismissIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getService(mContext, 12, dismissIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         return new NotificationCompat.Action(0, dismissTitle, intent);
     }
 
