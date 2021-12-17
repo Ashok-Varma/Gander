@@ -11,6 +11,9 @@
                     android:id="@+id/share_text"
                     android:title="@string/gander_share_as_text" />
                 <item
+                    android:id="@+id/share_file"
+                    android:title="@string/gander_share_as_file" />
+                <item
                     android:id="@+id/share_curl"
                     android:title="@string/gander_share_as_curl" />
             </group>

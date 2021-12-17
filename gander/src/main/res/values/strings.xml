@@ -25,6 +25,7 @@
     <string name="gander_no">No</string>
     <string name="gander_share">Share</string>
     <string name="gander_share_as_text">Share as text</string>
+    <string name="gander_share_as_file">Share as file</string>
     <string name="gander_share_as_curl">Share as curl command</string>
     <string name="gander_body_omitted">(encoded or binary body omitted)</string>
     <string name="gander_search">Search</string>
@@ -33,4 +34,5 @@
     <string name="gander_notification_category">Gander HTTP notifications</string>
     <string name="gander_search_request_hint"><font size="12">Search Request and Headers</font></string>
     <string name="gander_search_response_hint"><font size="12">Search Response and Headers</font></string>
+    <string name="gander_failed_to_write_file">"Failed to write file"</string>
 </resources>
